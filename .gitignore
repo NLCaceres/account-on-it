@@ -1,0 +1,28 @@
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.*
+!.env.example
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+
+# Generated Files
+*.http
+/.idea
+/.vscode
+/.vagrant
+
+# OS
+/dist
+.DS_Store
+
+# If we weren't using GitHub, the .bit dir would not be placed in the .git dir
+# so we'd have to be sure to place it in here. 
+# .bit
+# Whenever cloning a repo that has a .bit dir, we use 'bit import' to sync things
