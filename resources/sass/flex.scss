@@ -1,0 +1,28 @@
+.flexed {
+    display: flex;
+
+    &-spaced-around {
+        display: flex;
+        justify-content: space-around;
+    }
+}
+
+.spaced-around {
+    justify-content: space-around;
+}
+
+.align-baselines {
+    align-items: baseline;
+}
+
+.i-flex {
+    display: inline-flex;
+}
+
+.hidden-el {
+    display: none;
+}
+
+.flex-stretch {
+    flex-grow: 1;
+}

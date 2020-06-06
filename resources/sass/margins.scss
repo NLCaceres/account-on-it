@@ -1,0 +1,46 @@
+@import 'utility.scss';
+
+$margin-classes: ("no-margin":$spacer-0,
+  'm-xs':$spacer-1,
+  'm-sm':$spacer-2,
+  'm-md':$spacer-3,
+  'm-lg':$spacer-4,
+  'm-xl':$spacer-5,
+  'm-xxl':$spacer-6); //* Each margin class gets spaced out the same amount
+
+$margin-suffixes: ('-t':'margin-top',
+  '-r':'margin-right',
+  '-l':'margin-left',
+  '-b':'margin-bottom',
+  '-x':('margin-left', 'margin-right'),
+  '-y':('margin-top', 'margin-bottom')); //* All get attribute val, except x & y that get 2 (arr must be pulled out by mixin)
+
+$margin-attrs: ('margin-top', 'margin-right', 'margin-bottom', 'margin-left');
+
+//* Takes each size of margin and sets the value 
+@each $margin-class,
+$spacer in $margin-classes {
+  .#{$margin-class} {
+
+    //* Mixin that iterates and sets each side specified
+    @include set-sides($spacer, $margin-attrs);
+
+    //* Creates separate suffixed version to handle each side or combo of sides
+    @each $margin-suffix,
+    $attr in $margin-suffixes {
+
+
+      &#{$margin-suffix} {
+
+        //* Both x (l & r) and y (t & b) use mixin to pull out those 2 attributes
+        @if $margin-suffix=='-x'or $margin-suffix=='-y' {
+          @include set-sides($spacer, $attr);
+        }
+
+        @else {
+          #{$attr}: $spacer !important;
+        }
+      }
+    }
+  }
+}

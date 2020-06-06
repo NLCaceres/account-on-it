@@ -1,0 +1,49 @@
+//* Attempt to make this as reusable as possible
+//* A fair # of css attrs revolve around 4 points, border, radius, margin, padding etc.
+//* Goal: Give which side (effectively attr) and val, return css all set
+
+//! The following 2 may receive update to handle an arr of vals but may be ridiculously tough to account for
+
+//! 4 Corners Attribute Setting Mixin
+@mixin set-sides($val, $sides) {
+  @if length($sides)>4 {
+    @error "Unknown additional attribute. Must contain at most 4 attributes related to each possible side";
+  }
+
+  @if length($sides)==0 {
+    @error "Missing which sides will be set";
+  }
+
+  @each $side in $sides {
+    #{$side}: $val !important;
+  }
+}
+
+//! Suffix Addition Mixin
+@mixin set-suffixes($vals, $suffixesWithAttr) {
+  //* Suffixes with Attr should be a map ($suffix : $attr)
+  //* Optionally attr can contain arr ($suffix : ($attr1, $attr2, $attr3))
+  $suffixes: map-keys($map: $suffixesWithAttr);
+  $suffix-length: length($suffixes);
+
+  @if $suffix-length==0 {
+    @error 'Missing suffixes';
+  }
+
+  //? Sass does NOT start arrs from 0!
+  @for $i from 1 through $suffix-length {
+    $suffix: nth($list: $suffixes, $n: $i);
+
+    &-#{$suffix} {
+      $attributes: map-get($map: $suffixesWithAttr, $key: $suffix);
+
+      //? 'through' includes last value, 'until' does NOT
+      @for $j from 1 through length($attributes) {
+        $attr: nth($list: $attributes, $n: $j);
+        //* $val MUST use $i because it relates to suffix, NOT the attr (attr changes, suffix and it's val do NOT)
+        $val: nth($list: $vals, $n: $i);
+        #{$attr}: $val !important;
+      }
+    }
+  }
+}

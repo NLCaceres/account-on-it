@@ -1,0 +1,33 @@
+@import 'variables/colors.scss';
+
+%btn-skin {
+  box-shadow: none !important;
+  color: #dddddd;
+}
+
+%hover-skin {
+  color: white;
+  box-shadow: 0 0 0 2px white inset !important;
+}
+
+.ui.inverted.button {
+  @extend %btn-skin;
+
+  &:focus {
+    @extend %btn-skin; // Overrides Semantic's
+  }
+
+  &:hover {
+    @extend %hover-skin;
+  }
+}
+
+%no-margin-x {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.button-pair {
+  width: 100%;
+  @extend %no-margin-x;
+}

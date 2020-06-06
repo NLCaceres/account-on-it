@@ -1,0 +1,53 @@
+@import "variables/colors.scss";
+
+@mixin set-colors($app-color) {
+  background-color: $app-color !important;
+
+  &-text {
+    color: $app-color !important;
+  }
+
+  &-mid {
+    background-color: darken($app-color, 5%) !important;
+  }
+}
+
+.app-brand-blue {
+  @include set-colors($brand-blue);
+}
+
+.app-light-accent {
+  @include set-colors($light-accent);
+}
+
+.app-dark-accent {
+  @include set-colors($dark-accent);
+}
+
+.app-blue {
+  @include set-colors($blue);
+}
+
+.app-cyan {
+  @include set-colors($cyan);
+}
+
+.app-yellow {
+  @include set-colors($yellow);
+}
+
+.app-green {
+  @include set-colors($green);
+}
+
+.app-red {
+  @include set-colors($red);
+}
+
+.app-gray {
+  @include set-colors($gray);
+}
+
+.app-white {
+  @include set-colors($white);
+}

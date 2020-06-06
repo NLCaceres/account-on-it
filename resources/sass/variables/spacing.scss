@@ -1,0 +1,12 @@
+//? 'em' - Takes font-size and scales based on it. 2em with 24px font is 48px. 
+//? 2em margins in the above case would be 48 pixels of spacing between elems
+//? 'rem' - Takes root element font-size and scales based on that!
+//? This makes 'em' great for sizing relative to parent/main component while that parent/main sizes relative to the app root/base css rules
+//! Padding/Margin Utilities
+$spacer-0: 0;
+$spacer-1: 0.33em;
+$spacer-2: 0.5em;
+$spacer-3: 1em;
+$spacer-4: 1.5em;
+$spacer-5: 2em;
+$spacer-6: 4em;

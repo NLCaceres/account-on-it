@@ -1,0 +1,11 @@
+@import "https://fonts.googleapis.com/css?family=Nunito"; //? @import can grab actual urls. @use cannot
+
+// Typography
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;
+$font-family-sans-serif: "Nunito",
+sans-serif;
+
+@mixin set-text-shadow($size, $color) {
+  text-shadow: (-1*$size) $size 0 $color, $size $size 0 $color, $size (-1*$size) 0 $color, (-1*$size) (-1*$size) 0 $color;
+}

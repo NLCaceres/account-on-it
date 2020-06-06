@@ -1,0 +1,91 @@
+//! Fade
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 1s ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+    opacity: 0;
+}
+
+//! Slides
+//? Useful Slide Mixins
+@mixin move-right($x-val: -30px) {
+    opacity: 0;
+    transform: translateX($x-val);
+}
+
+@mixin slide-transition($duration: 0.5s) {
+    transition-property: opacity, transform;
+    transition-duration: $duration;
+    transition-timing-function: ease-in //cubic-bezier(0.55, 0.29, 0.2, 0.95);
+}
+
+@mixin move-left($x-val: 30px) {
+    opacity: 0;
+    transform: translateX($x-val);
+}
+
+//? Standard Slide - Enters from left moving right. Leaves left
+.slide-enter,
+.slide-leave-to {
+    @include move-right;
+}
+
+.slide-enter-active {
+    @include slide-transition;
+}
+
+.slide-abs-leave-active {
+    position: absolute;
+    transition: opacity 0.1s, transform 0.3s;
+}
+
+.slide-leave-active {
+    transition: opacity 0.5s, transform 0.5s;
+}
+
+.slide-move {
+    transition: opacity 0.3s, transform 1s;
+}
+
+//? Slide Left & Slide Right
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+    @include slide-transition;
+}
+
+.slide-left-enter,
+.slide-right-leave-active {
+    @include move-left;
+}
+
+.slide-left-leave-active,
+.slide-right-enter {
+    @include move-right;
+}
+
+//! Change Page
+.change-page-enter {
+    //@include move-right(-10px);
+    opacity: 0;
+    transform: translate(20px, 20px);
+    // transform: translateZ(-10px);
+}
+
+.change-page-leave-active {
+    position: absolute; //? Prevents the janky moves when removals happen
+}
+
+.change-page-leave-to {
+    //@include move-left(10px);
+    opacity: 0;
+    transform: translateY(2em); //? Abs pos makes all moves relative to top left corner of parent
+}
+
+.change-page-move {
+    transition: opacity 0.5s, transform 1s;
+}

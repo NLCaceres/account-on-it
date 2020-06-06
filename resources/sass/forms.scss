@@ -1,0 +1,18 @@
+@import 'variables/typography.scss';
+@import 'variables/colors.scss';
+
+%label-skin {
+  font-size: larger !important;
+  color: white !important;
+  @include set-text-shadow(2px, black);
+}
+
+.form-label {
+  @extend %label-skin;
+  margin-bottom: 0.5em !important;
+}
+
+.form-validation-err {
+  @include set-text-shadow(1px, black);
+  color: $red;
+}

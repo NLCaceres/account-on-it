@@ -1,0 +1,105 @@
+@import 'utility.scss';
+//* Goal is to form various colors and styles of borderings
+//* Format: .border-side-color E.g. border-r-light or border-y-white
+
+$rounded-sides: ('l', 'r', 'x', 'none');
+
+$border-sides: ('t':'border-top',
+    'r':'border-right',
+    'l':'border-left',
+    'b':'border-bottom',
+    'x':('border-left', 'border-right'),
+    'y':('border-top', 'border-bottom'));
+$border-slim: 2px; //* Describes the thickness (thin is 1px, medium is 3px)
+
+.rounded {
+    @each $side in $rounded-sides {
+        &-#{$side} {
+            @if $side=="l" {
+                border-radius: 5px 0px 0px 5px !important;
+            }
+
+            @else if $side=='r' {
+                border-radius: 0px 5px 5px 0px !important;
+            }
+
+            @else if $side=='x' {
+                border-radius: 5px !important;
+            }
+
+            @else {
+                border-radius: initial !important;
+            }
+        }
+    }
+
+}
+
+@mixin border-side-color-combos($color-variations, $color-var-vals, $standard-val) {
+
+    $color-vars: (); //* Arr & maps immutable 
+
+    @each $color-var in $color-variations {
+        //* To combat immutability, just make a new map with old's value each loop
+        $color-vars: map-merge($color-vars, ($color-var : border)); //* Uses border shorthand later
+    }
+
+    @include set-suffixes($color-var-vals, $color-vars);
+
+    @each $side,
+    $attr in $border-sides {
+        &-#{$side} {
+
+
+            @if $side=='x'or $side=='y' {
+                @include set-sides($standard-val, $attr);
+
+                //* Set up suffixes for alternative values for EACH side 
+                @each $attribute in $attr {
+                    $color-vars: ();
+
+                    @each $color-var in $color-variations {
+                        $color-vars: map-merge($color-vars, ($color-var : $attribute));
+                    }
+
+                    @include set-suffixes($color-var-vals, $color-vars);
+                }
+            }
+
+            @else {
+                //* Standard value for side
+                #{$attr}: $standard-val !important;
+
+                //* Set up suffixes for alternative values for side
+                $color-vars: (); //* Arr & maps immutable 
+
+                @each $color-var in $color-variations {
+                    //* To combat immutability, just make a new map with old's value each loop
+                    $color-vars: map-merge($color-vars, ($color-var : $attr));
+                }
+
+                @include set-suffixes($color-var-vals, $color-vars);
+            }
+        }
+    }
+}
+
+.border {
+    $standard-val: thin solid black; //* '!important' already included in mixin used later
+    border: $standard-val !important;
+
+    $normal-color-vars: ('light', 'white', 'none');
+    $normal-color-variation-vals: (thin solid #ffffff55, thin solid white, none);
+
+    @include border-side-color-combos($normal-color-vars, $normal-color-variation-vals, $standard-val);
+
+    &-slim {
+        $slim-val: $border-slim solid black; //* Set up the standard for this suffix version
+        border: $slim-val; //* Use it 
+
+        $slim-color-vars: ('light', 'white');
+        $slim-color-variation-vals: ($border-slim solid #ffffff55, $border-slim solid white, none);
+
+        @include border-side-color-combos($slim-color-vars, $slim-color-variation-vals, $slim-val);
+    }
+}

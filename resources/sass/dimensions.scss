@@ -1,0 +1,33 @@
+//* Goal here is to have classes to make responsive width and heights
+//* Using width & height at 25, 50, 75, and 100 percent
+//* Format is .dimension-percentile E.g. h-25 or w-75
+
+$dimension-percentiles: (25, 50, 75, 100); //* Percentiles
+
+$dimensions: ('h':'height', 'w':'width'); //* Height and width
+
+@each $dimension-class,
+$dimension-attr in $dimensions {
+
+  .#{$dimension-class} {
+
+    @each $dimension-percentile in $dimension-percentiles {
+
+      //? Sass does NOT really have type cast funcs, so below are some tricks to do so
+      //? Auto cast num - string to form the suffix
+      &-#{$dimension-percentile} {
+        #{$dimension-attr}: $dimension-percentile * 1% !important; //? Multiply by 1(unit type) & $result = ($var * 1)unit-type e.g. (25 * 1)% = 25%
+      }
+    }
+  }
+}
+
+.overflow-x {
+  overflow-x: scroll;
+}
+
+.sticky-el {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}

@@ -1,0 +1,46 @@
+@import 'utility.scss';
+
+$padding-classes: ("no-padding":$spacer-0,
+  'p-xs':$spacer-1,
+  'p-sm':$spacer-2,
+  'p-md':$spacer-3,
+  'p-lg':$spacer-4,
+  'p-xl':$spacer-5,
+  'p-xxl':$spacer-6); //? Each padding class gets spaced out the same amount
+
+$padding-suffixes: ('-t':'padding-top',
+  '-r':'padding-right',
+  '-l':'padding-left',
+  '-b':'padding-bottom',
+  '-x':('padding-left', 'padding-right'),
+  '-y':('padding-top', 'padding-bottom')); //?
+
+$padding-attrs: ('padding-top', 'padding-right', 'padding-bottom', 'padding-left');
+
+@each $padding-class,
+$spacer in $padding-classes {
+  .#{$padding-class} {
+
+    //? Mixin that iterates and sets each side specified
+    @include set-sides($spacer, $padding-attrs);
+
+    @each $padding-suffix,
+    $attr in $padding-suffixes {
+
+      //? Creates separate suffixed version to handle each side or combo of sides
+      &#{$padding-suffix} {
+        @if $padding-suffix=='-x' {
+          @include set-sides($spacer, $attr);
+        }
+
+        @else if $padding-suffix=='-y' {
+          @include set-sides($spacer, $attr);
+        }
+
+        @else {
+          #{$attr}: $spacer !important;
+        }
+      }
+    }
+  }
+}
