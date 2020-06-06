@@ -42,7 +42,7 @@ return [
         ],
 
         'single' => [
-            'driver' => 'single',
+            'driver' => 'errorlog', //'single', //? Heroku uses errorlog driver instead!
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
         ],
