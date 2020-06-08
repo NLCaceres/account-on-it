@@ -34,13 +34,13 @@ export default {
   },
   actions: {
     [BEGIN_LOAD]({ commit }, loading) {
-      commit(loading);
+      commit(LOAD, loading);
     },
     [BEGIN_SAVE]({ commit }, saving) {
-      commit(saving);
+      commit(SAVE, saving);
     },
     [ERROR_OCCURRED]({ commit }, err) {
-      commit(err);
+      commit(ERROR, err);
     },
     [RESIZE_WINDOW](context) {
       if (context.state.window.height !== window.innerHeight) {
