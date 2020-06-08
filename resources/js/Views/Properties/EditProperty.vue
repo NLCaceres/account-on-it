@@ -12,12 +12,13 @@
       />
     </div>
 
-    <sui-alert-loading :loading="loading" />
+    <sui-alert-loading />
     <sui-alert-saving :saving="saving" :saved="saved" :error="error" @saved="this.saved = false;" />
   </div>
 </template>
 <script>
-import propertiesAPI from "../../API/properties";
+import PropertiesAPI from "../../API/properties";
+import { BEGIN_LOAD } from "../../Store/action_types";
 export default {
   data() {
     return {
@@ -41,6 +42,16 @@ export default {
       }
     };
   },
+  async created() {
+    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
+    try {
+      const dataReply = (await PropertiesAPI.find(this.$route.params.id)).data;
+      this.property = dataReply;
+    } catch (err) {
+      this.error = err.response.data.message || err.message;
+    }
+    this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
+  },
   methods: {
     EditProperty(propName, propVal) {
       if (propName) {
@@ -49,7 +60,7 @@ export default {
     },
     async UpdateProperty() {
       this.saving = true;
-      const response = await propertiesAPI.update(this.property.id, {
+      const response = await PropertiesAPI.update(this.property.id, {
         house_num: this.property.house_num,
         street: this.property.street,
         state: this.property.state,

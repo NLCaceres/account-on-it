@@ -15,7 +15,7 @@
       @delete="OpenModal"
     />
 
-    <sui-alert-loading :loading="loading" />
+    <sui-alert-loading />
     <sui-alert-error>{{error}}</sui-alert-error>
 
     <sui-modal :size="-1">Are You Sure?</sui-modal>
@@ -23,6 +23,7 @@
 </template>
 <script>
 import PropertiesAPI from "../../API/properties";
+import { BEGIN_LOAD } from "../../Store/action_types";
 
 export default {
   data() {
@@ -41,23 +42,33 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     if (from.query.page && !to.query.page) this.currentPage = 1;
-    this.loading = true;
+    this.$store.dispatch(BEGIN_LOAD, true); //* Stop loading
     PropertiesAPI.all((err, properties) => {
       this.SetData(err, properties);
       next();
     });
+  },
+  async created() {
+    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
+    try {
+      const dataReply = (await landlordsAPI.find(this.$route.params.id)).data;
+      this.landlord = dataReply[0];
+    } catch (err) {
+      this.error = err.response.data.message || err.message;
+    }
+    this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
   },
   methods: {
     SetData(err, data) {
       if (err) {
         this.error = err.toString();
       } else {
-        this.loading = false;
+        this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
         this.properties = data;
       }
     },
     async DeleteProperty() {
-      const response = await propertiesAPI.delete(this.propertyIdToDelete);
+      const response = await PropertiesAPI.delete(this.propertyIdToDelete);
       if (response.status === 204) {
         this.properties.splice(this.propertyIndexToDelete, 1);
       }

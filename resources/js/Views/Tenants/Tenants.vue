@@ -15,7 +15,7 @@
       @delete="OpenModal"
     />
 
-    <sui-alert-loading :loading="loading" />
+    <sui-alert-loading />
     <sui-alert-error>{{error}}</sui-alert-error>
 
     <sui-modal :size="-1">Are You Sure?</sui-modal>
@@ -23,6 +23,8 @@
 </template>
 <script>
 import TenantsAPI from "../../API/tenants";
+import { BEGIN_LOAD } from "../../Store/action_types";
+
 export default {
   data() {
     return {
@@ -40,21 +42,18 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     if (from.query.page && !to.query.page) this.currentPage = 1;
-    this.loading = true;
+    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
     TenantsAPI.all((err, tenants) => {
       this.SetData(err, tenants);
       next();
     });
-  },
-  created() {
-    console.log(this.$store);
   },
   methods: {
     SetData(err, data) {
       if (err) {
         this.error = err.toString();
       } else {
-        this.loading = false;
+        this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
         this.tenants = data;
       }
     },

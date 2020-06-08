@@ -21,7 +21,7 @@
       @delete="OpenModal"
     />
 
-    <sui-alert-loading :loading="loading" />
+    <sui-alert-loading />
     <sui-alert-error>{{error}}</sui-alert-error>
 
     <sui-modal :size="-1">Are You Sure?</sui-modal>
@@ -29,6 +29,7 @@
 </template>
 <script>
 import LandlordsAPI from "../../API/landlords";
+import { BEGIN_LOAD } from "../../Store/action_types";
 export default {
   data() {
     return {
@@ -52,7 +53,7 @@ export default {
     //todo maybe set up a different pathway for pagination updates
     if (from.query.page && !to.query.page) this.currentPage = 1;
     //? Fires when this route is about to change - like w/ pagination (route?page=1) or inner links (route#link)
-    this.loading = true;
+    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
     LandlordsAPI.all((err, landlords) => {
       this.SetData(err, landlords);
       next(); //? Move along router funcs
@@ -63,7 +64,7 @@ export default {
       if (err) {
         this.error = err.toString();
       } else {
-        this.loading = false;
+        this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
         this.landlords = data;
       }
     },
@@ -76,15 +77,18 @@ export default {
     ChangePage(newPage) {
       this.currentPage = newPage;
       if (this.currentPage === 1) {
+        //* If page 1 then use base url
         this.$router.replace({
           path: "landlords"
         });
       } else if (this.currentPage === this.pages) {
+        //* If currentPage === total # of pages, then use base url
         this.$router.replace({
           path: "landlords",
           query: { page: this.pages }
         });
       } else {
+        //* If not 1st or last page, then set query to that page #
         this.$router.replace({
           path: "landlords",
           query: { page: this.currentPage }

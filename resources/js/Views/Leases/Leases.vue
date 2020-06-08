@@ -8,7 +8,7 @@
       class="ui inverted button m-md-b m-md-l"
     >Add New Lease</router-link>
 
-    <app-loading :loading="loading" />
+    <app-loading />
     <app-error>{{error}}</app-error>
 
     <bootstrap-pagination v-if="pages > 1" :size="-1" :num-of-pages="pages" />
@@ -36,7 +36,7 @@ export default {
     });
   },
   beforeRouteUpdate(to, from, next) {
-    this.loading = true;
+    this.$store.dispatch(BEGIN_LOAD, true); //* Stop loading
     LeasesAPI.all((err, leases) => {
       this.SetData(err, leases);
       next(); //? Move along router funcs
@@ -47,7 +47,7 @@ export default {
       if (err) {
         this.error = err.toString();
       } else {
-        this.loading = false;
+        this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
         this.leases = data;
       }
     },

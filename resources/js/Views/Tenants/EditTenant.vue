@@ -14,11 +14,13 @@
       />
     </div>
 
-    <sui-alert-loading :loading="loading" />
+    <sui-alert-loading />
     <sui-alert-saving :saving="saving" :saved="saved" :error="error" @saved="this.saved = false;" />
   </div>
 </template>
 <script>
+import { BEGIN_LOAD } from "../../Store/action_types";
+
 export default {
   data() {
     return {

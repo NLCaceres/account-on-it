@@ -9,12 +9,13 @@
       :validation-errs="validationErrs"
     />
 
-    <sui-alert-loading :loading="loading" />
+    <sui-alert-loading />
     <sui-alert-saving :saving="saving" :saved="saved" :error="error" @saved="this.saved = false;" />
   </div>
 </template>
 <script>
-import landlordsAPI from "../../API/landlords";
+import LandlordsAPI from "../../API/landlords";
+import { BEGIN_LOAD } from "../../Store/action_types";
 export default {
   data() {
     return {
@@ -36,12 +37,14 @@ export default {
     };
   },
   async created() {
+    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
     try {
-      const dataReply = (await landlordsAPI.find(this.$route.params.id)).data;
+      const dataReply = (await LandlordsAPI.find(this.$route.params.id)).data;
       this.landlord = dataReply[0];
     } catch (err) {
       this.error = err.response.data.message || err.message;
     }
+    this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
   },
   methods: {
     setData(err, data) {
@@ -49,7 +52,7 @@ export default {
         //? This check is better than (err !== null) since it actually checks all falsey vals!
         this.error = err.toString();
       } else {
-        this.loading = false;
+        this.$store.dispatch(BEGIN_LOAD, false);
         this.landlord = data;
       }
     },

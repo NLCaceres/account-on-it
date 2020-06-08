@@ -1,5 +1,5 @@
 <template>
-  <div class="ui message" :class="{'hidden':!loading}">
+  <div class="ui message" :class="{'hidden':!Loading}">
     <i class="close icon" @click="CloseAlert" />
     <div class="header">
       <slot>Loading!</slot>
@@ -10,6 +10,11 @@
 export default {
   props: {
     loading: Boolean
+  },
+  computed: {
+    Loading() {
+      return this.$store.state.app.loading;
+    }
   },
   methods: {
     CloseAlert() {

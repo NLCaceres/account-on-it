@@ -26,6 +26,14 @@
 <script>
 import loginAPI from "../../../API/authentication";
 export default {
+  computed: {
+    AppLoading() {
+      return this.$store.state.app.loading;
+    },
+    DisableForgotPasswordOption() {
+      return this.$store.state.app.loading ? false : true;
+    }
+  },
   data() {
     return {
       forgotPasswordReady: false,
