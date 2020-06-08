@@ -82,7 +82,7 @@ export default {
           path: "landlords"
         });
       } else if (this.currentPage === this.pages) {
-        //* If currentPage === total # of pages, then use base url
+        //* If currentPage = total # of pages, then use base url
         this.$router.replace({
           path: "landlords",
           query: { page: this.pages }
