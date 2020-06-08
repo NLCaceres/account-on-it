@@ -7,6 +7,8 @@
   </router-link>
 </template>
 <script>
+//? Thanks to the props here, this vue template may be best used for providing clarity
+//? Rather than fully taking place of the simple router-link VueRouter provides
 export default {
   props: {
     pathName: {
