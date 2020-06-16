@@ -100,7 +100,8 @@ class LoginController extends Controller
         //* Getting an array w/ relations, adding in an attr in place of 'email_verified_at', and sending
         $userArray = $user->attributesToArray();
 
-        if ($user->account_type === 0) {
+        if ($user->role === 1) {
+        } else if ($user->account_type === 0) {
             //* Landlord only needs its ID
             $userArray['landlord_id'] = $user->landlord->id;
         } else {
