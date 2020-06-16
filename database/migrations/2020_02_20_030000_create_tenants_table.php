@@ -19,12 +19,14 @@ class CreateTenantsTable extends Migration
             $table->string('first_name');
             $table->string('surname');
             $table->string('email');
-            $table->boolean('claimed');
-            $table->boolean('current'); //* Current tenants or past ones!
+            // $table->boolean('claimed');
+            // $table->boolean('current'); //* Current tenants or past ones!
+            //* Instead of claimed attr, if user_id exists, then must be claimed account!
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('property_id')->nullable();
             $table->foreign('property_id')->references('id')->on('properties');
+            //* Instead of current attr, use lease_id and calculate if currently renting!
             $table->unsignedBigInteger('lease_id')->nullable();
             $table->foreign('lease_id')->references('id')->on('leases');
             $table->unsignedBigInteger('landlord_id')->nullable();

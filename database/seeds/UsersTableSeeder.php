@@ -53,7 +53,7 @@ class UsersTableSeeder extends Seeder
         ]);
 
         //* Create tenants for the landlord user
-        $tenants = factory(App\Tenant::class, 5)->states('claimed')->create()->each(function ($tenant) {
+        $tenants = factory(App\Tenant::class, 5)->create()->each(function ($tenant) {
             $tenantUser = factory(App\User::class)->states('tenants')->create([
                 'first_name' => $tenant->first_name,
                 'surname' => $tenant->surname,
@@ -121,7 +121,7 @@ class UsersTableSeeder extends Seeder
             'first_name' => $user->first_name,
             'surname' => $user->surname,
             'email' => $user->email,
-            'claimed' => true,
+            //'claimed' => true,
         ]); //* Not using 'renting' state since it will create it's own property, lease, & landlord
 
         //* Grab all landlords, pick one at random or select one deliberately (such as one placed in param)
