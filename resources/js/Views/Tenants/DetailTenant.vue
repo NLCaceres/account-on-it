@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import TenantsAPI from "../../API/tenants";
+import TenantsAPI from "../../API/TenantAPI";
 export default {
   data() {
     return {

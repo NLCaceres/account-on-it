@@ -24,7 +24,8 @@
   </div>
 </template>
 <script>
-import loginAPI from "../../../API/authentication";
+import loginAPI from "../../../API/AuthenticationAPI";
+
 export default {
   computed: {
     AppLoading() {

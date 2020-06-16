@@ -4,7 +4,7 @@
     <back-button :steps-back="-1" />
 
     <div class="ui basic segment">
-      <property-form
+      <form-property
         @edit="EditProperty"
         @submit="UpdateProperty"
         :saving="saving"
@@ -17,8 +17,10 @@
   </div>
 </template>
 <script>
-import PropertiesAPI from "../../API/properties";
-import { BEGIN_LOAD } from "../../Store/action_types";
+import PropertiesAPI from "../../API/PropertyAPI";
+import { BEGIN_LOAD } from "../../Store/ActionTypes";
+import { APP_MODULE } from "../../Store";
+
 export default {
   data() {
     return {
@@ -43,14 +45,14 @@ export default {
     };
   },
   async created() {
-    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
+    this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading
     try {
       const dataReply = (await PropertiesAPI.find(this.$route.params.id)).data;
       this.property = dataReply;
     } catch (err) {
       this.error = err.response.data.message || err.message;
     }
-    this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
+    this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false); //* Stop loading
   },
   methods: {
     EditProperty(propName, propVal) {

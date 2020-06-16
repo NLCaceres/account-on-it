@@ -52,7 +52,7 @@
   </div>
 </template>
 <script>
-import LandlordsAPI from "../../API/landlords";
+import LandlordsAPI from "../../API/LandlordAPI";
 
 export default {
   data() {

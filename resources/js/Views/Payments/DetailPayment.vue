@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import PaymentsAPI from "../../API/payments";
+import PaymentsAPI from "../../API/PaymentAPI";
 export default {
   data() {
     return {

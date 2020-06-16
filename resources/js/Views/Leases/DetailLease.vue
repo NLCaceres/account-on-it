@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import LeaseAPI from "../../API/leases";
+import LeaseAPI from "../../API/LeaseAPI";
 export default {
   data() {
     return {

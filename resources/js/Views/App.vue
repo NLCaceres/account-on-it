@@ -25,9 +25,9 @@
 </template>
 <script>
 import { DEFAULT_COMPONENT_TRANSITION } from "../Utility/Constants/transitions";
-import { AUTHENTICATION_CHECK, RESIZE_WINDOW } from "../Store/action_types";
+import { AUTHENTICATION_CHECK, RESIZE_WINDOW } from "../Store/ActionTypes";
 import { AUTH_MODULE, APP_MODULE } from "../Store";
-import { CHECK_AUTHENTICATION } from "../Store/modules/authentication";
+import { CHECK_AUTHENTICATION } from "../Store/modules/AuthenticationState";
 
 export default {
   data() {

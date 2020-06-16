@@ -2,7 +2,7 @@
   <div class="ui segment container no-padding-b app-dark-accent-mid">
     <header-back-button>Edit Landlord</header-back-button>
 
-    <landlord-form
+    <form-landlord
       @edit="EditLandlord"
       @submit="UpdateLandlord"
       :saving="saving"
@@ -14,8 +14,10 @@
   </div>
 </template>
 <script>
-import LandlordsAPI from "../../API/landlords";
-import { BEGIN_LOAD } from "../../Store/action_types";
+import LandlordsAPI from "../../API/LandlordAPI";
+import { BEGIN_LOAD } from "../../Store/ActionTypes";
+import { APP_MODULE } from "../../Store";
+
 export default {
   data() {
     return {
@@ -37,14 +39,14 @@ export default {
     };
   },
   async created() {
-    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
+    this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading
     try {
       const dataReply = (await LandlordsAPI.find(this.$route.params.id)).data;
       this.landlord = dataReply[0];
     } catch (err) {
       this.error = err.response.data.message || err.message;
     }
-    this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
+    this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false); //* Stop loading
   },
   methods: {
     setData(err, data) {
@@ -52,7 +54,7 @@ export default {
         //? This check is better than (err !== null) since it actually checks all falsey vals!
         this.error = err.toString();
       } else {
-        this.$store.dispatch(BEGIN_LOAD, false);
+        this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false);
         this.landlord = data;
       }
     },

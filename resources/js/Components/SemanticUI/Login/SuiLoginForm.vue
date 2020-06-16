@@ -33,9 +33,9 @@
   </div>
 </template>
 <script>
-import { SIGN_IN } from "../../../Store/action_types";
+import { SIGN_IN } from "../../../Store/ActionTypes";
 import { mapActions } from "vuex";
-import loginApi from "../../../API/authentication";
+import loginApi from "../../../API/AuthenticationAPI";
 export default {
   props: {
     small: {

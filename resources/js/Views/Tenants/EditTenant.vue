@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import { BEGIN_LOAD } from "../../Store/action_types";
+import { BEGIN_LOAD } from "../../Store/ActionTypes";
 
 export default {
   data() {

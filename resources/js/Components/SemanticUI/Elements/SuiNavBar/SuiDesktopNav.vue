@@ -21,7 +21,7 @@
 
 <script>
 import { AUTH_MODULE, APP_MODULE } from "../../../../Store"; //? Auto grabs file named index.js in this dir
-import { SIGN_OUT } from "../../../../Store/action_types";
+import { SIGN_OUT } from "../../../../Store/ActionTypes";
 
 export default {
   //! Lifecycle Hooks

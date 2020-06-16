@@ -1,7 +1,6 @@
 <template>
   <div class="ui segment container no-padding-b app-dark-accent-mid">
-    <h1>New Tenant</h1>
-    <back-button :steps-back="-1" />
+    <header-back-button>New Tenant</header-back-button>
 
     <div class="ui basic segment">
       <model-form
@@ -19,7 +18,7 @@
   </div>
 </template>
 <script>
-import tenantsAPI from "../../API/tenants";
+import tenantsAPI from "../../API/TenantAPI";
 
 export default {
   data() {

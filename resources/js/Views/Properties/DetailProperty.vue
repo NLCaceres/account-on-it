@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import PropertiesAPI from "../../API/properties";
+import PropertiesAPI from "../../API/PropertyAPI";
 export default {
   data() {
     return {

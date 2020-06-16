@@ -2,7 +2,7 @@
   <div class="ui segment container no-padding-b app-dark-accent-mid">
     <header-back-button>New Landlord</header-back-button>
 
-    <landlord-form
+    <form-landlord
       new-landlord
       :saving="saving"
       @edit="EditLandlord"
@@ -14,7 +14,7 @@
   </div>
 </template>
 <script>
-import landlordsAPI from "../../API/landlords";
+import LandlordsAPI from "../../API/LandlordAPI";
 
 export default {
   data() {
@@ -43,7 +43,7 @@ export default {
     },
     async StoreLandlord() {
       this.saving = true;
-      const response = await landlordsAPI.create(this.landlord);
+      const response = await LandlordsAPI.create(this.landlord);
       this.saving = false;
       if (response.status === 201) {
         this.saved = true;

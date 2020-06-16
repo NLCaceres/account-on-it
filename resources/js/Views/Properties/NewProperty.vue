@@ -4,7 +4,7 @@
     <back-button :steps-back="-1" />
 
     <div class="ui basic segment">
-      <property-form new-property :saving="saving" @edit="EditProperty" @submit="StoreProperty" />
+      <form-property new-property :saving="saving" @edit="EditProperty" @submit="StoreProperty" />
     </div>
 
     <sui-alert-saving
