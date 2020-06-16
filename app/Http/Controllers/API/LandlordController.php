@@ -20,9 +20,14 @@ class LandlordController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Landlord::all();
+        $user = $request->user();
+        if ($user->role === 1) {
+            return Landlord::paginate(15);
+        } else {
+            //todo: Used in a search query
+        }
     }
 
     /**
