@@ -4,9 +4,9 @@
   </div>
 </template>
 <script>
-import { SIGN_OUT } from "../Store/action_types";
+import { SIGN_OUT } from "../Store/ActionTypes";
 import { AUTH_MODULE } from "../Store";
 
-import loginApi from "../API/authentication";
+import loginApi from "../API/AuthenticationAPI";
 export default {};
 </script>
