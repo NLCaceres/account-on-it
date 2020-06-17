@@ -1,5 +1,5 @@
 <template>
-  <div class="ui message" :class="{'hidden': !saving}">
+  <div class="ui message" :class="{'hidden': !SaveInProgress}">
     <i class="close icon" @click="CloseAlert" />
     <div class="header">{{SaveMessage}}</div>
   </div>
@@ -12,6 +12,9 @@ export default {
     errorMsg: String
   },
   computed: {
+    SaveInProgress() {
+      return this.$store.state.app.saving;
+    },
     SaveMessage() {
       if (this.saving) {
         return "Saving in Progress";
