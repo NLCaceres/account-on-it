@@ -4,7 +4,7 @@ const routes = [
         name: "Landlords",
         component: () =>
             import(
-                /* webpackChunkName: "LandlordsView" */ "../Views/Landlords/Landlords"
+                /* webpackChunkName: "LandlordsListView" */ "../Views/Landlords/ListLandlords"
             ),
         meta: { title: "Landlord Info" }
     },
