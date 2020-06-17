@@ -11,7 +11,9 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _API_properties__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../API/properties */ "./resources/js/API/properties.js");
+/* harmony import */ var _API_PropertyAPI__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../API/PropertyAPI */ "./resources/js/API/PropertyAPI.js");
+/* harmony import */ var _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Store/ActionTypes */ "./resources/js/Store/ActionTypes.js");
+/* harmony import */ var _Store__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Store */ "./resources/js/Store/index.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -37,6 +39,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -60,6 +64,45 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     };
   },
+  created: function created() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      var dataReply;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _this.$store.dispatch("".concat(_Store__WEBPACK_IMPORTED_MODULE_3__["APP_MODULE"], "/").concat(_Store_ActionTypes__WEBPACK_IMPORTED_MODULE_2__["BEGIN_LOAD"]), true); //* Start loading
+
+
+              _context.prev = 1;
+              _context.next = 4;
+              return _API_PropertyAPI__WEBPACK_IMPORTED_MODULE_1__["default"].find(_this.$route.params.id);
+
+            case 4:
+              dataReply = _context.sent.data;
+              _this.property = dataReply;
+              _context.next = 11;
+              break;
+
+            case 8:
+              _context.prev = 8;
+              _context.t0 = _context["catch"](1);
+              _this.error = _context.t0.response.data.message || _context.t0.message;
+
+            case 11:
+              _this.$store.dispatch("".concat(_Store__WEBPACK_IMPORTED_MODULE_3__["APP_MODULE"], "/").concat(_Store_ActionTypes__WEBPACK_IMPORTED_MODULE_2__["BEGIN_LOAD"]), false); //* Stop loading
+
+
+            case 12:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[1, 8]]);
+    }))();
+  },
   methods: {
     EditProperty: function EditProperty(propName, propVal) {
       if (propName) {
@@ -67,31 +110,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     },
     UpdateProperty: function UpdateProperty() {
-      var _this = this;
+      var _this2 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
         var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                _this.saving = true;
-                _context.next = 3;
-                return _API_properties__WEBPACK_IMPORTED_MODULE_1__["default"].update(_this.property.id, {
-                  house_num: _this.property.house_num,
-                  street: _this.property.street,
-                  state: _this.property.state,
-                  zipcode: _this.property.zipcode,
-                  additional_info: _this.property.additional_info
+                _this2.saving = true;
+                _context2.next = 3;
+                return _API_PropertyAPI__WEBPACK_IMPORTED_MODULE_1__["default"].update(_this2.property.id, {
+                  house_num: _this2.property.house_num,
+                  street: _this2.property.street,
+                  state: _this2.property.state,
+                  zipcode: _this2.property.zipcode,
+                  additional_info: _this2.property.additional_info
                 });
 
               case 3:
-                response = _context.sent;
-                _this.saving = false;
+                response = _context2.sent;
+                _this2.saving = false;
 
                 if (response.status === 204) {
-                  _this.saved = true;
-                  _this.validationErrs = {
+                  _this2.saved = true;
+                  _this2.validationErrs = {
                     house_num: [],
                     street: [],
                     state: [],
@@ -99,22 +142,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     additional_info: []
                   };
                   setTimeout(function () {
-                    return _this.saved = false;
+                    return _this2.saved = false;
                   }, 2000); //? Oddly 'this' refers to the vue instance here! Not true elsewhere
                 } else if (response.status === 422) {
-                  _this.error = response.data.message;
-                  _this.validationErrs = response.data.errors;
+                  _this2.error = response.data.message;
+                  _this2.validationErrs = response.data.errors;
                   setTimeout(function () {
-                    return _this.error = null;
+                    return _this2.error = null;
                   }, 4000);
                 }
 
               case 6:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee);
+        }, _callee2);
       }))();
     }
   }
@@ -149,7 +192,7 @@ var render = function() {
         "div",
         { staticClass: "ui basic segment" },
         [
-          _c("property-form", {
+          _c("form-property", {
             attrs: {
               saving: _vm.saving,
               "validation-errs": _vm.validationErrs
@@ -160,7 +203,7 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c("sui-alert-loading", { attrs: { loading: _vm.loading } }),
+      _c("sui-alert-loading"),
       _vm._v(" "),
       _c("sui-alert-saving", {
         attrs: { saving: _vm.saving, saved: _vm.saved, error: _vm.error },

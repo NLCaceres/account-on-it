@@ -9,8 +9,8 @@
     "/LandlordEditView.js.map": "/LandlordEditView.js.map",
     "/LandlordNewView.js": "/LandlordNewView.js",
     "/LandlordNewView.js.map": "/LandlordNewView.js.map",
-    "/LandlordsView.js": "/LandlordsView.js",
-    "/LandlordsView.js.map": "/LandlordsView.js.map",
+    "/LandlordsListView.js": "/LandlordsListView.js",
+    "/LandlordsListView.js.map": "/LandlordsListView.js.map",
     "/PropertiesView.js": "/PropertiesView.js",
     "/PropertiesView.js.map": "/PropertiesView.js.map",
     "/PropertyDetailView.js": "/PropertyDetailView.js",
@@ -24,5 +24,11 @@
     "/TenantNewView.js": "/TenantNewView.js",
     "/TenantNewView.js.map": "/TenantNewView.js.map",
     "/TenantsView.js": "/TenantsView.js",
-    "/TenantsView.js.map": "/TenantsView.js.map"
+    "/TenantsView.js.map": "/TenantsView.js.map",
+    "/UserDetailView.js": "/UserDetailView.js",
+    "/UserDetailView.js.map": "/UserDetailView.js.map",
+    "/UserNewView.js": "/UserNewView.js",
+    "/UserNewView.js.map": "/UserNewView.js.map",
+    "/UsersView.js": "/UsersView.js",
+    "/UsersView.js.map": "/UsersView.js.map"
 }

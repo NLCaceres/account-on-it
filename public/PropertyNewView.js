@@ -151,7 +151,7 @@ var render = function() {
         "div",
         { staticClass: "ui basic segment" },
         [
-          _c("property-form", {
+          _c("form-property", {
             attrs: { "new-property": "", saving: _vm.saving },
             on: { edit: _vm.EditProperty, submit: _vm.StoreProperty }
           })
