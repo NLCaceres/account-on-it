@@ -39,7 +39,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     $userArray = $user->attributesToArray();
 
-    if ($user->account_type === 0) {
+    if ($user->role === 1) {
+    } else if ($user->account_type === 0) {
         //* Landlord only needs its ID
         $userArray['landlord_id'] = $user->landlord->id;
     } else {
