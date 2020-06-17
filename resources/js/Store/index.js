@@ -1,25 +1,26 @@
-import landlordsAPI from '../API/landlords';
+import landlordsAPI from '../API/LandlordAPI';
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+Vue.use(Vuex);
+
 //! Modules w/ namespace constants
-import app from './modules/app';
+import app from './modules/AppState';
 export const APP_MODULE = 'app';
 
-import authentication from './modules/authentication';
+import authentication from './modules/AuthenticationState';
 export const AUTH_MODULE = 'authentication';
 
-import landlords from './modules/landlords';
+import landlords from './modules/LandlordState';
 export const LANDLORD_MODULE = 'landlords';
 
-import tenants from './modules/tenants';
+import tenants from './modules/TenantState';
 export const TENANT_MODULE = 'tenants';
-
-Vue.use(Vuex);
 
 //! Store
 export default new Vuex.Store({
-  //? Simple imports as always! app structure doesn't necessarily need to follow Vue's 
+  //? Simple imports as always! Vuex Dir structure doesn't necessarily need to follow Vue's 
+  //? .. = next to
   //? (./Store/index .. ./Store/modules, etc) but up to the dev!
   //? Counter-ex: (./Store/index .. ./Store/auth => ./Store/auth/index.js .. ./Store/auth/actions.js .. ./Store/auth/mutators.js, etc);
   //? Diff being each module gets its own dir w/ separate files for mutations & actions probably

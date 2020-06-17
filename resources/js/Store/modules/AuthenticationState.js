@@ -1,6 +1,6 @@
-import authAPI from '../../API/authentication';
-import { LOGIN, AUTHENTICATED, LOGGED_IN, LOGIN_ATTEMPT, LOGGED_OUT } from '../mutation_types';
-import { SIGN_IN, SIGN_OUT, AUTHENTICATION_CHECK } from '../action_types';
+import authAPI from '../../API/AuthenticationAPI';
+import { LOGIN, AUTHENTICATED, LOGGED_IN, LOGIN_ATTEMPT, LOGGED_OUT } from '../MutationTypes';
+import { SIGN_IN, SIGN_OUT, AUTHENTICATION_CHECK } from '../ActionTypes';
 
 //! Getters
 export const CHECK_AUTHENTICATION = 'CHECK_AUTHENTICATION';

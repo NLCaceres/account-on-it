@@ -1,4 +1,4 @@
-import landlordsAPI from '../../API/landlords';
+import landlordsAPI from '../../API/LandlordAPI';
 
 const state = {
   landlords: []

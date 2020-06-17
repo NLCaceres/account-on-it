@@ -1,5 +1,5 @@
-import { LOAD, SAVE, ERROR, UPDATE_HEIGHT, UPDATE_WIDTH } from '../mutation_types';
-import { BEGIN_LOAD, BEGIN_SAVE, ERROR_OCCURRED, RESIZE_WINDOW } from '../action_types';
+import { LOAD, SAVE, ERROR, UPDATE_HEIGHT, UPDATE_WIDTH } from '../MutationTypes';
+import { BEGIN_LOAD, BEGIN_SAVE, ERROR_OCCURRED, RESIZE_WINDOW } from '../ActionTypes';
 
 export default {
   namespaced: true,

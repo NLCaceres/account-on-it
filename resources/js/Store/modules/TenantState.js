@@ -1,6 +1,6 @@
-import tenantsAPI from '../../API/tenants';
-import { ADD_ENTITY as PushTenant, ADD_ENTITIES as InitTenants } from '../mutation_types';
-import { ADD_ENTITY as AddTenant, ALL_ENTITIES as AllTenants } from '../action_types';
+import tenantsAPI from '../../API/TenantAPI';
+import { ADD_ENTITY as PushTenant, ADD_ENTITIES as InitTenants } from '../MutationTypes';
+import { ADD_ENTITY as AddTenant, ALL_ENTITIES as AllTenants } from '../ActionTypes';
 
 const store = { namespaced: true }
 
