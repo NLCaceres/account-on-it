@@ -27,12 +27,15 @@ import router from "./Routes"; // Imports still work though! Which you use is pa
 //@params (ID, optionsObj) - optionsObj = helper func, props, filters, or even child components!
 // Vue.component("personal-access-tokens", require("./Components/passport/PersonalAccessTokens").default); //? Laravel Passport useful premade Vue components
 
-//? MUST DECLARE ALL MODELS LIKE THIS USED IN COMPONENTS 
+//? MUST DECLARE ALL MODELS USED IN COMPONENTS LIKE THIS
 //? or get 'componentNormalizer declaration file missing' / 'implicit any' err
 //! Models 
-require('./Models/UserClass');
 require('./Models/EnumRole');
 require('./Models/EnumAccountType');
+require('./Models/UserClass');
+require('./Models/TenantClass');
+require('./Models/LandlordClass');
+
 
 // ! Forms
 Vue.component(
