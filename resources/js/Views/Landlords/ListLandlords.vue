@@ -28,8 +28,11 @@
   </div>
 </template>
 <script>
-import LandlordsAPI from "../../API/landlords";
-import { BEGIN_LOAD } from "../../Store/action_types";
+import store from '../../Store';
+import LandlordsAPI from "../../API/LandlordAPI";
+import { BEGIN_LOAD } from "../../Store/ActionTypes";
+import { APP_MODULE } from "../../Store";
+
 export default {
   data() {
     return {
@@ -45,6 +48,7 @@ export default {
   //? Following vue-router lifecycle methods are good alternatives working w/ pagination, etc. compared to normal lifecycle like created()
   beforeRouteEnter(to, from, next) {
     //? Fires when about to load 1st time
+    store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading  
     LandlordsAPI.all((err, landlords) => {
       next(vm => vm.SetData(err, landlords));
     });
@@ -53,19 +57,21 @@ export default {
     //todo maybe set up a different pathway for pagination updates
     if (from.query.page && !to.query.page) this.currentPage = 1;
     //? Fires when this route is about to change - like w/ pagination (route?page=1) or inner links (route#link)
-    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
+    this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading
     LandlordsAPI.all((err, landlords) => {
       this.SetData(err, landlords);
       next(); //? Move along router funcs
-    });
+    }, this.currentPage);
   },
   methods: {
     SetData(err, data) {
       if (err) {
         this.error = err.toString();
       } else {
-        this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
-        this.landlords = data;
+        this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false); //* Stop loading 
+        console.log(data);
+        this.pages = data.last_page; //* Last page will be total num of pages
+        this.landlords = data.data;
       }
     },
     async DeleteLandlord() {

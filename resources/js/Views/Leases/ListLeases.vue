@@ -18,7 +18,11 @@
   </div>
 </template>
 <script>
-import LeasesAPI from "../../API/leases";
+import store from '../../Store';
+import LeasesAPI from "../../API/LeaseAPI";
+import { BEGIN_LOAD } from "../../Store/ActionTypes";
+import { APP_MODULE } from "../../Store";
+
 export default {
   data() {
     return {
@@ -31,12 +35,13 @@ export default {
     };
   },
   beforeRouteEnter(to, from, next) {
+    store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading  
     LeasesAPI.all((err, leases) => {
       next(vm => vm.SetData(err, leases));
     });
   },
   beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch(BEGIN_LOAD, true); //* Stop loading
+    this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Stop loading
     LeasesAPI.all((err, leases) => {
       this.SetData(err, leases);
       next(); //? Move along router funcs
@@ -47,7 +52,7 @@ export default {
       if (err) {
         this.error = err.toString();
       } else {
-        this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
+        this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false); //* Stop loading
         this.leases = data;
       }
     },

@@ -36,7 +36,7 @@
   </div>
 </template>
 <script>
-import landlordsAPI from "../../API/landlords";
+import landlordsAPI from "../../API/LandlordAPI";
 import { DEFAULT_VALIDATION_ERR_TRANSITION } from "../../Utility/Constants/transitions";
 
 export default {

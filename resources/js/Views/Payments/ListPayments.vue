@@ -22,7 +22,11 @@
   </div>
 </template>
 <script>
-import PaymentsAPI from "../../API/payments";
+import store from '../../Store';
+import PaymentsAPI from "../../API/PaymentAPI";
+import { BEGIN_LOAD } from "../../Store/ActionTypes";
+import { APP_MODULE } from "../../Store";
+
 export default {
   data() {
     return {
@@ -35,12 +39,13 @@ export default {
     };
   },
   beforeRouteEnter(to, from, next) {
+    store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading  
     PaymentsAPI.all((err, payments) => {
       next(vm => vm.SetData(err, payments));
     });
   },
   beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
+    this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading
     PaymentsAPI.all((err, payments) => {
       this.SetData(err, payments);
       next(); //? Move along router funcs
@@ -51,7 +56,7 @@ export default {
       if (err) {
         this.error = err.toString();
       } else {
-        this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
+        this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false); //* Stop loading
         this.payments = data;
       }
     },

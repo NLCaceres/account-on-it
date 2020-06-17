@@ -57,10 +57,11 @@
 </template>
 <script>
 import states from "../../Utility/Constants/state_list";
-import PropertiesAPI from "../../API/properties";
+import PropertiesAPI from "../../API/PropertyAPI";
 import { DEFAULT_VALIDATION_ERR_TRANSITION } from "../../Utility/Constants/transitions";
 import FinalValidationCheck from "../../Utility/Functions/final_validation_check";
 export default {
+  //! Props
   props: {
     newProperty: Boolean,
     saving: Boolean
@@ -75,6 +76,35 @@ export default {
       return statePlusAbbreviation;
     }
   },
+  //! Data
+  data() {
+    return {
+      property: {
+        street: "",
+        city: "",
+        state: "",
+        postal_code: "",
+        additional_info: ""
+      },
+      validationErrs: {
+        house_num: [],
+        street: [],
+        city: [],
+        state: [],
+        postal_code: [],
+        additional_info: []
+      },
+      validationTransitions: {
+        house_num: DEFAULT_VALIDATION_ERR_TRANSITION,
+        street: DEFAULT_VALIDATION_ERR_TRANSITION,
+        city: DEFAULT_VALIDATION_ERR_TRANSITION,
+        state: DEFAULT_VALIDATION_ERR_TRANSITION,
+        postal_code: DEFAULT_VALIDATION_ERR_TRANSITION,
+        additional_info: DEFAULT_VALIDATION_ERR_TRANSITION
+      }
+    };
+  },
+  //! Lifecycle Hooks
   //? Created is great for constants unless needed super early
   created() {
     const ADDRESS_ENDPOINT_BASE_URL =
@@ -103,49 +133,23 @@ export default {
       onSelect: this.SelectAddress
     });
   },
-  data() {
-    return {
-      property: {
-        street: "",
-        city: "",
-        state: "",
-        postal_code: "",
-        additional_info: ""
-      },
-      validationErrs: {
-        house_num: [],
-        street: [],
-        city: [],
-        state: [],
-        postal_code: [],
-        additional_info: []
-      },
-      validationTransitions: {
-        house_num: DEFAULT_VALIDATION_ERR_TRANSITION,
-        street: DEFAULT_VALIDATION_ERR_TRANSITION,
-        city: DEFAULT_VALIDATION_ERR_TRANSITION,
-        state: DEFAULT_VALIDATION_ERR_TRANSITION,
-        postal_code: DEFAULT_VALIDATION_ERR_TRANSITION,
-        additional_info: DEFAULT_VALIDATION_ERR_TRANSITION
-      }
-    };
-  },
+  //! Methods
   methods: {
     Edited(propName = null, propVal = null) {
       this.$emit("edit", propName, propVal);
     },
     //! Address API Calls
-    GeolocationCallback(position) {
-      this.USER_LAT = position.coords.latitude;
-      this.USER_LONG = position.coords.longitude;
-    },
     BeforeAddressRequest(settings) {
       //* If user allowed location services + successfully set lat/long then add them into AddressApiRequest to improve response */
       if (this.USER_LAT && this.USER_LONG)
         settings.url =
           settings.url + "&at=" + this.USER_LAT + "," + this.USER_LONG;
 
-      return settings; //! Required otherwise new settings won't work
+      return settings; //? Required otherwise new settings won't work
+    },
+    GeolocationCallback(position) {
+      this.USER_LAT = position.coords.latitude;
+      this.USER_LONG = position.coords.longitude;
     },
     OnAddressResponse(response) {
       var newResponse = { results: [] };
@@ -162,7 +166,7 @@ export default {
         }); //* Title sets up div with results, rest is for setting up other fields onClick */
       }
 
-      return newResponse; //! Required otherwise it will attempt to parse normal response
+      return newResponse; //? Required otherwise it will attempt to parse normal response
     },
     SelectAddress(result, response) {
       this.property.street = result.title.slice(0, result.title.indexOf(","));
@@ -177,7 +181,7 @@ export default {
       const postal_code = result.postal_code.slice(
         0,
         result.postal_code.indexOf("-")
-      ); //? Receives 5+4 Postal Code so keep or no? Probably No, unless support the complicated validation
+      ); //* Receives 5+4 Postal Code so keep or no? Probably No, unless support the complicated validation
       this.property.postal_code = parseInt(postal_code);
     },
     //! Form Submission
@@ -194,8 +198,13 @@ export default {
         .trim();
 
       //* Send data
-      //this.UpdateProperty();
+      if (this.newProperty) {
+        this.CreateProperty();
+      } else {
+        this.UpdateProperty();
+      }
     },
+    async CreateProperty() {},
     async UpdateProperty() {
       //this.saving = true;
       const response = await PropertiesAPI.update(this.property.id, {

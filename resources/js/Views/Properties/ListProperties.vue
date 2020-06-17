@@ -22,8 +22,10 @@
   </div>
 </template>
 <script>
-import PropertiesAPI from "../../API/properties";
-import { BEGIN_LOAD } from "../../Store/action_types";
+import store from '../../Store';
+import PropertiesAPI from "../../API/PropertyAPI";
+import { BEGIN_LOAD } from "../../Store/ActionTypes";
+import { APP_MODULE } from '../../Store';
 
 export default {
   data() {
@@ -36,34 +38,25 @@ export default {
     };
   },
   beforeRouteEnter(to, from, next) {
-    PropertiesAPI.all((err, properties) => {
+    store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading  
+    PropertiesAPI.all((err, properties) => { 
       next(vm => vm.SetData(err, properties));
     });
   },
   beforeRouteUpdate(to, from, next) {
     if (from.query.page && !to.query.page) this.currentPage = 1;
-    this.$store.dispatch(BEGIN_LOAD, true); //* Stop loading
+    this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Stop loading
     PropertiesAPI.all((err, properties) => {
       this.SetData(err, properties);
       next();
     });
-  },
-  async created() {
-    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
-    try {
-      const dataReply = (await landlordsAPI.find(this.$route.params.id)).data;
-      this.landlord = dataReply[0];
-    } catch (err) {
-      this.error = err.response.data.message || err.message;
-    }
-    this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
-  },
+  },  
   methods: {
     SetData(err, data) {
       if (err) {
         this.error = err.toString();
       } else {
-        this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
+        this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false); //* Stop loading
         this.properties = data;
       }
     },

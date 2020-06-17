@@ -22,8 +22,10 @@
   </div>
 </template>
 <script>
-import TenantsAPI from "../../API/tenants";
-import { BEGIN_LOAD } from "../../Store/action_types";
+import store from '../../Store';
+import TenantsAPI from "../../API/TenantAPI";
+import { BEGIN_LOAD } from "../../Store/ActionTypes";
+import { APP_MODULE } from "../../Store";
 
 export default {
   data() {
@@ -36,13 +38,14 @@ export default {
     };
   },
   beforeRouteEnter(to, from, next) {
+    store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading  
     TenantsAPI.all((err, tenants) => {
       next(vm => vm.SetData(err, tenants));
     });
   },
   beforeRouteUpdate(to, from, next) {
     if (from.query.page && !to.query.page) this.currentPage = 1;
-    this.$store.dispatch(BEGIN_LOAD, true); //* Start loading
+    this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading
     TenantsAPI.all((err, tenants) => {
       this.SetData(err, tenants);
       next();
@@ -53,7 +56,7 @@ export default {
       if (err) {
         this.error = err.toString();
       } else {
-        this.$store.dispatch(BEGIN_LOAD, false); //* Stop loading
+        this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false); //* Stop loading
         this.tenants = data;
       }
     },
