@@ -10,7 +10,7 @@
 //? BUT here @forward ensures 'Variables' can be used anywhere this stylesheet is '@import/@use'd
 
 //! Fonts
-@import "https://fonts.googleapis.com/css?family=Nunito"; //? @import can grab actual urls. @use cannot
+//@import "https://fonts.googleapis.com/css?family=Nunito"; //? @import can grab actual urls. @use cannot
 
 //! Utilities
 @import "app_colors.scss";
@@ -48,7 +48,6 @@ h3 {
 
 //* The following two relate to the navbar links (this first one needs more specificity though)
 .only.row .item {
-
     //? Removes thin translucent lines to replace with different types of borders
     &:hover {
         border-bottom: 1px solid white;
