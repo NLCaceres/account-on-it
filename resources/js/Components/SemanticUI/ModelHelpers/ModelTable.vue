@@ -1,7 +1,7 @@
 <template>
   <div class="w-100 overflow-x">
     <sui-table
-      v-if="entities.length > 0"
+      v-if="EntitiesSize"
       :entities="entities"
       :entity-name="entityName"
       @delete="OnDelete"
@@ -19,6 +19,11 @@ export default {
     entityName: String,
     pluralEntity: String,
     saving: Boolean
+  },
+  computed: {
+    EntitiesSize() {
+      return (this.entities) ? this.entities.length > 0 : false;
+    }
   },
   methods: {
     OnDelete(id, index) {
