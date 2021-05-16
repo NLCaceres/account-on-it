@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class UserRequest extends FormRequest
 {
@@ -11,9 +14,12 @@ class UserRequest extends FormRequest
      *
      * @return bool
      */
+    //* False will immediately deny the user making the requesting
     public function authorize()
-    {
-        return false;
+    { //* True will allow gates & policies to handle it
+        //? Use Laravel Gates & Policies (probably policies due to their model association) 
+        //? to verify if user can interact with this piece of data
+        return true; 
     }
 
     /**
@@ -21,13 +27,19 @@ class UserRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules(Request $request)
+    { //* Thanks to DepInject, could actually send in different set of rules for different routes or under diff conditions!
+        //? Dependency Injection can only seem to grab the $request here though! so grabbing param from it's route works!
+        $user = $request->route()->parameter('user');
+        //? Thanks to DI, the request instance could also be used to grab the user making the request if needed
         return [
             'first_name' => 'required|string|max:40',
             'surname' => 'required|string|max:40',
-            'email' => 'required|string|email|max:64|unique:users', //? Cont. from Landlords Req: unique will default to key for column name
-            'password' => 'required|string|min:8|max:64' //? 8 chars with chars, nums, symbols
+            'email' => ['required', 'string', 'email', 'max:64', Rule::unique('users')->ignore($user)],
+            //? Unique as seen below with a delim string acts similar to a function taking the DB table and column name'
+            //'email' => 'required|string|email|max:64|unique:users', //? Unique will default to primary key for column name
+            'password' => 'required|string|min:8|max:64|confirmed', //? 8 chars with chars, nums, symbols
+            'account_type' => 'required|integer|numeric|in:0,1', 
         ];
     }
 }
