@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LeaseRequest;
-use App\Lease;
+use App\Models\Lease;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,15 +13,19 @@ class LeaseController extends Controller
     public function __construct()
     {
         $this->middleware('auth:sanctum');
+        $this->authorizeResource(Lease::class, 'lease');
     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Lease::all();
+        $user = $request->user();
+
+        //todo Probably should send list of landlord's property's leases
+        return ($user->role > 0) ? Lease::paginate(15) : response(null, Response::HTTP_FORBIDDEN); //* Admins only!
     }
 
     /**
@@ -34,8 +38,13 @@ class LeaseController extends Controller
     {
         $data = $request->validated();
 
-        $lease = new Lease($data);
-        $lease->save() ? response($lease, Response::HTTP_CREATED) : response(null, Response::HTTP_NOT_FOUND);
+        $lease = new Lease([
+            'lease_start' => $data['lease_start'],
+            'lease_end' => $data['lease_end'],
+            'property_id' => $data['property_id'],
+        ]);
+
+        return $lease->save() ? response($lease, Response::HTTP_CREATED) : response(null, Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -60,7 +69,17 @@ class LeaseController extends Controller
     {
         $data = $request->validated();
 
-        return $lease->update($data) ? response($lease, Response::HTTP_NO_CONTENT) : response(null, Response::HTTP_BAD_REQUEST);
+        $leaseDataArr = $lease->toArray();
+
+        $onlyUpdateSome = array_diff($data, $leaseDataArr);
+
+        $finalData = [
+            'lease_start' => $onlyUpdateSome['lease_start'] ?? $leaseDataArr['lease_start'],
+            'lease_end' => $onlyUpdateSome['lease_end'] ?? $leaseDataArr['lease_end'],
+            'property_id' => $leaseDataArr['property_id'],
+        ];
+
+        return $lease->update($finalData) ? response($lease, Response::HTTP_NO_CONTENT) : response(null, Response::HTTP_BAD_REQUEST);
     }
 
     /**
@@ -71,8 +90,7 @@ class LeaseController extends Controller
      */
     public function destroy(Lease $lease)
     {
-        $lease->delete();
-
+        //$lease->delete(); //* May want to keep all lease data and never allow deletes
         return response(null, Response::HTTP_NO_CONTENT);
     }
 }
