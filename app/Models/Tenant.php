@@ -1,11 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Tenant extends Model
 {
+    use HasFactory;
     // ? Eloquent models have expected vars!
     //? $table will override the associated table name, $primaryKey to override standard id col
     // protected $table = "my_tenants";
@@ -25,24 +27,24 @@ class Tenant extends Model
     // ? $timestamps = false will get rid of created_at & updated_at cols, $dateFormat & const CREATED_AT/UPDATED_AT to rename also available
     public function payments()
     {
-        return $this->hasMany('App\Payment');
+        return $this->hasMany(Payment::class, "paid_by");
     }
 
     //! BelongsTo Relationships
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
     public function property()
     {
-        return $this->belongsTo('App\Property');
+        return $this->belongsTo(Property::class);
     }
     public function lease()
     {
-        return $this->belongsTo('App\Lease');
+        return $this->belongsTo(Lease::class);
     }
     public function landlord()
     {
-        return $this->belongsTo('App\Landlord');
+        return $this->belongsTo(Landlord::class);
     }
 }
