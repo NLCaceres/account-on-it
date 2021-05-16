@@ -1,14 +1,19 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Landlord;
-use Faker\Generator as Faker;
+use App\Models\Landlord;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Landlord::class, function (Faker $faker) {
-    return [
-        'first_name' => $faker->firstName(),
-        'surname' => $faker->lastName,
-        'email' => $faker->unique()->safeEmail
-    ];
-});
+class LandlordFactory extends Factory {
+
+    protected $model = Landlord::class;
+
+    public function definition() {
+        return [
+            'first_name' => $this->faker->firstName(),
+            'surname' => $this->faker->lastName(),
+            'email' => $this->faker->unique()->safeEmail()
+        ];
+    }
+}

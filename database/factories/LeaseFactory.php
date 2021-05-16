@@ -1,22 +1,30 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Lease;
+use App\Models\Lease;
 use Carbon\Carbon;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Lease::class, function (Faker $faker) {
-    return [
-        'lease_start' => Carbon::now(),
-        'lease_end' => Carbon::now()->addYear(),
-    ];
-});
+class LeaseFactory extends Factory {
 
-$factory->state(Lease::class, 'past', function () {
-    $least_start = Carbon::now()->subYears(rand(2, 15));
-    return [
-        'lease_start' => $least_start,
-        'lease_end' => $least_start->addYear()
-    ];
-});
+    protected $model = Lease::class;
+
+    public function definition() {
+        return [
+            'lease_start' => Carbon::now(),
+            'lease_end' => Carbon::now()->addYear(),
+        ];
+    }
+
+    //* State Manipulation Method
+    public function past() {
+        return $this->state(function (array $attributes) { 
+            $least_start = Carbon::now()->subYears(rand(2, 15));
+            return [
+                'lease_start' => $least_start,
+                'lease_end' => $least_start->addYear()
+            ];
+        });
+    }
+}

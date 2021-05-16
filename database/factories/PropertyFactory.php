@@ -1,19 +1,27 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Property;
-use Faker\Generator as Faker;
+use App\Models\Property;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Property::class, function (Faker $faker) {
-    return [
-        'street' => $faker->buildingNumber . ' ' . $faker->streetName,
-        'city' => $faker->city,
-        'state' => $faker->state,
-        'postal_code' => substr($faker->postcode, 0, 5),
-    ];
-});
+class PropertyFactory extends Factory {
 
-$factory->state(Property::class, 'rooms', function ($faker) {
-    return ['additional_info' => $faker->secondaryAddress];
-});
+    protected $model = Property::class;
+
+    public function definition() {
+        return [
+            'street' => $this->faker->buildingNumber() . ' ' . $this->faker->streetName(),
+            'city' => $this->faker->city(),
+            'state' => $this->faker->state(),
+            'postal_code' => substr($this->faker->postcode(), 0, 5),
+        ];
+    }
+
+    //* State Manipulation Method
+    public function rooms() {
+        return $this->state(function (array $attributes) { 
+            return ['additional_info' => $this->faker->secondaryAddress()];
+        });
+    }
+}

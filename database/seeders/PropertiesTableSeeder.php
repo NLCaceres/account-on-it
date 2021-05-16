@@ -1,5 +1,8 @@
 <?php
 
+namespace Database\Seeder;
+
+use App\Models\Property;
 use Illuminate\Database\Seeder;
 
 class PropertiesTableSeeder extends Seeder
@@ -11,7 +14,7 @@ class PropertiesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Property::class, 10)->create();
-        factory(App\Property::class, 10)->states('rooms')->create();
+        Property::factory()->count(10)->create();
+        Property::factory()->count(10)->rooms()->create();
     }
 }
