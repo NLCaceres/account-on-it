@@ -8,7 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VueController extends Controller
 {
-    public function index()
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('loginCheck');
+    }
+
+    public function index(Request $request)
     {
         return view('vue');
     }
@@ -35,5 +40,29 @@ class VueController extends Controller
         // $body2_success = $body2['score'];
         //! Laravel 7 gives us plenty of response helpers like the json() method used above
         return response(['action' => $recaptchaVerified['action'], 'score' => $recaptchaVerified['score']]); //? Defaults to 200 (OK)
+    }
+
+    protected function loginCheck(Request $request) {
+        $user = $request->user();
+
+        $userArray = $user->attributesToArray();
+
+        if ($user->role === 1) {
+        } 
+        //? 'Else if' technically doesn't exist in php (even if it evaluates the same) so best to specifically use elseif
+        elseif ($user->account_type === 0) {
+            //* Landlord only needs its ID
+            $userArray['landlord_id'] = $user->landlord->id;
+        } else {
+            //* Tenant needs its ID, property, and landlord
+            $userArray['tenant_id'] = $user->tenant->id;
+            $userArray['property_id'] = $user->tenant->property_id;
+            $userArray['landlord_id'] = $user->tenant->landlord_id;
+        }
+
+        $userArray['email_verified'] = $user->email_verified_at != null ?: false; //? Elvis operator similar to Kotlin's
+        unset($userArray['email_verified_at']); //? Removes an elem (mutable array so no need to reset);
+
+        return response(['message' => 'Logged in', 'user' => $userArray], Response::HTTP_OK);
     }
 }

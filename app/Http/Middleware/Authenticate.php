@@ -15,7 +15,10 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
-            return route('login');
+            // @params: Route Name = '/' + Route Params = 'not-found -> /not-found
+            //* Redirects to Vue SPA, specifically the 404 not found view, matches Vue-Route behavior
+            return route('front-end', 'not-found'); 
+            // return route('login');
         }
     }
 }

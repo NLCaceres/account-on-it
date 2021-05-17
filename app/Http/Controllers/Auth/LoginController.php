@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use App\User;
+use App\Models\User;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
@@ -24,7 +24,11 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers; //* No Longer in by default due to Breeze option. Brought by Laravel/ui
+    //* Inside it uses ThrottlesLogins trait (also brought by laravel/ui now)
+    //* Default 5 login attempts per 1 minute by 
+    // protected $maxAttempts = 1; // Default is 5
+    // protected $decayMinutes = 2; // Default is 1
 
     /**
      * Where to redirect users after login.
@@ -41,7 +45,7 @@ class LoginController extends Controller
     public function __construct()
     {
         //? Why? Guest middleware deals w/ unauthenticated users! Authenticated users never use this! Perfect!
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest')->except(['logout']);
     }
 
     /**
@@ -52,17 +56,16 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        //* Mostly identical to AuthenticatesUsers trait login method below 
+        //* Mostly identical to login() in AuthUsers Trait  
         //* EXCEPT we use a case insensitive search for a user with a matching email 
         //* updating only the email part of the credentials before attempting Login
 
         $this->validateLogin($request); //? All methods from AuthenticatesUsers trait are fair game!
 
         //? AuthUsers trait uses ThrottlesLogins trait which grabs username and IP to do so. 
-        if (
-            method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request) //? All traits that AuthenticatesUsers 'use's are also fair game!
-        ) {
+        if (method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)) //? All traits AuthenticatesUsers use also usable!
+        {
             $this->fireLockoutEvent($request);
 
             return $this->sendLockoutResponse($request);
@@ -71,23 +74,29 @@ class LoginController extends Controller
         $credentials = $this->credentials($request);
         //* Case insensitive search
         $user = User::firstWhere('email', 'ilike', $credentials['email']); //? Could add '%' to either side for substring search
-        $credentials['email'] = $user['email']; //* Only update email (otherwise will not be case insensitive)
+        
+        if (! is_null($user)) $credentials['email'] = $user['email']; //* Only update email (otherwise will not be case insensitive)
+        
+        //? Normally Laravel uses the following line, but we don't quite have access to it, 
+        //? So we can use Auth::guard instead, which is more or less the same
+        // $loginAttempt = $this->guard()->attempt(
+        //     $credentials,
+        //     $request->filled('remember')
+        // );
 
-        $loginAttempt = $this->guard()->attempt(
-            $credentials,
-            $request->filled('remember')
-        );
-
-        if ($loginAttempt) { //* This section changed from AuthenticatesUsers to override
+        if (Auth::attempt($credentials, $request->filled('remember'))) { //* This section changed from AuthenticatesUsers to override
             return $this->sendLoginResponse($request);
         }
 
         //? Login attempt unsuccessful, if over max # of attempts lock out user. Redirect from Vue if needed
         $this->incrementLoginAttempts($request);
 
-        return $this->sendFailedLoginResponse($request);
+        //? Normally Laravel sends the following line, but instead we make our own message
+        //return $this->sendFailedLoginResponse($request);
+        return response(['message' => 'Invalid Credentials'], Response::HTTP_UNAUTHORIZED);  
     }
 
+    //* Following 2 methods are callback functions, done after logging in & logging out respectively
     /**
      * The user has been authenticated.
      *
@@ -95,20 +104,22 @@ class LoginController extends Controller
      * @param  mixed  $user
      * @return mixed
      */
+    //? This gets called from the above sendLoginResponse (only because it's a function that is set)
     protected function authenticated(Request $request, $user)
     {
         //* Getting an array w/ relations, adding in an attr in place of 'email_verified_at', and sending
         $userArray = $user->attributesToArray();
 
         if ($user->role === 1) {
-        } else if ($user->account_type === 0) {
+            //* Admins should have access to everything
+        } elseif ($user->account_type === 0) {
             //* Landlord only needs its ID
-            $userArray['landlord_id'] = $user->landlord->id;
+            $userArray['landlord_id'] = optional($user->landlord)->id;
         } else {
             //* Tenant needs its ID, property, and landlord
-            $userArray['tenant_id'] = $user->tenant->id;
-            $userArray['property_id'] = $user->tenant->property_id;
-            $userArray['landlord_id'] = $user->tenant->landlord_id;
+            $userArray['tenant_id'] = optional($user->tenant)->id;
+            $userArray['property_id'] = optional($user->tenant)->property_id;
+            $userArray['landlord_id'] = optional($user->tenant)->landlord_id;
         }
 
         $userArray['email_verified'] = $user->email_verified_at != null ?: false; //? Elvis operator similar to Kotlin's
