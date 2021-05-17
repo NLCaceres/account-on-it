@@ -18,6 +18,8 @@ class ConfirmPasswordController extends Controller
     | this trait and override any functions that require customization.
     |
     */
+    //? Reasoning behind this controller is for moments in an app where you need a user to re-input password 
+    //? Typically before accessing secure info like user info, changing password, security details, etc.
 
     use ConfirmsPasswords;
 
