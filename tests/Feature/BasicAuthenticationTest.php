@@ -8,58 +8,62 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Client\Response;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use App\User;
+use App\Models\User;
 
 class BasicAuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase; //* Makes sure we have a fresh database
 
     /**
      * A basic feature test example.
      *
      * @return void
      */
-    public function testLogin() //? No call to sanctum/csrf-cookie (only needed to authenticate later calls in real app)
+    public function testLogin() //? No call to sanctum/csrf-cookie needed (but POSTMAN may need to or grab cookie from response html)
     {
-        $user = factory(\App\User::class)->create([
+        $user = User::factory()->create([
             'email' => 'jondoe@email.com',
             'password' => Hash::make('password'),
         ]);
 
-        $loginResponse = $this->post('/login', [
+        $loginResponse = $this->post('/api/login', [
             'email' => 'jondoe@email.com',
             'password' => 'password',
             'remember' => true,
         ]);
+
+        $loginResponse->assertOk();
         $this->assertAuthenticatedAs($user);
     }
 
-    public function testCookieReception()
+    public function testSetSanctumXsrfToken()
     {
         $cookieResponse = $this->get('/sanctum/csrf-cookie');
-        //dd($cookieResponse->headers->getCookies()[0]->getValue()); //? DD can BLOCK others!
+        //dd($cookieResponse->headers->getCookies()[0]->getValue()); //? DD can BLOCK other debugging messages!
         $cookieResponse->assertCookie('XSRF-TOKEN');
         $cookieResponse->assertNoContent();
     }
 
-    public function testAddRememberToken()
+    public function testSetRememberToken()
     {
-        $user = factory(\App\User::class)->create([
+        $user = User::factory()->create([
             'email' => 'jondoe@email.com',
             'password' => Hash::make('password'),
             'remember_token' => null
         ]);
 
-        $loginResponse = $this->post('/login', [
+        $loginResponse = $this->post('/api/login', [
             'email' => 'jondoe@email.com',
             'password' => 'password',
             'remember' => true,
         ]);
 
-        $userArr = $user->toArray();
+        $userArr = $user->toArray(); $userArr['remember_token'] = null;
 
-        $updatedUser = User::firstWhere('email', 'jondoe@email.com')->toArray();
+        $userSearch = User::firstWhere('email', 'jondoe@email.com');
+        $updatedUser = $userSearch->makeVisible("remember_token");
 
-        $this->assertTrue($userArr['remember_token'] != $updatedUser['remember_token']);
+        //* Since above factory sets remember_token = null, php doesn't return it in array
+        $this->assertTrue($updatedUser['remember_token'] != $userArr['remember_token']);
     }
 }
