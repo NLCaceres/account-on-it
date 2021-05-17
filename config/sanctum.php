@@ -13,10 +13,14 @@ return [
     |
     */
 
-    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', 'localhost,127.0.0.1')),
+    'stateful' => explode(',', env(
+        'SANCTUM_STATEFUL_DOMAINS', 
+        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1'
+    )),
     //? Explode returns an array of strings using 1st param as delim
     //? SHOULD have SANCTUM_STATEFUL_DOMAINS set but can cause issues 
     //? since localhost and 127.0.0.1 are treated differently by Laravel's Auth as well as CORS
+    //! DON'T FORGET PORT IN ENV FOR DEV! 
 
     /*
     |--------------------------------------------------------------------------
@@ -44,6 +48,7 @@ return [
 
     'middleware' => [
         'verify_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
+        'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
     ],
 
 ];
