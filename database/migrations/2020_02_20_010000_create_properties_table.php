@@ -18,8 +18,8 @@ class CreatePropertiesTable extends Migration
             $table->string('street');
             $table->string('city');
             $table->string('state');
-            $table->integer('postal_code');
-            $table->string('additional_info')->nullable();
+            $table->string('postal_code'); //* Accounts for '00302' as well as Canada/UK's 
+            $table->string('additional_info')->nullable(); //* Equivalent of address 2!
             $table->unsignedBigInteger('landlord_id');
             $table->foreign('landlord_id')->references('id')->on('landlords');
             $table->timestamps();
