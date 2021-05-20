@@ -1,0 +1,27 @@
+[
+  {
+    "title": "One Part Apartment Management Tool",
+    "description": "Touch Bases with Tenants, Schedule Work, Track Rent, Find New Tenants",
+    "img": {
+      "src": "https://bit.ly/36OF2O6",
+      "alt": "Landlord keeping up with your tenants and properties"
+    }
+  },
+  {
+    "title": "One Part Tenant Apartment Portal",
+    "description": "Find a New Apartment. Never Miss Rent. Fix Apartment Problems with a Couple Clicks. Enjoy Your Home, Sweet Home!",
+    "img": {
+      "src": "https://bit.ly/37FPCX8",
+      "alt": "Relaxing in Bed"
+    }
+  },
+  {
+    "title": "Everybody Wins!",
+    "meta":"",
+    "description": "Whether you're a landlord, apartment manager, or tenant, you can count on Account On It.",
+    "img": {
+      "src": "https://bit.ly/36NppXi",
+      "alt": "Landlord, Apartment Manger and Tenant all in perfect harmony"
+    }
+  }
+]
