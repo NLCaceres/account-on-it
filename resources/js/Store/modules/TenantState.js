@@ -2,6 +2,8 @@ import tenantsAPI from '../../API/TenantAPI';
 import { ADD_ENTITY as PushTenant, ADD_ENTITIES as InitTenants } from '../MutationTypes';
 import { ADD_ENTITY as AddTenant, ALL_ENTITIES as AllTenants } from '../ActionTypes';
 
+export const TENANT_MODULE = 'tenants';
+
 const store = { namespaced: true }
 
 store.state = {

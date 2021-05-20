@@ -1,7 +1,11 @@
-import landlordsAPI from '../../API/LandlordAPI';
+import LandlordAPI from '../../API/LandlordAPI';
+
+export const LANDLORD_MODULE = 'landlords';
+
+const LandlordsAPI = new LandlordAPI();
 
 const state = {
-  landlords: []
+  landlords: [],
 };
 
 //? It's tempting to use them like Java getters, but DO NOT. Use them to compute data based on state
@@ -18,7 +22,7 @@ const getters = { //? Examples include filters, counts, mapped data, etc;
 //? [mutationName] : [mutationName] (state, data) {}
 const actions = { //? Call from view to request data for later retrieval via getters!
   async allLandlords(context) {
-    context.commit('landlords', await landlordsAPI.all().data) //? Commit handles mutations
+    context.commit('landlords', await LandlordsAPI.all().data) //? Commit handles mutations
   }
 };
 
