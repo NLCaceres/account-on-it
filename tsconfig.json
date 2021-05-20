@@ -10,14 +10,14 @@
     "compilerOptions": {
         //! True compiling options
         //? 'ES5' aligns with Vue's browser support
-        //? TS will be compiled to ES5
-        "target": "es6", //! es6 will allow arrow functions so consider it!
-        // "lib": [
-        //     "esnext",
-        //     "dom",
-        //     "dom.iterable",
-        //     "scripthost"
-        // ], //? Being extra specific of what libraries target is bringing in
+        //? TS will be compiled to ES5 and polyfills 
+        "target": "es5", 
+        "lib": [ //? Enables newer features 
+            "esnext", //? Arrow funcs, Object.entries, '??' operator and more!
+            "dom", //? The rest just cover bases for ES6
+            "dom.iterable",
+            "scripthost"
+        ], //? Being extra specific of what libraries target is bringing in
         // "baseUrl": ".",
         // "paths": {
         //     //? If TS sees 'from "@/someDir/someFile"', it'll bring './resources/js/someDir/someFile'
@@ -27,12 +27,13 @@
         //     ] //? 1st '*' is a wildcard, 2nd is baseUrl/someDir/someFile (base + module)
         // },
         //? W/ webpack, this ensures tree shaking
-        "module": "esnext", //? Module system (so imports work now!)
-        "moduleResolution": "node",
+        "module": "ES2015", //? Module system (so imports work now!)
+        "moduleResolution": "node", //? New resolution system that works better with Node.js
+        "resolveJsonModule": true, //? Grabs json files
         "esModuleInterop": true,
-        "sourceMap": true,
         "importHelpers": true,
         "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
         //! Type inference
         //? This enables stricter inference for data properties on 'this'
         "strict": true,
