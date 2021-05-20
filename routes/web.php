@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', function () {
-  return phpinfo();
-});
+// Route::get('/', function () {
+//   return phpinfo();
+// });
 //Route::get('/home', 'HomeController@index')->name('home');
 
 //Auth::routes(); //? Laravel default config for authentication (can also remove routes if needed by adding as params)
