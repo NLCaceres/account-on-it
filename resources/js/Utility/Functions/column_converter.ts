@@ -1,4 +1,4 @@
-export default function ColumnConverter(width) {
+export default function ColumnConverter(width: Number) : string {
   switch (width) {
     case 1:
       return "one";
@@ -24,5 +24,7 @@ export default function ColumnConverter(width) {
       return "eleven";
     case 12:
       return "twelve";
+    default:
+      return "Error";
   }
 }
