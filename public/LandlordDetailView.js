@@ -1,176 +1,101 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([["LandlordDetailView"],{
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=js&":
-/*!******************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************************************************************************************************/
+/***/ "./node_modules/ts-loader/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=ts&":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/ts-loader??ref--5!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=ts& ***!
+  \*********************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../API/LandlordAPI */ "./resources/js/API/LandlordAPI.js");
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../API/LandlordAPI */ "./resources/js/API/LandlordAPI.ts");
+/* harmony import */ var _Store_modules_AppState__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Store/modules/AppState */ "./resources/js/Store/modules/AppState.js");
+/* harmony import */ var _Store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Store */ "./resources/js/Store/index.js");
+/* harmony import */ var _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Store/ActionTypes */ "./resources/js/Store/ActionTypes.js");
+/* harmony import */ var _Models_LandlordClass__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Models/LandlordClass */ "./resources/js/Models/LandlordClass.ts");
+/* harmony import */ var _Models_TenantClass__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Models/TenantClass */ "./resources/js/Models/TenantClass.ts");
+/* harmony import */ var _Models_PropertyClass__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Models/PropertyClass */ "./resources/js/Models/PropertyClass.ts");
+/* harmony import */ var _Store_modules_AuthenticationState__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Store/modules/AuthenticationState */ "./resources/js/Store/modules/AuthenticationState.js");
+/* harmony import */ var _Store_GetterTypes__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Store/GetterTypes */ "./resources/js/Store/GetterTypes.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      loggedIn: false,
-      loading: false,
-      saving: false,
-      error: null,
-      saved: false,
-      landlord: {
-        id: null,
-        first_name: "",
-        surname: "",
-        email: ""
-      },
-      tenants: [],
-      addingTenant: false,
-      newTenant: {
-        first_name: "",
-        surname: "",
-        email: ""
-      },
-      tenantValidationErrs: {
-        first_name: [],
-        surname: [],
-        email: []
-      },
-      addingProperty: false,
-      properties: [],
-      newProperty: {
-        house_number: 0,
-        street: "",
-        state: "",
-        zipcode: 0,
-        additional_info: 0
-      },
-      propertyValidationErrs: {
-        house_number: [],
-        street: [],
-        state: [],
-        zipcode: [],
-        additional_info: []
-      }
-    };
-  },
-  computed: {
-    IsYours: function IsYours() {
-      return this.loggedIn ? "Your" : "".concat(this.landlord.first_name, " ").concat(this.landlord.surname, "'s");
+
+
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = (vue__WEBPACK_IMPORTED_MODULE_1__["default"].extend({
+    data: function () {
+        return {
+            error: null,
+            saved: false,
+            landlord: new _Models_LandlordClass__WEBPACK_IMPORTED_MODULE_6__["default"]("", "", ""),
+            tenants: [],
+            addingTenant: false,
+            newTenant: new _Models_TenantClass__WEBPACK_IMPORTED_MODULE_7__["default"]("", "", ""),
+            addingProperty: false,
+            properties: [],
+            newProperty: new _Models_PropertyClass__WEBPACK_IMPORTED_MODULE_8__["default"]("", "", "", "", ""),
+        };
     },
-    AddOrCancelTenant: function AddOrCancelTenant() {
-      return this.addingTenant ? "Cancel New Tenant" : "Add New Tenant";
+    computed: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, Object(vuex__WEBPACK_IMPORTED_MODULE_11__["mapGetters"])(_Store_modules_AppState__WEBPACK_IMPORTED_MODULE_3__["APP_MODULE"], { mobile: _Store_GetterTypes__WEBPACK_IMPORTED_MODULE_10__["MOBILE_WIDTH"] })), { IsYours: function () {
+            return this.$store.getters[_Store_modules_AuthenticationState__WEBPACK_IMPORTED_MODULE_9__["AUTH_MODULE"] + "/" + _Store_GetterTypes__WEBPACK_IMPORTED_MODULE_10__["IS_ADMIN"]]
+                ? this.landlord.first_name + " " + this.landlord.surname + "'s"
+                : "Your";
+        },
+        AddOrCancelTenant: function () {
+            return this.addingTenant ? "Cancel New Tenant" : "Add New Tenant";
+        },
+        AddOrCancelProperty: function () {
+            return this.addingProperty ? "Cancel New Property" : "Add New Property";
+        } }),
+    beforeRouteEnter: function (to, from, next) {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
+            return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+                _Store__WEBPACK_IMPORTED_MODULE_4__["default"].dispatch(_Store_modules_AppState__WEBPACK_IMPORTED_MODULE_3__["APP_MODULE"] + "/" + _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_5__["BEGIN_LOAD"], true); //* Start loading
+                _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_2__["landlordAPI"].GetByID(parseInt(to.params.id), function (data, err) {
+                    var _a;
+                    if (((_a = data) === null || _a === void 0 ? void 0 : _a.status) === 403) {
+                        next(false);
+                    }
+                    else {
+                        next((function (vm) { return vm.SetData(data, err); }));
+                    }
+                });
+                return [2 /*return*/];
+            });
+        });
     },
-    AddOrCancelProperty: function AddOrCancelProperty() {
-      return this.addingProperty ? "Cancel New Property" : "Add New Property";
-    }
-  },
-  created: function created() {
-    var _this = this;
-
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var dataResponse;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.prev = 0;
-              _context.next = 3;
-              return _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_1__["default"].find(_this.$route.params.id);
-
-            case 3:
-              dataResponse = _context.sent.data;
-              _this.tenants = dataResponse.tenants;
-              delete dataResponse.tenants;
-              _this.properties = dataResponse.properties;
-              delete dataResponse.properties;
-              _this.landlord = dataResponse;
-              _context.next = 14;
-              break;
-
-            case 11:
-              _context.prev = 11;
-              _context.t0 = _context["catch"](0);
-              _this.error = _context.t0.response.data.message || _context.t0.message;
-
-            case 14:
-            case "end":
-              return _context.stop();
-          }
+    methods: {
+        SetData: function (data, err) {
+            if (err)
+                this.error = err.toString();
+            else if (data) {
+                this.tenants = data.tenants;
+                this.properties = data.properties;
+                this.landlord = data.landlord;
+                // this.landlord = data['landlord'] as Landlord; //? Originall done this way since IDE guesses wrong
+            }
         }
-      }, _callee, null, [[0, 11]]);
-    }))();
-  }
-});
+    }
+}));
+
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c&scoped=true&":
-/*!**********************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c&scoped=true& ***!
-  \**********************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c&":
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c& ***!
+  \**********************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -185,7 +110,17 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("header-back-button", [_vm._v("Landlord Details")]),
+      _c(
+        "header-back-button",
+        {
+          attrs: {
+            breadcrumb: "",
+            reverse: "",
+            headerClasses: [_vm.mobile ? "m-sm-l" : "m-md-l"]
+          }
+        },
+        [_vm._v("\n    " + _vm._s(_vm.IsYours) + " Details\n  ")]
+      ),
       _vm._v(" "),
       _c("model-display", {
         staticClass: "m-lg-b",
@@ -196,6 +131,7 @@ var render = function() {
         "button",
         {
           staticClass: "ui inverted button app-blue m-md-l",
+          attrs: { type: "button" },
           on: {
             click: function($event) {
               _vm.addingTenant = !_vm.addingTenant
@@ -241,8 +177,7 @@ var render = function() {
                   attrs: {
                     "new-entity": "",
                     entity: _vm.newTenant,
-                    "entity-name": "Tenant",
-                    "validation-errors": _vm.tenantValidationErrs
+                    "entity-name": "Tenant"
                   },
                   on: { edit: _vm.CallTenantAPI }
                 })
@@ -255,6 +190,7 @@ var render = function() {
         "button",
         {
           staticClass: "ui inverted button app-blue m-md-t m-md-l",
+          attrs: { type: "button" },
           on: {
             click: function($event) {
               _vm.addingProperty = !_vm.addingProperty
@@ -292,8 +228,7 @@ var render = function() {
                   attrs: {
                     "new-entity": "",
                     entity: _vm.newProperty,
-                    "entity-name": "Tenant",
-                    "validation-errors": _vm.propertyValidationErrs
+                    "entity-name": "Tenant"
                   },
                   on: { edit: _vm.CallPropertyAPI }
                 })
@@ -312,6 +247,51 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./resources/js/Models/PropertyClass.ts":
+/*!**********************************************!*\
+  !*** ./resources/js/Models/PropertyClass.ts ***!
+  \**********************************************/
+/*! exports provided: default, PropertyWithImg */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PropertyWithImg", function() { return PropertyWithImg; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _AbstractDbRecord__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractDbRecord */ "./resources/js/Models/AbstractDbRecord.ts");
+
+
+var Property = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Property, _super);
+    function Property(street, city, state, postal_code, //* Other countries often include # & letters!
+    additional_info, landlord_id, id, created_at, updated_at) {
+        var _this = _super.call(this, id, created_at, updated_at) || this;
+        _this.street = street;
+        _this.city = city;
+        _this.state = state;
+        _this.postal_code = postal_code;
+        _this.additional_info = additional_info;
+        _this.landlord_id = landlord_id;
+        return _this;
+    }
+    return Property;
+}(_AbstractDbRecord__WEBPACK_IMPORTED_MODULE_1__["default"]));
+/* harmony default export */ __webpack_exports__["default"] = (Property);
+var PropertyWithImg = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PropertyWithImg, _super);
+    function PropertyWithImg(street, city, state, postal_code, //* Other countries often include # & letters!
+    additional_info, img, landlord_id, id, created_at, updated_at) {
+        var _this = _super.call(this, street, city, state, postal_code, additional_info, landlord_id, id, created_at, updated_at) || this;
+        _this.img = img;
+        return _this;
+    }
+    return PropertyWithImg;
+}(Property));
+
+
+
+/***/ }),
+
 /***/ "./resources/js/Views/Landlords/DetailLandlord.vue":
 /*!*********************************************************!*\
   !*** ./resources/js/Views/Landlords/DetailLandlord.vue ***!
@@ -321,8 +301,8 @@ render._withStripped = true
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _DetailLandlord_vue_vue_type_template_id_0b7bbf2c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DetailLandlord.vue?vue&type=template&id=0b7bbf2c&scoped=true& */ "./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c&scoped=true&");
-/* harmony import */ var _DetailLandlord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DetailLandlord.vue?vue&type=script&lang=js& */ "./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=js&");
+/* harmony import */ var _DetailLandlord_vue_vue_type_template_id_0b7bbf2c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DetailLandlord.vue?vue&type=template&id=0b7bbf2c& */ "./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c&");
+/* harmony import */ var _DetailLandlord_vue_vue_type_script_lang_ts___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DetailLandlord.vue?vue&type=script&lang=ts& */ "./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=ts&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -332,12 +312,12 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _DetailLandlord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _DetailLandlord_vue_vue_type_template_id_0b7bbf2c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _DetailLandlord_vue_vue_type_template_id_0b7bbf2c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _DetailLandlord_vue_vue_type_script_lang_ts___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _DetailLandlord_vue_vue_type_template_id_0b7bbf2c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _DetailLandlord_vue_vue_type_template_id_0b7bbf2c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
-  "0b7bbf2c",
+  null,
   null
   
 )
@@ -349,33 +329,33 @@ component.options.__file = "resources/js/Views/Landlords/DetailLandlord.vue"
 
 /***/ }),
 
-/***/ "./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=js&":
+/***/ "./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=ts&":
 /*!**********************************************************************************!*\
-  !*** ./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=js& ***!
+  !*** ./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=ts& ***!
   \**********************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DetailLandlord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./DetailLandlord.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DetailLandlord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_ts_loader_index_js_ref_5_node_modules_vue_loader_lib_index_js_vue_loader_options_DetailLandlord_vue_vue_type_script_lang_ts___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/ts-loader??ref--5!../../../../node_modules/vue-loader/lib??vue-loader-options!./DetailLandlord.vue?vue&type=script&lang=ts& */ "./node_modules/ts-loader/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=script&lang=ts&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_ts_loader_index_js_ref_5_node_modules_vue_loader_lib_index_js_vue_loader_options_DetailLandlord_vue_vue_type_script_lang_ts___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c&scoped=true&":
-/*!****************************************************************************************************!*\
-  !*** ./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c&scoped=true& ***!
-  \****************************************************************************************************/
+/***/ "./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c& ***!
+  \****************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DetailLandlord_vue_vue_type_template_id_0b7bbf2c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./DetailLandlord.vue?vue&type=template&id=0b7bbf2c&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c&scoped=true&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DetailLandlord_vue_vue_type_template_id_0b7bbf2c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DetailLandlord_vue_vue_type_template_id_0b7bbf2c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./DetailLandlord.vue?vue&type=template&id=0b7bbf2c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/DetailLandlord.vue?vue&type=template&id=0b7bbf2c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DetailLandlord_vue_vue_type_template_id_0b7bbf2c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DetailLandlord_vue_vue_type_template_id_0b7bbf2c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DetailLandlord_vue_vue_type_template_id_0b7bbf2c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

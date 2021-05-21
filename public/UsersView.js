@@ -9,44 +9,56 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _API_UserAPI__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../API/UserAPI */ "./resources/js/API/UserAPI.ts");
+/* harmony import */ var _Store_modules_AppState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Store/modules/AppState */ "./resources/js/Store/modules/AppState.js");
+/* harmony import */ var _Store__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Store */ "./resources/js/Store/index.js");
+/* harmony import */ var _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Store/ActionTypes */ "./resources/js/Store/ActionTypes.js");
 
 
-/* harmony default export */ __webpack_exports__["default"] = (vue__WEBPACK_IMPORTED_MODULE_1__["default"].extend({
-    data() {
+
+
+
+// @Component
+//todo Vue 3 improvements needed
+/* harmony default export */ __webpack_exports__["default"] = (/* class UserList extends */vue__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
+    data: function () {
         return {
-            loading: false,
-            error: null,
             users: [],
             currentPage: 1,
             pages: 1,
-            userIdToDelete: 0,
-            userIndexToDelete: 0
+            UserIdToDelete: 0,
+            UserIndexToDelete: 0,
+            UserAPI: new _API_UserAPI__WEBPACK_IMPORTED_MODULE_1__["default"](),
         };
     },
-    created() {
-        this.fetchUsers();
+    //! Hooks
+    beforeRouteEnter: function (to, from, next) {
+        _Store__WEBPACK_IMPORTED_MODULE_3__["default"].dispatch(_Store_modules_AppState__WEBPACK_IMPORTED_MODULE_2__["APP_MODULE"] + "/" + _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_4__["BEGIN_LOAD"], true);
+        var starterUserAPI = new _API_UserAPI__WEBPACK_IMPORTED_MODULE_1__["default"](); //* The singleton above isn't available yet so make a temp one!
+        starterUserAPI.GetAll(function (data, err) {
+            var _a;
+            if (((_a = data) === null || _a === void 0 ? void 0 : _a.status) === 403) {
+                next(false);
+            }
+            else {
+                next(function (vm) { return vm.SetData(data, err); });
+            }
+        });
     },
+    //! Component Methods
     methods: {
-        //? All async functions must have return signature Promise (regardless what's in that promise)
-        fetchUsers() {
-            return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
-                this.error = this.users = null;
-                this.loading = true;
-                try {
-                    // const response = await UserAPI.GetAll();
-                    // console.log(response);
-                    //this.users = response.data;
-                }
-                catch (err) {
-                    this.error = err.response.data.message || err.message;
-                }
-                if (this.users)
-                    this.loading = false;
-            });
+        SetData: function (data, err) {
+            if (err) {
+                err.toString();
+            }
+            else if (data) {
+                this.$store.dispatch(_Store_modules_AppState__WEBPACK_IMPORTED_MODULE_2__["APP_MODULE"] + "/" + _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_4__["BEGIN_LOAD"], false); //* Stop loading
+                this.pages = data.last_page; //* Last page will be total num of pages
+                this.users = data.data;
+            }
         },
-        ChangePage(newPage) {
+        ChangePage: function (newPage) {
             this.currentPage = newPage;
             if (this.currentPage === 1) {
                 this.$router.replace({
@@ -56,19 +68,19 @@ __webpack_require__.r(__webpack_exports__);
             else if (this.currentPage === this.pages) {
                 this.$router.replace({
                     path: "users",
-                    query: { page: `${this.pages}` }
+                    query: { page: "" + this.pages }
                 });
             }
             else {
                 this.$router.replace({
                     path: "users",
-                    query: { page: `${this.currentPage}` } //? Forcing cast of num to str gets TS to not complain
+                    query: { page: "" + this.currentPage } //? Forcing cast of num to str gets TS to not complain
                 });
             }
         },
-        OpenModal(id, index) {
-            this.userIdToDelete = id;
-            this.userIndexToDelete = index;
+        OpenModal: function (id, index) {
+            this.UserIdToDelete = id;
+            this.UserIndexToDelete = index;
             $(".ui.modal.mini").modal("show");
         }
     }
@@ -102,7 +114,7 @@ var render = function() {
         "router-link",
         {
           staticClass: "ui inverted button app-blue m-md-b m-md-l",
-          attrs: { id: "new-route", to: { name: "UserNew" } }
+          attrs: { id: "new-route", to: { name: "SignUp" } }
         },
         [_vm._v("Add New User")]
       ),
@@ -123,7 +135,7 @@ var render = function() {
         on: { delete: _vm.OpenModal }
       }),
       _vm._v(" "),
-      _c("sui-alert-loading", { attrs: { loading: _vm.loading } }),
+      _c("sui-alert-loading"),
       _vm._v(" "),
       _c("sui-modal", { attrs: { size: -1 } }, [_vm._v("Are You Sure?")])
     ],

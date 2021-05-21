@@ -1,171 +1,5 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([["LandlordsListView"],{
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Store */ "./resources/js/Store/index.js");
-/* harmony import */ var _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../API/LandlordAPI */ "./resources/js/API/LandlordAPI.js");
-/* harmony import */ var _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Store/ActionTypes */ "./resources/js/Store/ActionTypes.js");
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      loading: false,
-      error: null,
-      currentPage: 1,
-      pages: 1,
-      landlords: [],
-      landlordIdToDelete: -1,
-      landlordIndexToDelete: -1
-    };
-  },
-  //? Following vue-router lifecycle methods are good alternatives working w/ pagination, etc. compared to normal lifecycle like created()
-  beforeRouteEnter: function beforeRouteEnter(to, from, next) {
-    //? Fires when about to load 1st time
-    _Store__WEBPACK_IMPORTED_MODULE_1__["default"].dispatch("".concat(_Store__WEBPACK_IMPORTED_MODULE_1__["APP_MODULE"], "/").concat(_Store_ActionTypes__WEBPACK_IMPORTED_MODULE_3__["BEGIN_LOAD"]), true); //* Start loading  
-
-    _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_2__["default"].all(function (err, landlords) {
-      next(function (vm) {
-        return vm.SetData(err, landlords);
-      });
-    });
-  },
-  beforeRouteUpdate: function beforeRouteUpdate(to, from, next) {
-    var _this = this;
-
-    //todo maybe set up a different pathway for pagination updates
-    if (from.query.page && !to.query.page) this.currentPage = 1; //? Fires when this route is about to change - like w/ pagination (route?page=1) or inner links (route#link)
-
-    this.$store.dispatch("".concat(_Store__WEBPACK_IMPORTED_MODULE_1__["APP_MODULE"], "/").concat(_Store_ActionTypes__WEBPACK_IMPORTED_MODULE_3__["BEGIN_LOAD"]), true); //* Start loading
-
-    _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_2__["default"].all(function (err, landlords) {
-      _this.SetData(err, landlords);
-
-      next(); //? Move along router funcs
-    }, this.currentPage);
-  },
-  methods: {
-    SetData: function SetData(err, data) {
-      if (err) {
-        this.error = err.toString();
-      } else {
-        this.$store.dispatch("".concat(_Store__WEBPACK_IMPORTED_MODULE_1__["APP_MODULE"], "/").concat(_Store_ActionTypes__WEBPACK_IMPORTED_MODULE_3__["BEGIN_LOAD"]), false); //* Stop loading 
-
-        console.log(data);
-        this.pages = data.last_page; //* Last page will be total num of pages
-
-        this.landlords = data.data;
-      }
-    },
-    DeleteLandlord: function DeleteLandlord() {
-      var _this2 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return landlordsAPI["delete"](_this2.landlordIdToDelete);
-
-              case 2:
-                response = _context.sent;
-
-                if (response.status === 204) {
-                  _this2.landlords.splice(_this2.landlordIndexToDelete, 1);
-                }
-
-              case 4:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    },
-    ChangePage: function ChangePage(newPage) {
-      this.currentPage = newPage;
-
-      if (this.currentPage === 1) {
-        //* If page 1 then use base url
-        this.$router.replace({
-          path: "landlords"
-        });
-      } else if (this.currentPage === this.pages) {
-        //* If currentPage = total # of pages, then use base url
-        this.$router.replace({
-          path: "landlords",
-          query: {
-            page: this.pages
-          }
-        });
-      } else {
-        //* If not 1st or last page, then set query to that page #
-        this.$router.replace({
-          path: "landlords",
-          query: {
-            page: this.currentPage
-          }
-        });
-      }
-    },
-    OpenModal: function OpenModal(id, index) {
-      this.landlordIdToDelete = id;
-      this.landlordIndexToDelete = index;
-      $(".ui.modal.mini").modal("show");
-    }
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=style&index=0&id=982890ec&lang=scss&scoped=true&":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--8-2!./node_modules/sass-loader/dist/cjs.js??ref--8-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=style&index=0&id=982890ec&lang=scss&scoped=true& ***!
@@ -214,6 +48,140 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/ts-loader/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=ts&":
+/*!********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/ts-loader??ref--5!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=ts& ***!
+  \********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _Store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Store */ "./resources/js/Store/index.js");
+/* harmony import */ var _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../API/LandlordAPI */ "./resources/js/API/LandlordAPI.ts");
+/* harmony import */ var _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Store/ActionTypes */ "./resources/js/Store/ActionTypes.js");
+/* harmony import */ var _Store_modules_AppState__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Store/modules/AppState */ "./resources/js/Store/modules/AppState.js");
+
+
+
+
+
+
+//? The below would work to incorporate mixins but with Composition API, mixins are old news!
+/* harmony default export */ __webpack_exports__["default"] = (vue__WEBPACK_IMPORTED_MODULE_1__["default"].extend({
+    data: function () {
+        return {
+            loading: false,
+            error: null,
+            currentPage: 1,
+            totalPages: 1,
+            landlords: [],
+            landlordIdToDelete: -1,
+            landlordIndexToDelete: -1
+        };
+    },
+    //! Vue Router Navigation Guards
+    //? Following vue-router lifecycle methods are good alternatives working w/ pagination, etc. compared to normal lifecycle like created()
+    beforeRouteEnter: function (to, from, next) {
+        //? Fires when about to load 1st time 
+        _Store__WEBPACK_IMPORTED_MODULE_2__["default"].dispatch(_Store_modules_AppState__WEBPACK_IMPORTED_MODULE_5__["APP_MODULE"] + "/" + _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_4__["BEGIN_LOAD"], true); //* Start loading
+        _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_3__["landlordAPI"].GetAll(function (data, err) {
+            var _a;
+            if (((_a = data) === null || _a === void 0 ? void 0 : _a.status) === 403) {
+                next(false);
+            }
+            else {
+                next(function (vm) { return vm.SetData(data, err); });
+            }
+        });
+    },
+    beforeRouteUpdate: function (to, from, next) {
+        var _this = this;
+        //* Checks if query even exists in URL
+        if (from.query.page && !to.query.page)
+            this.currentPage = 1;
+        //? Fires when this route is about to change - like w/ pagination (route?page=1) or inner links (route#link)
+        this.$store.dispatch(_Store_modules_AppState__WEBPACK_IMPORTED_MODULE_5__["APP_MODULE"] + "/" + _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_4__["BEGIN_LOAD"], true); //* Start loading
+        _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_3__["landlordAPI"].GetAll(function (landlords, err) {
+            _this.SetData(landlords, err);
+            next(); //? Move along router funcs
+        }, "?page=" + this.currentPage);
+    },
+    methods: {
+        SetData: function (data, err) {
+            if (err) {
+                this.error = err.toString();
+                console.log(err);
+            }
+            else if (data) {
+                this.$store.dispatch(_Store_modules_AppState__WEBPACK_IMPORTED_MODULE_5__["APP_MODULE"] + "/" + _Store_ActionTypes__WEBPACK_IMPORTED_MODULE_4__["BEGIN_LOAD"], false); //* Stop loading 
+                this.totalPages = data.last_page; //* Last page will be total num of pages
+                this.landlords = data.data;
+            }
+        },
+        DeleteLandlord: function () {
+            return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
+                var response;
+                var _this = this;
+                return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, _API_LandlordAPI__WEBPACK_IMPORTED_MODULE_3__["landlordAPI"].Delete(this.landlordIdToDelete)];
+                        case 1:
+                            response = _a.sent();
+                            if (response) { //* If true, 204 status, then splice out the landlord that got deleted
+                                this.landlords.splice(this.landlordIndexToDelete, 1);
+                            }
+                            else { //* If false, 424 response, then report error message
+                                this.error = 'Issue while deleting. It might be an internet issue!';
+                                setTimeout(function () { return _this.error = null; }, 4000);
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        },
+        ChangePage: function (newPage) {
+            this.currentPage = newPage;
+            if (this.currentPage === 1) {
+                if (this.$route.fullPath !== '/landlords') {
+                    //* If page 1 then use base url
+                    this.$router.replace({
+                        path: this.$route.path
+                    });
+                }
+            }
+            else if (this.currentPage === this.totalPages) {
+                if (this.$route.fullPath !== this.$route.path + "?page=" + String(this.totalPages)) {
+                    //* If currentPage = total # of pages, then use base url
+                    this.$router.replace({
+                        path: this.$route.path,
+                        query: { page: String(this.totalPages) }
+                    });
+                }
+            }
+            else {
+                if (this.$route.fullPath !== this.$route.path + "?page=" + String(this.currentPage)) {
+                    //* If not 1st or last page, then set query to that page #
+                    this.$router.replace({
+                        path: this.$route.path,
+                        query: { page: String(this.currentPage) }
+                    });
+                }
+            }
+        },
+        OpenModal: function (id, index) {
+            this.landlordIdToDelete = id;
+            this.landlordIndexToDelete = index;
+            $(".ui.modal.mini").modal("show");
+        }
+    }
+}));
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=template&id=982890ec&scoped=true&":
 /*!*********************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=template&id=982890ec&scoped=true& ***!
@@ -244,10 +212,13 @@ var render = function() {
         [_vm._v("Add New Landlord")]
       ),
       _vm._v(" "),
-      _vm.pages > 1
+      _vm.totalPages > 1
         ? _c("sui-pagination", {
-            attrs: { currentPage: _vm.currentPage, "num-of-pages": _vm.pages },
-            on: { "update:currentPage": _vm.ChangePage }
+            attrs: {
+              currentPage: _vm.currentPage,
+              "num-of-pages": _vm.totalPages
+            },
+            on: { "update:page": _vm.ChangePage }
           })
         : _vm._e(),
       _vm._v(" "),
@@ -286,7 +257,7 @@ render._withStripped = true
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ListLandlords_vue_vue_type_template_id_982890ec_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ListLandlords.vue?vue&type=template&id=982890ec&scoped=true& */ "./resources/js/Views/Landlords/ListLandlords.vue?vue&type=template&id=982890ec&scoped=true&");
-/* harmony import */ var _ListLandlords_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ListLandlords.vue?vue&type=script&lang=js& */ "./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=js&");
+/* harmony import */ var _ListLandlords_vue_vue_type_script_lang_ts___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ListLandlords.vue?vue&type=script&lang=ts& */ "./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=ts&");
 /* empty/unused harmony star reexport *//* harmony import */ var _ListLandlords_vue_vue_type_style_index_0_id_982890ec_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ListLandlords.vue?vue&type=style&index=0&id=982890ec&lang=scss&scoped=true& */ "./resources/js/Views/Landlords/ListLandlords.vue?vue&type=style&index=0&id=982890ec&lang=scss&scoped=true&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
@@ -298,7 +269,7 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _ListLandlords_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ListLandlords_vue_vue_type_script_lang_ts___WEBPACK_IMPORTED_MODULE_1__["default"],
   _ListLandlords_vue_vue_type_template_id_982890ec_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
   _ListLandlords_vue_vue_type_template_id_982890ec_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
@@ -315,17 +286,17 @@ component.options.__file = "resources/js/Views/Landlords/ListLandlords.vue"
 
 /***/ }),
 
-/***/ "./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=js&":
+/***/ "./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=ts&":
 /*!*********************************************************************************!*\
-  !*** ./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=js& ***!
+  !*** ./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=ts& ***!
   \*********************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ListLandlords.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_ts_loader_index_js_ref_5_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_script_lang_ts___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/ts-loader??ref--5!../../../../node_modules/vue-loader/lib??vue-loader-options!./ListLandlords.vue?vue&type=script&lang=ts& */ "./node_modules/ts-loader/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=script&lang=ts&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_ts_loader_index_js_ref_5_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_script_lang_ts___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -340,8 +311,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_style_index_0_id_982890ec_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--8-2!../../../../node_modules/sass-loader/dist/cjs.js??ref--8-3!../../../../node_modules/vue-loader/lib??vue-loader-options!./ListLandlords.vue?vue&type=style&index=0&id=982890ec&lang=scss&scoped=true& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/Views/Landlords/ListLandlords.vue?vue&type=style&index=0&id=982890ec&lang=scss&scoped=true&");
 /* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_style_index_0_id_982890ec_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_style_index_0_id_982890ec_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_style_index_0_id_982890ec_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_style_index_0_id_982890ec_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_style_index_0_id_982890ec_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_style_index_0_id_982890ec_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ListLandlords_vue_vue_type_style_index_0_id_982890ec_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
 
 /***/ }),
 
