@@ -6,7 +6,6 @@
       field-name="street"
       v-model="property.street"
       placeholder="House Number and Street Address Property is Located On"
-      :validation-transition="validationTransitions.street"
       :validation-errors="validationErrs.street"
     >Street Address</sui-search>
 
@@ -15,7 +14,6 @@
       field-name="additional_info"
       v-model="property.additional_info"
       placeholder="Apartment, Suite, Unit, Building or Specific Room Number related to Property"
-      :validation-transition="validationTransitions.additional_info"
       :validation-errors="validationErrs.additional_info"
     >Address Line 2</sui-input>
 
@@ -25,21 +23,20 @@
       field-name="city"
       v-model="property.city"
       placeholder="City that Property is Located"
-      :validation-transition="validationTransitions.city"
       :validation-errors="validationErrs.city"
     />
 
     <sui-select
       required
+      searchBar
       model-name="property"
       field-name="state"
       :options="StateNames"
       v-model="property.state"
-      :validation-transition="validationTransitions.state"
       :validation-errors="validationErrs.state"
     >
       State/Territory/Province
-      <template v-slot:default-option>Select the Property's State</template>
+        <template #default-option>  Select the Property's State  </template>
     </sui-select>
 
     <sui-input
@@ -48,7 +45,6 @@
       field-name="postal_code"
       v-model.number="property.postal_code"
       placeholder="5 Digit ZIP or Postal Code"
-      :validation-transition="validationTransitions.postal_code"
       :validation-errors="validationErrs.postal_code"
     >Postal or ZIP Code</sui-input>
 
@@ -56,10 +52,12 @@
   </form>
 </template>
 <script>
+import Vue from 'vue';
 import states from "../../Utility/Constants/state_list";
 import PropertiesAPI from "../../API/PropertyAPI";
-import { DEFAULT_VALIDATION_ERR_TRANSITION } from "../../Utility/Constants/transitions";
-import FinalValidationCheck from "../../Utility/Functions/final_validation_check";
+import FinalValidationCheck from "../../Utility/Functions/Validation";
+//todo BIGGEST Challenge - Convert to Typescript
+
 export default {
   //! Props
   props: {
@@ -94,14 +92,6 @@ export default {
         postal_code: [],
         additional_info: []
       },
-      validationTransitions: {
-        house_num: DEFAULT_VALIDATION_ERR_TRANSITION,
-        street: DEFAULT_VALIDATION_ERR_TRANSITION,
-        city: DEFAULT_VALIDATION_ERR_TRANSITION,
-        state: DEFAULT_VALIDATION_ERR_TRANSITION,
-        postal_code: DEFAULT_VALIDATION_ERR_TRANSITION,
-        additional_info: DEFAULT_VALIDATION_ERR_TRANSITION
-      }
     };
   },
   //! Lifecycle Hooks
@@ -259,10 +249,7 @@ export default {
 
       this.ValidRoomNum();
 
-      return FinalValidationCheck(
-        this.validationErrs,
-        this.validationTransitions
-      );
+      return FinalValidationCheck(this.validationErrs);
     },
     ValidStreetAddress() {
       if (!this.property.street) {
@@ -367,5 +354,3 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-</style>

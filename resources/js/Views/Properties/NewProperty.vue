@@ -1,10 +1,10 @@
 <template>
-  <div class="ui segment container no-padding-b app-dark-accent-mid">
+  <div class="ui segment container p-0-b app-dark-accent-dark">
     <h1>New Property</h1>
     <back-button :steps-back="-1" />
 
     <div class="ui basic segment">
-      <form-property new-property :saving="saving" @edit="EditProperty" @submit="StoreProperty" />
+      <property-form new-property :saving="saving" />
     </div>
 
     <sui-alert-saving
@@ -16,8 +16,15 @@
     />
   </div>
 </template>
-<script>
-export default {
+<script lang='ts'>
+import Vue from 'vue';
+import PropertyForm from './FormProperty.vue';
+
+export default Vue.extend({
+  //! Local Components: 
+  components: {
+    'property-form': PropertyForm
+  },
   data() {
     return {
       loading: false,
@@ -42,35 +49,35 @@ export default {
     };
   },
   methods: {
-    EditProperty(propName, propVal) {
-      if (propName) {
-        this.property[propName] = propVal;
-      }
-    },
-    async StoreProperty() {
-      console.log("Store Prop");
-      this.saving = true;
-      this.ValidProperty();
-      if (!this.validErrs) {
-        const response = await propertiesAPI.create(this.property);
-        this.saving = false;
-        if (response.status === 201) {
-          this.saved = true;
-          this.validationErrs = {
-            house_num: [],
-            street: [],
-            state: [],
-            zipcode: [],
-            additional_info: []
-          };
-          setTimeout(() => (this.saved = false), 2000);
-        } else if (response.status === 422) {
-          this.error = response.data.message;
-          this.validationErrs = response.data.errors;
-          setTimeout(() => (this.error = null), 4000);
-        }
-      }
-    }
+    // EditProperty(propName, propVal) {
+    //   if (propName) {
+    //     this.property[propName] = propVal;
+    //   }
+    // },
+    // async StoreProperty() {
+    //   console.log("Store Prop");
+    //   this.saving = true;
+    //   this.ValidProperty();
+    //   if (!this.validErrs) {
+    //     const response = await propertiesAPI.create(this.property);
+    //     this.saving = false;
+    //     if (response.status === 201) {
+    //       this.saved = true;
+    //       this.validationErrs = {
+    //         house_num: [],
+    //         street: [],
+    //         state: [],
+    //         zipcode: [],
+    //         additional_info: []
+    //       };
+    //       setTimeout(() => (this.saved = false), 2000);
+    //     } else if (response.status === 422) {
+    //       this.error = response.data.message;
+    //       this.validationErrs = response.data.errors;
+    //       setTimeout(() => (this.error = null), 4000);
+    //     }
+    //   }
+    // }
   }
-};
+});
 </script>
