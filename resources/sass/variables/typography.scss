@@ -9,3 +9,23 @@ sans-serif;
 @mixin set-text-shadow($size, $color) {
   text-shadow: (-1*$size) $size 0 $color, $size $size 0 $color, $size (-1*$size) 0 $color, (-1*$size) (-1*$size) 0 $color;
 }
+
+//! Font Size
+//? It may be best to use vw instead of em since 
+//? em typically refers to width based on font size 
+//? Ultimately makes it kind of confusing to debug
+// $font-size-0: 0.5em;
+// $font-size-1: 0.75em;
+// $font-size-2: 1em;
+// $font-size-3: 1.5em;
+// $font-size-4: 2em;
+// $font-size-5: 3em;
+// $font-size-6: 4em;
+
+$font-size-0: 1vw;
+$font-size-1: 2vw;
+$font-size-2: 3vw;
+$font-size-3: 4vw;
+$font-size-4: 6vw;
+$font-size-5: 7vw;
+$font-size-6: 8vw;
