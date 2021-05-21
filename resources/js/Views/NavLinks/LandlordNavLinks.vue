@@ -24,15 +24,21 @@
     >My Profile</generic-route-link>
   </div>
 </template>
-<script>
-export default {
+<script lang='ts'>
+import Vue from 'vue';
+import GenericRouteLink from './GenericRouteLink.vue';
+
+export default Vue.extend({
+  components: {
+    GenericRouteLink
+  },
   props: {
     flexed: Boolean
   },
   computed: {
-    LandlordID() {
+    LandlordID(): string {
       return this.$store.state.authentication.user.landlord_id;
     }
   }
-};
+});
 </script>

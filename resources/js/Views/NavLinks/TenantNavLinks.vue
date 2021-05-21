@@ -23,21 +23,23 @@
     >My Profile</router-link>
   </div>
 </template>
-<script>
-export default {
+<script lang='ts'>
+import Vue from 'vue';
+
+export default Vue.extend({
   props: {
     flexed: Boolean
   },
   computed: {
-    LandlordID() {
+    LandlordID(): string {
       return this.$store.state.authentication.user.landlord_id;
     },
-    PropertyID() {
+    PropertyID(): string {
       return this.$store.state.authentication.user.property_id;
     },
-    TenantID() {
+    TenantID(): string {
       return this.$store.state.authentication.user.tenant_id;
     }
   }
-};
+});
 </script>

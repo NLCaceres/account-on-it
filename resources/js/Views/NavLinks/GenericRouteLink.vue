@@ -6,10 +6,12 @@
     <slot></slot>
   </router-link>
 </template>
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 //? Thanks to the props here, this vue template may be best used for providing clarity
 //? Rather than fully taking place of the simple router-link VueRouter provides
-export default {
+
+export default Vue.extend({
   props: {
     pathName: {
       type: String,
@@ -39,7 +41,7 @@ export default {
     }
   },
   computed: {
-    ToRoute() {
+    ToRoute(): object | null {
       //? The following are all the different options the router-link 'to' prop accepts
 
       const PathRoute = this.PathRoute(); //* Checks for VueRouter's path obj related props ({ path: foo, query: { bar: foh }})
@@ -47,11 +49,13 @@ export default {
 
       const NamedRoute = this.NamedRoute(); //* Checks for VueRouter's named route obj related props ({ name: foo, params: { bar: foh }})
       if (NamedRoute) return NamedRoute;
+      
+      return null;
     }
   },
   methods: {
-    PathRoute() {
-      const pathRoute = {};
+    PathRoute(): object | null {
+      const pathRoute = { query: null, path: null as string | null };
       //* Simple strings work just like anchor tag href, 'home' = /home
       //* but here we'll use the { path: pathName } version for flexibility
       if (this.pathName) {
@@ -63,9 +67,10 @@ export default {
         pathRoute.path = this.pathName;
         return pathRoute;
       }
+      return null;
     },
-    NamedRoute() {
-      const namedRoute = {};
+    NamedRoute(): object | null {
+      const namedRoute = { params: null, name: null as string | null};
 
       //* Basic Named Route uses this.routeName
       //* Dynamic Named Route, e.g. `${entityName}${routeType}` - LandlordDetail
@@ -81,7 +86,8 @@ export default {
           : `${this.entityName}${this.routeType}`;
         return namedRoute;
       }
+      return null;
     }
   }
-};
+});
 </script>
