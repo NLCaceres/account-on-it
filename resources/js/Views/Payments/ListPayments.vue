@@ -21,59 +21,64 @@
     <semantic-modal :size="-1">Are You Sure?</semantic-modal>
   </div>
 </template>
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import store from '../../Store';
-import PaymentsAPI from "../../API/PaymentAPI";
+// import PaymentsAPI from "../../API/PaymentAPI";
 import { BEGIN_LOAD } from "../../Store/ActionTypes";
-import { APP_MODULE } from "../../Store";
+import { APP_MODULE } from "../../Store/modules/AppState";
+import { LaravelPaginatedResponse } from '../../Models/InterfaceLaravelResponse';
 
-export default {
+export default Vue.extend({
   data() {
     return {
       loading: false,
-      error: null,
+      error: null as string | null,
       pages: 1,
-      payments: [],
+      payments: [] as any,
       paymentIdToDelete: -1,
       paymentIndexToDelete: -1
     };
   },
   beforeRouteEnter(to, from, next) {
     store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading  
-    PaymentsAPI.all((err, payments) => {
-      next(vm => vm.SetData(err, payments));
-    });
+    //todo Update SetData params and Payments Model
+    // PaymentsAPI.all((data?: TypicalPaginatedResponse<any>, err?: Error) => {
+    //   next(vm => vm.SetData(data, err));
+    // });
   },
   beforeRouteUpdate(to, from, next) {
     this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading
-    PaymentsAPI.all((err, payments) => {
-      this.SetData(err, payments);
-      next(); //? Move along router funcs
-    });
+    // PaymentsAPI.all((data?: TypicalPaginatedResponse<any>, err?: Error) => {
+    //   this.SetData(data, err);
+    //   next(); //? Move along router funcs
+    // });
   },
   methods: {
-    SetData(err, data) {
+    SetData(data?: LaravelPaginatedResponse<any>, err?: Error) {
       if (err) {
         this.error = err.toString();
-      } else {
-        this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false); //* Stop loading
-        this.payments = data;
+      } else if (data) {
+        this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false); //* Stop loading 
+        console.log(data);
+        this.pages = data.last_page; //* Last page will be total num of pages
+        this.payments = data.data;
       }
     },
     async DeletePayment() {
       //todo May not allow.
-      const response = await PaymentsAPI.delete(this.paymentIdToDelete);
-      if (response.status === 204) {
-        this.payments.splice(this.paymentIndexToDelete, 1);
-      }
+      // const response = await PaymentsAPI.delete(this.paymentIdToDelete);
+      // if (response.status === 204) {
+      //   this.payments.splice(this.paymentIndexToDelete, 1);
+      // }
     },
-    OpenModal(id, index) {
+    OpenModal(id: number, index: number) {
       this.paymentIdToDelete = id;
       this.paymentIndexToDelete = index;
       $("#deleteModal").modal("toggle");
     }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>
