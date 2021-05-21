@@ -1,5 +1,5 @@
 <template>
-  <div class="ui segment container no-padding-b app-dark-accent-mid">
+  <div class="ui segment container p-0-b app-dark-accent-dark">
     <h1>Edit Tenant Information</h1>
     <back-button :steps-back="-1" />
 
@@ -8,20 +8,19 @@
         entity-name="Tenant"
         :entity="tenant"
         :saving="saving"
-        @edit="EditTenant"
-        @submit="StoreTenant"
         :validation-errs="validationErrs"
       />
     </div>
 
     <sui-alert-loading />
-    <sui-alert-saving :saving="saving" :saved="saved" :error="error" @saved="this.saved = false;" />
+    <sui-alert-saving />
   </div>
 </template>
-<script>
-import { BEGIN_LOAD } from "../../Store/ActionTypes";
+<script lang='ts'>
+import Vue from 'vue';
+// import { BEGIN_LOAD } from "../../Store/ActionTypes";
 
-export default {
+export default Vue.extend({
   data() {
     return {
       loading: false,
@@ -35,5 +34,5 @@ export default {
   },
   created() {},
   methods: {}
-};
+});
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ui segment container no-padding-b app-dark-accent-mid">
+  <div class="ui segment container p-0-b app-dark-accent-dark">
     <header-back-button>New Tenant</header-back-button>
 
     <div class="ui basic segment">
@@ -8,19 +8,18 @@
         entity-name="Tenant"
         :entity="tenant"
         :saving="saving"
-        @edit="EditTenant"
-        @submit="StoreTenant"
         :validation-errs="validationErrs"
       />
     </div>
 
-    <sui-alert-saving :saving="saving" :saved="saved" :error="error" @saved="saved = false;" />
+    <sui-alert-saving />
   </div>
 </template>
-<script>
-import tenantsAPI from "../../API/TenantAPI";
+<script lang='ts'>
+import Vue from 'vue';
+// import tenantsAPI from "../../API/TenantAPI";
 
-export default {
+export default Vue.extend({
   data() {
     return {
       loading: false,
@@ -43,26 +42,26 @@ export default {
     };
   },
   methods: {
-    EditTenant(propName, propVal) {
-      if (propName) {
-        this.tenant[propName] = propVal;
-      }
-    },
-    async StoreTenant() {
-      this.saving = true;
-      const response = await tenantsAPI.create(this.tenant);
-      console.log(response);
-      this.saving = false;
-      if (response.status === 201) {
-        this.saved = true;
-        this.validationErrs = { first_name: [], surname: [], email: [] };
-        setTimeout(() => (this.saved = false), 2000); //? Oddly 'this' refers to the vue instance here! Not true elsewhere
-      } else if (response.status === 422) {
-        this.error = response.data.message;
-        this.validationErrs = response.data.errors;
-        setTimeout(() => (this.error = null), 4000);
-      }
-    }
+    // EditTenant(propName, propVal) {
+    //   if (propName) {
+    //     this.tenant[propName] = propVal;
+    //   }
+    // },
+    // async StoreTenant() {
+    //   this.saving = true;
+    //   const response = await tenantsAPI.create(this.tenant);
+    //   console.log(response);
+    //   this.saving = false;
+    //   if (response.status === 201) {
+    //     this.saved = true;
+    //     this.validationErrs = { first_name: [], surname: [], email: [] };
+    //     setTimeout(() => (this.saved = false), 2000); //? Oddly 'this' refers to the vue instance here! Not true elsewhere
+    //   } else if (response.status === 422) {
+    //     this.error = response.data.message;
+    //     this.validationErrs = response.data.errors;
+    //     setTimeout(() => (this.error = null), 4000);
+    //   }
+    // }
   }
-};
+});
 </script>
