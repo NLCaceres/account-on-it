@@ -1,33 +1,40 @@
 <template>
-  <div class="ui inverted huge menu app-brand-blue sticky-el">
-    <div class="ui container grid">
-      <sui-desktop-nav>
+  <div class="ui inverted huge menu app-brand-blue sticky-el m-0-b">
+    <div class="ui w-100 m-0-x grid" id='full-nav'>
+      <sui-desktop-nav v-if="$store.state.app.window.width > 768 && $store.state.app.window.height > 450">
         <!--//* App Name -->
-        <slot />
+        <slot></slot>
         <!--//* Desktop Navbar links -->
-        <template v-slot:links>
-          <slot name="links" />
+        <template #links>
+          <slot name="links"></slot>
         </template>
       </sui-desktop-nav>
 
-      <sui-mobile-nav>
+      <sui-mobile-nav v-else>
         <!--//* App Name -->
-        <slot />
+        <slot></slot>
         <!--//* A bit more versatile with a separate set of links to use in the mobile navbar -->
-        <template v-slot:mobile-links>
-          <slot name="mobile-links" />
+        <template #mobile-links>
+          <slot name="mobile-links"></slot>
         </template>
       </sui-mobile-nav>
     </div>
   </div>
 </template>
-<script>
-export default {
+<script lang='ts'>
+import Vue from 'vue';
+import SuiDesktopNav from './SuiDesktopNav.vue';
+import SuiMobileNav from './SuiMobileNav.vue';
+
+export default Vue.extend({
+  components: {
+    SuiDesktopNav, SuiMobileNav
+  },
   data() {
     return {};
   }
   //? Ordinarily sticky navbar is available in SUI (but it's a pain to work with)
-};
+});
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 <template>
-  <div class="tablet mobile only row">
+  <div class="row" id="mobile-nav">
     <router-link
       class="header item app-dark-accent border-light p-xs-y"
       :to="{ name: 'Home'}"
@@ -9,35 +9,45 @@
     </router-link>
 
     <div class="right menu">
-      <div class="ui fluid dropdown item p-xs-y">
+      <router-link v-if="!Authenticated" id="login" :to="{ name: 'Login'}" class="ui item border-x-white app-green">Log In?</router-link>
+      <div id="mobile-nav-links" class="ui fluid dropdown item p-xs-y" v-else>
         <a>
-          <button class="ui inverted basic icon button">
+          <button type="button" class="ui inverted basic icon button">
             <i class="bars icon" />
           </button>
         </a>
         <div class="vertical menu app-blue" :style="{ width: NavbarWidth }">
-          <slot name="mobile-links" />
+          <slot name="mobile-links" :style="{ width: NavbarWidth }"/>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  mounted() {
-    $(".right.accordion.menu").accordion();
-  },
+<script lang='ts'>
+import Vue from 'vue';
+
+export default Vue.extend({
   computed: {
-    NavbarWidth() {
+    NavbarWidth(): string {
       return `${this.$store.state.app.window.width}px`;
+    },
+    Authenticated(): boolean {
+      return this.$store.state.authentication.authenticated;
     }
+  },
+  updated() {
+    if (this.$store.state.authentication.authenticated) {
+        console.log("Authenticated");
+        $('#mobile-nav-links').dropdown();
+      }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>
-@import "../../../../../sass/variables/colors.scss";
+@import "../../../../sass/variables/colors.scss";
+// @import "~/variables/colors.scss";
 
 //! Mobile
 .tablet.mobile.only.row {
