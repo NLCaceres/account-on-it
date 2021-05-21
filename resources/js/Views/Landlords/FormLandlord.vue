@@ -8,7 +8,6 @@
         v-model="landlord.first_name"
         placeholder="Landlord's First or Preferred Name"
         :validation-errors="validationErrs.first_name"
-        :validation-transition="validationTransitions.first_name"
       >Landlord's First Name</sui-input>
 
       <sui-input
@@ -18,7 +17,6 @@
         v-model="landlord.surname"
         placeholder="Landlord's Surname / Last Name / Family Name"
         :validation-errors="validationErrs.surname"
-        :validation-transition="validationTransitions.surname"
       >Landlord's Surname</sui-input>
 
       <sui-input
@@ -28,18 +26,17 @@
         v-model="landlord.email"
         placeholder="Landlord's Email Address"
         :validation-errors="validationErrs.email"
-        :validation-transition="validationTransitions.email"
       >Landlord's Email Address</sui-input>
 
       <sui-submit :new-entity="newLandlord" :saving="saving" />
     </form>
   </div>
 </template>
-<script>
-import landlordsAPI from "../../API/LandlordAPI";
-import { DEFAULT_VALIDATION_ERR_TRANSITION } from "../../Utility/Constants/transitions";
+<script lang='ts'>
+import Vue from 'vue';
+//import LandlordAPI from "../../API/LandlordAPI";
 
-export default {
+export default Vue.extend({
   props: {
     newLandlord: Boolean,
     saving: Boolean
@@ -57,11 +54,6 @@ export default {
         first_name: [],
         surname: [],
         email: []
-      },
-      validationTransitions: {
-        first_name: DEFAULT_VALIDATION_ERR_TRANSITION,
-        surname: DEFAULT_VALIDATION_ERR_TRANSITION,
-        email: DEFAULT_VALIDATION_ERR_TRANSITION
       }
     };
   },
@@ -75,7 +67,5 @@ export default {
       //* Send data
     }
   }
-};
+});
 </script>
-<style lang="scss" scoped>
-</style>
