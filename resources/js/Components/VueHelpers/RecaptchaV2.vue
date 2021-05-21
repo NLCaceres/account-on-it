@@ -2,6 +2,7 @@
   <div id="recaptcha-view"></div>
 </template>
 <script>
+
 export default {
   methods: {
     SetupRecaptcha() {
