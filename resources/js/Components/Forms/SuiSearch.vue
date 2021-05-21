@@ -23,7 +23,7 @@
       name="slide"
       tag="div"
       class="ui divided list"
-      :leave-active-class="validationTransition"
+      :leave-active-class="ProperValidationTransition"
     >
       <li
         v-for="validationErr in validationErrors"
@@ -33,15 +33,16 @@
     </transition-group>
   </div>
 </template>
-<script>
-import column_converter from "../../../Utility/Functions/column_converter";
-export default {
+<script lang='ts'>
+import Vue from 'vue';
+import column_converter from "../../Utility/Functions/column_converter";
+
+export default Vue.extend({
   props: {
     modelName: String,
     fieldName: String,
     placeholder: String,
     value: [String, Number],
-    validationTransition: String,
     validationErrors: Array,
     required: Boolean,
     fluid: {
@@ -54,7 +55,7 @@ export default {
     }
   },
   computed: {
-    ProperFieldName() {
+    ProperFieldName(): string {
       return this.fieldName.toLowerCase() === "id" ||
         this.fieldName.toLowerCase() === "_id"
         ? "ID"
@@ -63,9 +64,12 @@ export default {
             .trim()
             .replace(/\b\w/g, a => a.toUpperCase());
     },
-    FieldWidth() {
+    FieldWidth(): string {
       return column_converter(this.width); //? Takes width integer up to 12 and displays text. 1 -> 'one', 10 -> 'ten'
+    },
+    ProperValidationTransition(): string {
+      return this.validationErrors.length > 0 ? this.Transitions.INVALID_ERR_TRANSITION : this.Transitions.VALIDATION_INPUT_TRANSITION;
     }
   }
-};
+});
 </script>
