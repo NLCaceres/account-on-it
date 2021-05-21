@@ -4,20 +4,9 @@
 
     <router-link
       id="new-route"
-      :to="{ name: 'UserNew' }"
+      :to="{ name: 'SignUp' }"
       class="ui inverted button app-blue m-md-b m-md-l"
     >Add New User</router-link>
-
-    <!-- <table class="table" v-if="users">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Email</th>
-        </tr>
-      </thead>
-      <model-table :entities="users" />
-    </table>-->
 
     <sui-pagination
       v-if="pages > 1"
@@ -25,48 +14,68 @@
       @update:currentPage="ChangePage"
       :num-of-pages="pages"
     />
+    
     <model-table :entities="users" entity-name="User" plural-entity="Users" @delete="OpenModal" />
 
-    <sui-alert-loading :loading="loading" />
+    <sui-alert-loading />
 
     <sui-modal :size="-1">Are You Sure?</sui-modal>
   </div>
 </template>
 
 <script lang='ts'>
-import Vue from "vue";
-// import UserAPI from "../../API/UserAPI";
+import Vue, { VueConstructor } from "vue";
+// import Component from "vue-class-component";
 import User from "../../Models/UserClass";
+import { LaravelPaginatedResponse, TypicalPaginatedResponse } from '../../Models/InterfaceLaravelResponse';
+import UserAPI from "../../API/UserAPI";
+import { APP_MODULE } from '../../Store/modules/AppState';
+import store from "../../Store";
+import { BEGIN_LOAD } from "../../Store/ActionTypes";
+import { AxiosResponse } from 'axios';
+import { PreloadVue } from "../../Models/InterfaceVueViews";
 
-export default Vue.extend({
+// @Component
+//todo Vue 3 improvements needed
+export default /* class UserList extends */ (Vue as VueConstructor<PreloadVue>).extend({
   data() {
     return {
-      loading: false,
-      error: null,
-      users: [] as Array<typeof User> | null, //? Change to optional
+      users: [] as User[],
       currentPage: 1,
       pages: 1,
-      userIdToDelete: 0,
-      userIndexToDelete: 0
-    };
+      UserIdToDelete: 0,
+      UserIndexToDelete: 0,
+      UserAPI: new UserAPI(),
+    }
   },
-  created() {
-    this.fetchUsers();
-  },
-  methods: {
-    //? All async functions must have return signature Promise (regardless what's in that promise)
-    async fetchUsers(): Promise<void> {
-      this.error = this.users = null;
-      this.loading = true;
-      try {
-        // const response = await UserAPI.GetAll();
-        // console.log(response);
-        //this.users = response.data;
-      } catch (err) {
-        this.error = err.response.data.message || err.message;
+
+  //! Hooks
+  beforeRouteEnter(to, from, next): void {
+    store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true);
+    
+    const starterUserAPI = new UserAPI(); //* The singleton above isn't available yet so make a temp one!
+    starterUserAPI.GetAll((data?: TypicalPaginatedResponse<User>, err?: Error) => {
+      if ((data as AxiosResponse)?.status === 403) {
+        next(false);
+      } else {
+        next(vm => vm.SetData(data as LaravelPaginatedResponse<User>, err));
       }
-      if (this.users) this.loading = false;
-    },
+    });
+  },  
+
+  //! Component Methods
+  methods: {
+    SetData(data?: LaravelPaginatedResponse<User>, err?: Error): void {
+      if (err) {
+        err.toString();
+      } else if (data) {
+        this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, false); //* Stop loading
+
+        this.pages = data.last_page; //* Last page will be total num of pages
+        
+        this.users = data.data;
+      }
+    },  
     ChangePage(newPage: number): void {
       this.currentPage = newPage;
       if (this.currentPage === 1) {
@@ -86,8 +95,8 @@ export default Vue.extend({
       }
     },
     OpenModal(id: number, index: number): void {
-      this.userIdToDelete = id;
-      this.userIndexToDelete = index;
+      this.UserIdToDelete = id;
+      this.UserIndexToDelete = index;
       $(".ui.modal.mini").modal("show");
     }
   }

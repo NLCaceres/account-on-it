@@ -1,12 +1,10 @@
 <template>
-  <div class="ui segment container no-padding-b app-dark-accent-mid">
+  <div class="ui segment container p-0-b app-dark-accent-dark">
     <header-back-button>Edit Account</header-back-button>
 
-    <form-user
+    <user-form
       new-user
       :saving="saving"
-      @edit="EditLandlord"
-      @submit="StoreLandlord"
       :validation-errs="validationErrs"
     />
 
@@ -16,5 +14,12 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-export default Vue.extend({});
+import UserForm from './FormUser.vue';
+
+export default Vue.extend({
+  //! Local Components: 
+  components: {
+    UserForm
+  },
+});
 </script>
