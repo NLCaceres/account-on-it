@@ -8,47 +8,46 @@
       class="ui inverted button m-md-b m-md-l"
     >Add New Lease</router-link>
 
-    <app-loading />
-    <app-error>{{error}}</app-error>
-
-    <bootstrap-pagination v-if="pages > 1" :size="-1" :num-of-pages="pages" />
     <model-table :entities="leases" entity-name="Lease" plural-entity="Leases" @delete="OpenModal" />
 
-    <semantic-modal :size="-1">Are You Sure?</semantic-modal>
+    <sui-modal :size="-1">Are You Sure?</sui-modal>
   </div>
 </template>
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import store from '../../Store';
 import LeasesAPI from "../../API/LeaseAPI";
 import { BEGIN_LOAD } from "../../Store/ActionTypes";
-import { APP_MODULE } from "../../Store";
+import { APP_MODULE } from "../../Store/modules/AppState";
+import { LaravelPaginatedResponse } from '../../Models/InterfaceLaravelResponse';
 
-export default {
+export default Vue.extend({
   data() {
     return {
       loading: false,
-      error: null,
+      error: null as string | null,
       pages: 1,
-      leases: [],
+      leases: [] as any,
       leaseIdToDelete: -1,
       leaseIndexToDelete: -1
     };
   },
+  //todo Update SetData and Lease Model
   beforeRouteEnter(to, from, next) {
     store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Start loading  
-    LeasesAPI.all((err, leases) => {
-      next(vm => vm.SetData(err, leases));
-    });
+    // LeasesAPI.all((err, leases) => {
+    //   next(vm => vm.SetData(err, leases));
+    // });
   },
   beforeRouteUpdate(to, from, next) {
     this.$store.dispatch(`${APP_MODULE}/${BEGIN_LOAD}`, true); //* Stop loading
-    LeasesAPI.all((err, leases) => {
-      this.SetData(err, leases);
-      next(); //? Move along router funcs
-    });
+    // LeasesAPI.all((err, leases) => {
+    //   this.SetData(err, leases);
+    //   next(); //? Move along router funcs
+    // });
   },
   methods: {
-    SetData(err, data) {
+    SetData(data?: LaravelPaginatedResponse<any>, err?: Error) {
       if (err) {
         this.error = err.toString();
       } else {
@@ -62,13 +61,13 @@ export default {
         this.leases.splice(this.leaseIndexToDelete, 1);
       }
     },
-    OpenModal(id, index) {
+    OpenModal(id: number, index: number) {
       this.leaseIdToDelete = id;
       this.leaseIndexToDelete = index;
       $("#deleteModal").modal("toggle");
     }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>
