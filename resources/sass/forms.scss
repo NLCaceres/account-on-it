@@ -2,7 +2,6 @@
 @import 'variables/colors.scss';
 
 %label-skin {
-  font-size: larger !important;
   color: white !important;
   @include set-text-shadow(2px, black);
 }
@@ -10,6 +9,12 @@
 .form-label {
   @extend %label-skin;
   margin-bottom: 0.5em !important;
+  @media screen and (min-width: 500px) {
+    font-size: larger !important;
+  }
+  @media screen and (max-width: 499px) {
+    font-size: medium !important;
+  }
 }
 
 .form-validation-err {

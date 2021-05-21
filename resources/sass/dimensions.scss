@@ -2,14 +2,14 @@
 //* Using width & height at 25, 50, 75, and 100 percent
 //* Format is .dimension-percentile E.g. h-25 or w-75
 
-$dimension-percentiles: (25, 50, 75, 100); //* Percentiles
+$dimension-percentiles: (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100); //* Percentiles
 
-$dimensions: ('h':'height', 'w':'width'); //* Height and width
+$dimensions: ('h':'height', 'w':'width', 'max-h': 'max-height', 'max-w': 'max-width', 'min-h': 'min-height', 'min-w': 'min-width'); //* Height and width
 
-@each $dimension-class,
+@each $dimension-class-name,
 $dimension-attr in $dimensions {
 
-  .#{$dimension-class} {
+  .#{$dimension-class-name} {
 
     @each $dimension-percentile in $dimension-percentiles {
 
@@ -22,12 +22,63 @@ $dimension-attr in $dimensions {
   }
 }
 
+.auto {
+  &-width {
+    width: auto !important;
+  }
+  &-height {
+    height: auto !important;
+  }
+}
+
+//! Positioning
+.absolute {
+  &-pos {
+    position: absolute;
+  }
+
+  &-center {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    left: 0;
+    margin: 0;
+    // padding: 0; //* Doesn't seem to be necessary
+  }
+}
+
+.relative {
+  &-pos {
+    position: relative;
+  }
+}
+
 .overflow-x {
   overflow-x: scroll;
 }
 
 .sticky-el {
   position: -webkit-sticky;
-  position: sticky;
+  position: sticky !important;
   top: 0;
+  z-index: 1;
+}
+
+.fixed {
+  position: fixed !important;
+
+  &-h-center {
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    margin: 0 auto !important;
+
+    &-above {
+      position: fixed !important;
+      left: 0;
+      right: 0;
+      margin: 0 auto !important;
+      z-index: 1;
+    }
+  }
 }

@@ -7,11 +7,25 @@
     color: $app-color !important;
   }
 
-  &-mid {
+  &-dark {
     background-color: darken($app-color, 5%) !important;
+    &-text {
+      color: darken($app-color, 5%) !important;
+    }
   }
+ &-light {
+   background-color: lighten($app-color, 5%) !important;
+   &-text {
+     color: lighten($app-color, 5%) !important;
+   }
+ }
 }
 
+.transparent {
+  @include set-colors(transparent);
+}
+
+//! My personal color scheme
 .app-brand-blue {
   @include set-colors($brand-blue);
 }
@@ -51,3 +65,8 @@
 .app-white {
   @include set-colors($white);
 }
+
+//! Semantic/Fomantic UI Color options
+//? Just tack these onto class attr <element class="red" /> and all set!
+//* red, orange, yellow, olive, green, teal,
+//* blue, violet, purple, pink, brown, black

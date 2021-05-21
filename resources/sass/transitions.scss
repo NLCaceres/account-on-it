@@ -5,7 +5,7 @@
 }
 
 .fade-enter,
-.fade-leave-active {
+.fade-leave-to {
     opacity: 0;
 }
 
@@ -69,23 +69,87 @@
 }
 
 //! Change Page
-.change-page-enter {
-    //@include move-right(-10px);
-    opacity: 0;
-    transform: translate(20px, 20px);
-    // transform: translateZ(-10px);
+.change-page-enter-active {
+    animation: change-page-in 0.6s;
+    //? These delays can be used to stagger vue list transitions without javascript!
+    //transition-delay: calc( 1s * var(--i) ); //* Delay increases with higher index in list
 }
 
 .change-page-leave-active {
+    animation: change-page-out 0.5s;
     position: absolute; //? Prevents the janky moves when removals happen
+    //transition-delay: calc( 0.8s * (var(--total) - var(--i)) ); //* Delay increases with lower index in list
 }
 
-.change-page-leave-to {
-    //@include move-left(10px);
+.change-page-leave-to { //* Leaving elems finished state - necessary to avoid weird teleporting back to original spot
     opacity: 0;
-    transform: translateY(2em); //? Abs pos makes all moves relative to top left corner of parent
+    //? The below attributes work relative to nearest parent that is 'position: relative'
+    //? This can mean that the DOM will search all the way up to the body tag if it finds no relative parents!
+    left: -200px; 
+    top: 100px;
 }
 
 .change-page-move {
-    transition: opacity 0.5s, transform 1s;
+    transition: /* opacity 0.5s,  */transform 0.5s;
+}
+
+//? Vue can use css animations if trigger in the active or move phases of its transitions as shown above!
+@keyframes change-page-out {
+    0%   { opacity: 1; left: calc(0px + (var(--i) * 45px) ); top: 0px;}
+    15%  { opacity: 0; }
+    50%  { left: calc(0px + (var(--i) * 45px) ); top: 100px; }
+    100% { opacity: 0; left: -200px; top: 100px; }
+}
+@keyframes change-page-in {
+    0%   {opacity: 0; left:-200px; top:100px;}
+    50%  {left:0px; top:100px;}
+    70% { opacity: 0; }
+    100% {opacity: 1; left:0px; top:0px;}
+}
+
+//! Flip
+.flip-enter {
+    transform: rotateY(-180deg);
+}
+.flip-enter-active {
+    transition: transform 1s;
+}
+.flip-enter-to {
+    transform: rotateY(0deg);
+    opacity: 1;
+}
+.flip-leave {
+    transform: rotateY(0deg);
+    opacity: 1;
+}
+.flip-leave-active {
+    transition: opacity 1s transform 1s;
+}
+.flip-leave-to {
+    transform: rotateY(180deg);
+    opacity: 0;
+}
+
+//! Blur 
+.blur-enter {
+    filter: blur(5px);
+    opacity: 0;
+}
+.blur-enter-active {
+    transition: opacity 1s, filter 1s;
+}
+.blur-enter-to {
+    filter: blur(0);
+    opacity: 1;
+}
+.blur-leave {
+    filter: blur(0px);
+    opacity: 1;
+}
+.blur-leave-active {
+    transition: opacity 1s, filter 1s;
+}
+.blur-leave-to {
+    filter: blur(5px);
+    opacity: 0;
 }

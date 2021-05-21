@@ -1,9 +1,111 @@
 .flexed {
     display: flex;
 
+    //! Flex Row 
+
+    &-center {
+        display:flex;
+        justify-content: center;
+        &-all {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        &-cross {
+            display:flex;
+            align-items: center;
+        }
+    }
     &-spaced-around {
         display: flex;
         justify-content: space-around;
+    }
+    &-spaced-between {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &-align-baselines {
+        display:flex;
+        align-items: baseline;
+    }
+
+    &-align-stretch {
+        display: flex;
+        align-items: stretch;
+    }
+
+    &-wrap {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    &-reverse {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: flex-start;
+    }
+
+    //! Flex Column Direction
+    &-column {
+        display: flex;
+        flex-direction: column;
+
+        &-wrap {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+
+        &-center {
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        &-end {
+            display: flex;
+            justify-content: flex-end;
+        }
+        &-spaced-around {
+            display:flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        &-spaced-between {
+            display:flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }  
+        &-reverse {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: flex-start;
+        }      
+    }
+
+    //! Flex Property
+    &-equal {
+        flex: 1 1 0; //* All grow and shrink at same rate as if they were the same width
+    }
+
+    &-auto {
+        flex: 1 1 auto;
+        
+        &-no-shrink {
+            flex: 1 0 auto;
+        }
+    }
+}
+
+.align-self {
+    &-start {
+        align-self: flex-start;
+    }
+    &-end {
+        align-self: flex-end;
+    }
+    &-center {
+        align-self: center;
     }
 }
 
@@ -24,5 +126,9 @@
 }
 
 .flex-stretch {
-    flex-grow: 1;
+    @for $i from 0 through 10 {
+        &-#{$i} {
+            flex-grow: $i !important;
+        }
+    }
 }

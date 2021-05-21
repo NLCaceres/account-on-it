@@ -1,6 +1,6 @@
 @import 'utility.scss';
 
-$margin-classes: ("no-margin":$spacer-0,
+$margin-classes: ("m-0":$spacer-0,
   'm-xs':$spacer-1,
   'm-sm':$spacer-2,
   'm-md':$spacer-3,
@@ -39,6 +39,29 @@ $spacer in $margin-classes {
 
         @else {
           #{$attr}: $spacer !important;
+        }
+      }
+    }
+  }
+  .nega-#{$margin-class} {
+
+    //* Mixin that iterates and sets each side specified
+    @include set-sides($spacer, $margin-attrs, -1);
+
+    //* Creates separate suffixed version to handle each side or combo of sides
+    @each $margin-suffix,
+    $attr in $margin-suffixes {
+
+
+      &#{$margin-suffix} {
+
+        //* Both x (l & r) and y (t & b) use mixin to pull out those 2 attributes
+        @if $margin-suffix=='-x'or $margin-suffix=='-y' {
+          @include set-sides($spacer, $attr, -1);
+        }
+
+        @else {
+          #{$attr}: (-1 * $spacer) !important;
         }
       }
     }

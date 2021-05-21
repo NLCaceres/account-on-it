@@ -5,7 +5,7 @@
 //! The following 2 may receive update to handle an arr of vals but may be ridiculously tough to account for
 
 //! 4 Corners Attribute Setting Mixin
-@mixin set-sides($val, $sides) {
+@mixin set-sides($val, $sides, $sign: 1) {
   @if length($sides)>4 {
     @error "Unknown additional attribute. Must contain at most 4 attributes related to each possible side";
   }
@@ -15,7 +15,11 @@
   }
 
   @each $side in $sides {
-    #{$side}: $val !important;
+    @if (type-of($val) == "number") {
+      #{$side}: $sign * $val !important;
+    } @else {
+      #{$side}: $val !important;
+    }
   }
 }
 
