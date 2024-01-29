@@ -76,7 +76,7 @@ return [
             'password' => env('DEV_DB_PASSWORD') ?? $DATABASE_URL["pass"],
             'charset' => 'utf8',
             'prefix' => '',
-            'schema' => 'public',
+            'search_path' => 'public',
             'sslmode' => env('DEV_SSLMODE') ?? 'require', // Used for Heroku
             //? Prefer mode = Encryption is nice if you have it. Require = NEED Encryption 
         ],
@@ -89,7 +89,7 @@ return [
             'password' => env('DEV_DB_PASSWORD') ?? $DATABASE_URL["pass"],
             'charset' => 'utf8',
             'prefix' => '',
-            'schema' => 'public',
+            'search_path' => 'public',
             'sslmode' => env('DEV_SSLMODE') ?? 'require', // Used for Heroku
         ],
 
