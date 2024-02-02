@@ -27,20 +27,14 @@
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
-  <!-- //? Asset ensures you have the exact file from public directory (seemingly no issues with HotModuleReloading) -->
-  <!-- //? BUT could use mix() (here) with version() (in webpack.mix.js) to properly register versioned bundled files-->
-  <script src="{{ asset('js/app.js') }}" defer></script>
-  <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
-  <!-- <script src="{{ asset('js/semantic.min.js') }}" defer></script> -->
+  <!-- Order seems to matter for this vite call; jQuery MUST be 1st. For the matching input in vite.config, order doesn't seem to matter -->
+  @vite(["node_modules/jquery/dist/jquery.min.js", "node_modules/fomantic-ui-css/semantic.min.js", "resources/js/app.ts"])
   <link href="{{ asset('css/semantic.min.css') }}" rel="stylesheet" type="text/css">
-
 </head>
 
 <body>
   <!--//? Vue directly mounts on to div with render + $mount funcs -->
   <div id="app">
-    <!-- <app></app> -->
   </div>
 </body>
 
