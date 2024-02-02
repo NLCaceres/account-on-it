@@ -1,58 +1,46 @@
 // tsconfig.json
 {
-    //? Not sure what exactly it is BUT webpack/laravel-mix does NOT
-    //? like when files are named the same thing despite having different paths
-    //? E.g. Model/Foo and API/Foo will compile incorrectly
-    //? Naming convention therefore must be
-    //? E.g. Model/FooModel and API/FooAPI
-    //? or
-    //? E.g. Model/Foo and API/FooAPI while being certain never too use Foo (case sensitive) anywhere else!
-    "compilerOptions": {
-        //! True compiling options
-        //? 'ES5' aligns with Vue's browser support
-        //? TS will be compiled to ES5 and polyfills 
-        "target": "es5", 
-        "lib": [ //? Enables newer features 
-            "esnext", //? Arrow funcs, Object.entries, '??' operator and more!
-            "dom", //? The rest just cover bases for ES6
-            "dom.iterable",
-            "scripthost"
-        ], //? Being extra specific of what libraries target is bringing in
-        // "baseUrl": ".",
-        // "paths": {
-        //     //? If TS sees 'from "@/someDir/someFile"', it'll bring './resources/js/someDir/someFile'
-        //     //? Using baseUrl of course
-        //     "@/*": [
-        //         "resources/js/*"
-        //     ] //? 1st '*' is a wildcard, 2nd is baseUrl/someDir/someFile (base + module)
-        // },
-        //? W/ webpack, this ensures tree shaking
-        "module": "ES2015", //? Module system (so imports work now!)
-        "moduleResolution": "node", //? New resolution system that works better with Node.js
-        "resolveJsonModule": true, //? Grabs json files
-        "esModuleInterop": true,
-        "importHelpers": true,
-        "allowSyntheticDefaultImports": true,
-        "sourceMap": true,
-        //! Type inference
-        //? This enables stricter inference for data properties on 'this'
-        "strict": true,
-        //"types": ["webpack-env"], //? Pulls typings if already available somewhere
-        "experimentalDecorators": true,
-        "noUnusedLocals": true, //? Ensures unused imports have warning on them
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "noImplicitThis": true,
-        //! Javascript compatibility
-        "allowJs": true, //? Allows cross-compatibility (useful if migrating to typescript slowly)
-        "outDir": "public/js" //? If none specified TS compiler will try to overwrite files and VSCode's TS extension will complain
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": [ //? Enables newer features
+      "esnext", //? Arrow funcs, Object.entries, '??' operator and more!
+      "dom", //? The rest just cover bases for ES6
+      "dom.iterable"
+    ], //? Being extra specific of what libraries target is bringing in
+    "baseUrl": "./",
+    "paths": {
+      //? If TS sees 'from "@/someDir/someFile"', it'll load in './resources/js/someDir/someFile' with baseURL in mind
+      "@/*": [
+        "resources/js/*"
+      ]
     },
-    "include": [
-        "resources/js/**/*"
-        //"resources/js/**/*.vue"
-    ], //? Search these dirs and compile what it can
-    "exclude": [
-        "node_modules",
-        "vendor"
-    ]
+    "module": "ESNext", //? Module system (so imports work now!)
+    "moduleResolution": "bundler", //? New resolution system that works better with Vite
+    "isolatedModules": true,
+    "resolveJsonModule": true, //? Grabs json files
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    //! Type inference
+    "strict": true, //? Loads a specific set of "strict" rules
+    "types": ["vite/client", "vitest/globals", "jquery", "fomantic-ui-css"],
+    "experimentalDecorators": true,
+    "noEmit": true,
+    "noUnusedLocals": true, //? Ensures unused imports have warning on them
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "allowJs": true //? Allows cross-compatibility (useful if migrating to typescript slowly)
+  },
+  "include": [ //? Search these dirs and compile what it can
+    "resources/js/**/*.ts",
+    "resources/js/**/*.vue",
+    "resources/js/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "vendor"
+  ]
 }
