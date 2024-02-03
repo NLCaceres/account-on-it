@@ -1,7 +1,4 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-Vue.use(Vuex);
+import { createStore } from "vuex";
 
 //! Modules w/ namespace constants
 import app, { APP_MODULE } from './modules/AppState';
@@ -29,8 +26,11 @@ export function DefaultStore() {
 
     //? Strict mode ensures you can only mutate state via designated mutations! Will crash if your code mutates state outside of them
     //* When local, it'll be strict mode (good for dev)
-    strict: process.env.APP_ENV === 'local' //? Not needed in production, since it's slow
+    strict: import.meta.env.VITE_APP_ENV === 'local' //? Not needed in production, since it's slow
   }
 }
 
-export default new Vuex.Store(DefaultStore());
+//TODO: useStore() is helpful for grabbing the Vuex instance from inside components, so DON'T FORGET!
+//TODO: If type help is needed due to this.$store, it's worth checking out, https://vuex.vuejs.org/guide/migrating-to-4-0-from-3-x.html#typescript-support
+const store = createStore(DefaultStore());
+export default store;
