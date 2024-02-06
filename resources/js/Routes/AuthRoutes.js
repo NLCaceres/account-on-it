@@ -4,37 +4,33 @@ const routes = [
   {
     path: "/login",
     name: "Login",
-    component: () => import(/* webpackChunkName: "LoginComponent" */ "../Components/Login/SuiLoginView.vue"),
-    meta: { title: "Login", recaptchaRequirement: RECAPTCHA_REQUIRED,
-      authRequirement: LOGGED_OUT_ONLY, verificationRequirement: NO_VERIFICATION_NEEDED }
+    component: () => import("@/Components/Login/SuiLoginView.vue"),
+    meta: { title: "Login", authRequirement: LOGGED_OUT_ONLY }
   },
   {
     path: "/forgot-password",
     name: "ForgotPass",
-    component: () => import(/* webpackChunkName: "ForgotPasswordForm" */ "../Components/Login/SuiForgotPassword/SuiForgotPasswordView.vue"),
-    meta: { title: "Forgot Password", recaptchaRequirement: RECAPTCHA_REQUIRED,
-      authRequirement: LOGGED_OUT_ONLY, verificationRequirement: NO_VERIFICATION_NEEDED }
+    component: () => import("@/Components/Login/SuiForgotPassword/SuiForgotPasswordView.vue"),
+    meta: { title: "Forgot Password", authRequirement: LOGGED_OUT_ONLY }
   },
-  { //? Vue-Router uses pathToRegexp to process it's routes allowing some nice regexp-like mods
-    path: "/sign(-)?up", //* Optional dash thanks to regexp. //? Parentheses required
+  {
+    path: "/sign:_(-)?up", //? Optional dash thanks to new Vue-Router optionals. Syntax = Colon + underscore + parentheses, i.e. :_(-)?
     name: "SignUp",
-    component: () => import(/* webpackChunkName: "NewUserView" */ "../Views/Users/NewUser.vue"),
+    component: () => import("@/Views/Users/NewUser.vue"),
     alias: ["/registration"],
-    meta: { title: "Account Sign Up", recaptchaRequirement: RECAPTCHA_REQUIRED,
-      authRequirement: LOGGED_OUT_ONLY, verificationRequirement: NO_VERIFICATION_NEEDED }
+    meta: { title: "Account Sign Up", authRequirement: LOGGED_OUT_ONLY }
   },
   { //* Need finishVerification page only! The resendVerification can be a button in profile, and initial verification on registration
     path: "/email/verify/:id/:hash",
     name: "FinishVerification",
-    component: () => import (/* webpackChunkName: "FinishVerificationView" */ "../Views/Users/NewUser.vue"),
-    meta: { title: "Finish Verifying Account", recaptchaRequirement: RECAPTCHA_REQUIRED, 
-      authRequirement: LOGGED_IN_ONLY, verificationRequirement: NO_VERIFICATION_NEEDED }
+    component: () => import ("@/Views/Users/NewUser.vue"),
+    meta: { title: "Finish Verifying Account", authRequirement: LOGGED_IN_ONLY }
   }
 ]
-// routes.map((route) => {
-//   route.meta.authRequirement = LOGGED_OUT_ONLY;
-//   route.meta.verificationRequirement = NO_VERIFICATION_NEEDED; 
-//   route.meta.recaptchaRequirement = RECAPTCHA_REQUIRED;
-// })
+
+routes.map((route) => {
+  route.meta.recaptchaRequirement = RECAPTCHA_REQUIRED;
+  route.meta.verificationRequirement = NO_VERIFICATION_NEEDED;
+})
 
 export default routes;

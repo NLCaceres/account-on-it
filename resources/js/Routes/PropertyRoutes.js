@@ -1,30 +1,30 @@
-import { LOGGED_IN_ONLY } from "./MetaTags";
+import { LOGGED_IN_ONLY, NO_AUTH_NEEDED, NO_VERIFICATION_NEEDED, VERIFIED_ONLY } from "./MetaTags";
 
 const routes = [
   {
     path: "/properties",
     name: "Properties",
-    component: () => import(/* webpackChunkName: "PropertiesView" */ "../Views/Properties/ListProperties.vue"),
-    meta: { title: "Property Info" }
+    component: () => import("@/Views/Properties/ListProperties.vue"),
+    meta: { title: "Property Info", authRequirement: NO_AUTH_NEEDED, verificationRequirement: NO_VERIFICATION_NEEDED }
   },
   {
     path: "/property/:id",
     name: "PropertyDetail",
-    component: () => import(/* webpackChunkName: "PropertyDetailView" */ "../Views/Properties/DetailProperty.vue"),
-    meta: { transitionName: "slide" }
+    component: () => import("@/Views/Properties/DetailProperty.vue"),
+    meta: { transition: "slide", authRequirement: NO_AUTH_NEEDED, verificationRequirement: NO_VERIFICATION_NEEDED }
   },
   {
     path: "/properties/new",
     name: "PropertyNew",
-    component: () => import(/* webpackChunkName: "PropertyNewView" */ "../Views/Properties/NewProperty.vue"),
-    meta: { transitionName: "slide" }
+    component: () => import("@/Views/Properties/NewProperty.vue"),
+    meta: { transition: "slide", authRequirement: LOGGED_IN_ONLY, verificationRequirement: VERIFIED_ONLY }
   },
   {
     path: "/property/:id/edit",
     name: "PropertyEdit",
-    component: () => import(/* webpackChunkName: "PropertyEditView" */ "../Views/Properties/EditProperty.vue"),
-    meta: { transitionName: "slide" }
+    component: () => import("@/Views/Properties/EditProperty.vue"),
+    meta: { transition: "slide", authRequirement: LOGGED_IN_ONLY, verificationRequirement: VERIFIED_ONLY }
   }
 ];
-routes.map((route) => route.meta.authRequirement = LOGGED_IN_ONLY);
+
 export default routes;
