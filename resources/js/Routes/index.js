@@ -6,6 +6,7 @@ import PropertyRoutes from "./PropertyRoutes";
 import UserRoutes from "./UserRoutes";
 import AuthRoutes from "./AuthRoutes";
 import { MainBeforeEachFn } from "./GlobalBeforeGuards";
+import { MainAfterEachNavGuard } from "./GlobalAfterGuards";
 
 //! defineAsyncComponents NOT needed here. VueRouter uses a similar syntax BUT none of these components in ANY routes are asyncComponents
 export const StandardRoutes = [
@@ -42,5 +43,6 @@ const router = new createRouter({
 //? Any other calls to the global beforeEach will be called after this one
 //? BUT the component's beforeRouteLeave guard will be called before the global beforeEach calls
 router.beforeEach((to, from) => MainBeforeEachFn(to, from));
+router.afterEach((to, from) => { MainAfterEachNavGuard(to, from) });
 
 export default router;
