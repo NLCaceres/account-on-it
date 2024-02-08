@@ -13,10 +13,12 @@ export async function MainAfterEachNavGuard(to: RouteLocationNormalized, from: R
 
 //* Handles Window Title based on VueRouter meta title value
 export function UpdateTitle(to: RouteLocationNormalized, from: RouteLocationNormalized): void {
-  const nearestWithTitle = to.matched.slice() //? Returns arr copy
-    .reverse() //? Why reverse? We get deepest part of url first! Setting up find to quickly grab
-    .find(r => r.meta && r.meta.title); //* Match end of url 'deeply/nested/url' to grab the `url` section
-  document.title = nearestWithTitle ? (nearestWithTitle.meta.title as string) : (import.meta.env.VITE_APP_NAME ?? "");
+  //? If this app supported NestedRoutes i.e. a RouteRecord in any of the Routes.ts files that used the `children` prop
+  //? THEN `to.matched` array prop would make sense to check, since the parent and its child (or even grandchild) would all be in `matched`
+  // const nearestWithTitle = to.matched.slice() //? slice() used like this returns a copy of the array
+  //   .reverse() //? This would make getting `matched` last index the MOST relevant match to what is seen 
+  //   .find(r => r.meta && r.meta.title); //? SINCE directly using `to.meta` contains ALL `matched` indices meta tags
+  document.title = to.meta.title ? to.meta.title : (import.meta.env.VITE_APP_NAME ?? "");
 };
 
 export function UpdateTransitionEffect(to: RouteLocationNormalized, from: RouteLocationNormalized): void {
