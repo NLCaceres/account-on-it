@@ -1,38 +1,24 @@
-import { vi } from "vitest";
+import { vi, type MockInstance } from "vitest";
 import { actions } from '@/Store/modules/AppState';
 import { ERROR, LOAD, SAVE, SET_PAGE_VISIBILITY_API, UPDATE_HEIGHT, UPDATE_RECAPTCHA_SCORE, UPDATE_WIDTH } from '@/Store/MutationTypes';
 import * as PageVisibilityAPI from "@/Utility/Functions/page_visibility";
 
 describe('Vuex app module actions', () => {
-  describe('handle app wide load state', () => {
-    it(`calls '${LOAD}' mutation once`, () => {
-      const commit = vi.fn();
-      
-      const loadingState = true;
-  
-      actions.BEGIN_LOAD({ commit }, loadingState);
+  it(`handles app-wide load state calling commit once each via the ${LOAD} mutation`, () => {
+    const commit = vi.fn();
+    const startLoadingState = true;
 
-      expect(commit).toHaveBeenCalledOnce();
-    })
-    it(`specifically calls the '${LOAD}' mutation`, () => {
-      const commit = vi.fn();
-      const loadingState = true;
+    actions.BEGIN_LOAD({ commit }, startLoadingState);
 
-      actions.BEGIN_LOAD({ commit }, loadingState);
+    expect(commit).toHaveBeenCalledOnce();
+    expect(commit).toHaveBeenCalledWith(LOAD, startLoadingState);
 
-      expect(commit).toHaveBeenCalledOnce();
-      expect(commit).toHaveBeenCalledWith(LOAD, loadingState);
-    })
-    it(`uses load & loadingState args to call commit`, () => {
-      const commit = vi.fn();
-      const loadingState = false;
-
-      actions.BEGIN_LOAD({ commit }, loadingState);
-
-      expect(commit).toHaveBeenCalledWith(LOAD, loadingState);
-    })
+    const endLoadingState = false;
+    actions.BEGIN_LOAD({ commit }, endLoadingState);
+    expect(commit).toHaveBeenCalledTimes(2)
+    expect(commit).toHaveBeenLastCalledWith(LOAD, endLoadingState);
   })
-  it("calls 'commit' to set app wide save state", () => {
+  it("calls 'commit' to set app-wide save state", () => {
     const commit = vi.fn();
     const savingState = true;
 
@@ -40,7 +26,7 @@ describe('Vuex app module actions', () => {
 
     expect(commit).toHaveBeenCalledWith(SAVE, savingState);
   })
-  it("calls 'commit' to set app wide error state", () => {
+  it("calls 'commit' to set app-wide error state", () => {
     const commit = vi.fn();
     const error = "error";
 
@@ -110,10 +96,10 @@ describe('Vuex app module actions', () => {
     expect(commit).toHaveBeenCalledWith(UPDATE_RECAPTCHA_SCORE, score);
   })
   describe("handles init'ing page visibility api", () => {
-    let initVisAPI;
-    let visibilityReturn;
-    let tabChangeCallback;
-    let commit;
+    let initVisAPI: MockInstance;
+    let visibilityReturn = { hidden: "hidden", visibilityChange: "visibilityChange" };
+    let tabChangeCallback: MockInstance;
+    let commit: MockInstance;
     beforeEach(() => { //* Set up spies / stubs
       initVisAPI = vi.spyOn(PageVisibilityAPI, "default");
       visibilityReturn = { hidden: 'hidden', visibilityChange: 'visibilitychange' };
