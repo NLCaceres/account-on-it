@@ -1,6 +1,4 @@
-import expect from 'expect';
-import sinon from "sinon";
-import { mutations } from '../../../../Store/modules/AppState';
+import { mutations } from '@/Store/modules/AppState';
 
 describe('Vuex App Module Mutations', () => {
   it('checks if loading status has been updated ', () => {

@@ -1,8 +1,6 @@
-import expect from 'expect';
-import sinon from 'sinon';
-import rewiremock from "rewiremock/webpack";
-
-import { getters } from '../../../../Store/modules/AppState';
+import { vi } from "vitest";
+import { getters } from '@/Store/modules/AppState';
+import * as PageVisibilityAPI from "@/Utility/Functions/page_visibility";
 
 describe('Vuex App Module Getters', () => {
   describe("checks if on mobile screen", () => {
@@ -27,6 +25,7 @@ describe('Vuex App Module Getters', () => {
       const tooSmallState = { window: { width: 576 } };
       const tooSmallResult = getters.TABLET_DEVICE_WIDTH(tooSmallState);
       expect(tooSmallResult).toBe(false);
+
       const tooLargeState = { window: { width: 992 } };
       const tooLargeResult = getters.TABLET_DEVICE_WIDTH(tooLargeState);
       expect(tooLargeResult).toBe(false);
@@ -54,6 +53,7 @@ describe('Vuex App Module Getters', () => {
       const tooSmallState = { window: { width: 991 } };
       const tooSmallResult = getters.MID_DESKTOP_DEVICE_WIDTH(tooSmallState);
       expect(tooSmallResult).toBe(false);
+
       const tooLargeState = { window: { width: 1400 } };
       const tooLargeResult = getters.MID_DESKTOP_DEVICE_WIDTH(tooLargeState);
       expect(tooLargeResult).toBe(false);
@@ -83,15 +83,13 @@ describe('Vuex App Module Getters', () => {
       expect(notAvailableResult).toBe(false);
     })
     it("calls PageVisAPI Utility Function once with right args", () => {
-      let isVisApiAvailable = sinon.stub().returns(true);
-       
-      const appModule = rewiremock.proxy("../../../../Store/modules/AppState", { "../../../../Utility/Functions/page_visibility": { IsVisApiAvailable: isVisApiAvailable } })
-      rewiremock.enable();
+      const isVisApiAvailableSpy = vi.spyOn(PageVisibilityAPI, "IsVisApiAvailable").mockReturnValue(true);
+
       const availableState = { websiteVisibility: { hidden: 'hidden', visibilityChange: 'visibilitychange' } };
+      getters.PAGE_VISIBILITY_READY(availableState);
       
-      appModule.getters.PAGE_VISIBILITY_READY(availableState);
-      sinon.assert.calledOnceWithExactly(isVisApiAvailable, availableState.websiteVisibility.hidden, availableState.websiteVisibility.visibilityChange);
-      rewiremock.disable();
+      expect(isVisApiAvailableSpy).toHaveBeenCalledOnce();
+      expect(isVisApiAvailableSpy).toHaveBeenCalledWith(availableState.websiteVisibility.hidden, availableState.websiteVisibility.visibilityChange);
     })
   })
 });
