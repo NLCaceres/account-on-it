@@ -1,10 +1,12 @@
 <template>
   <div :class="{flexed: flexed}">
+    <!-- TODO: Split into currently renting tenants links and seeking tenancy tenants -->
+    <!-- TODO: Currently renting links should be dynamic in that they get HOME, LandlordDetail, PropertyDetail, Profile (not Tenants) -->
+    <!-- TODO: Seeking Tenancy maybe just get Available Properties search page -->
     <router-link
       class="item text-centered"
       :class="{'border-x-light': flexed, 'border-b-light': !flexed }"
       :to="{ name: 'Home'}"
-      exact
     >Home</router-link>
     <router-link
       class="item text-centered"
@@ -24,9 +26,9 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     flexed: Boolean
   },

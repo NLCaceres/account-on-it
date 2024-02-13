@@ -4,7 +4,6 @@
       class="item text-centered"
       :class="{'border-x-light': flexed, 'border-b-light': !flexed }"
       :to="{ name: 'Home'}"
-      exact
     >Home</router-link>
     <router-link
       class="item text-centered"
@@ -29,9 +28,9 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     flexed: Boolean
   }
