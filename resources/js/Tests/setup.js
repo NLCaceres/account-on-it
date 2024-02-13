@@ -1,3 +1,4 @@
+import "@testing-library/jest-dom/vitest";
 // window.Date = Date; //TODO: Likely not needed since Jest/Vitest are generally very good about mocking Date/Timers
 // global.axios = require('axios'); //TODO: Likely not needed, especially if using fetch over axios
 global.$ = global.jQuery = require("jquery");
