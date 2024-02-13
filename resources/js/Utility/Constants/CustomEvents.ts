@@ -1,5 +1,8 @@
-import _Vue from "vue";
+import { App, type Plugin } from "vue";
 
+//TODO: Might be completely replaceable by the Vue 3 emits option
+//TODO: Look for $emit and document what components can emit i.e.
+//* export default { emits: ["UPDATE_VIEW", "UPDATE_PAGE"] }
 export interface CustomEventsConstants {
   UPDATE_VIEW: string
   UPDATE_PAGE: string
@@ -17,13 +20,11 @@ export interface CustomEventsConstants {
   CHANGE_SORT: string
 }
 
-export default function CustomEventsPlugin(Vue: typeof _Vue, options?: any): void {
-  //? Simplest way to define a plugin and handle constants with Typescript 
-  //? (otherwise defining) them in created() hook would work just fine
-  //? The options can be filled in later with specifics or as it's own class/interface
-
-  //? Must be used with 'this' keyword in a SFC (so instance, not a global one according to Vue)
-  Vue.prototype.CustomEvents = {
+//? Vue 3 slightly changed plugin definitions by suggesting this syntax rather than a formal Javascript function definition
+//? Creating an object with an install key also works, e.g. const somePlugin = { install: (app, options) => {} }
+const CustomEventsPlugin: Plugin = (app: App, options: any) => {
+  //? Vue 3 also slightly changed augmenting global constants in the Vue instance by adding the app's config.globalProperties
+  app.config.globalProperties.CustomEvents = {
     UPDATE_VIEW: 'update:view',
     UPDATE_PAGE: 'update:page',
     
@@ -38,5 +39,6 @@ export default function CustomEventsPlugin(Vue: typeof _Vue, options?: any): voi
     BEFORE_ENTER: 'before-enter',
 
     CHANGE_SORT: 'change-sort',
-  }
+  };
 }
+export default CustomEventsPlugin;
