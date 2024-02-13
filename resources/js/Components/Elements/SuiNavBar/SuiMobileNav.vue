@@ -1,16 +1,12 @@
 <template>
   <div class="row" id="mobile-nav">
-    <router-link
-      class="header item app-dark-accent border-light p-xs-y"
-      :to="{ name: 'Home'}"
-      exact
-    >
+    <router-link class="header item app-dark-accent border-light p-xs-y" :to="{ name: 'Home'}">
       <slot></slot>
     </router-link>
 
     <div class="right menu">
-      <router-link v-if="!Authenticated" id="login" :to="{ name: 'Login'}" class="ui item border-x-white app-green">Log In?</router-link>
-      <div id="mobile-nav-links" class="ui fluid dropdown item p-xs-y" v-else>
+      <router-link v-if="!Authenticated" id="login" :to="{ name: 'Login' }" class="ui item border-x-white app-green">Log In?</router-link>
+      <div v-else id="mobile-nav-links" class="ui fluid dropdown item p-xs-y">
         <a>
           <button type="button" class="ui inverted basic icon button">
             <i class="bars icon" />
@@ -25,9 +21,9 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   computed: {
     NavbarWidth(): string {
       return `${this.$store.state.app.window.width}px`;

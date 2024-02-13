@@ -22,11 +22,11 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import SuiDesktopNav from './SuiDesktopNav.vue';
 import SuiMobileNav from './SuiMobileNav.vue';
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     SuiDesktopNav, SuiMobileNav
   },

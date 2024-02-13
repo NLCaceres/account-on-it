@@ -1,7 +1,6 @@
 <template>
   <div class="row" id="desktop-nav">
-    <router-link id="desktop-brand" :to="{ name: 'Home'}" exact
-      class="header item app-dark-accent border-light">
+    <router-link id="desktop-brand" :to="{ name: 'Home'}" class="header item app-dark-accent border-light">
         <slot></slot>
     </router-link>
 
@@ -27,13 +26,13 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import { AUTH_MODULE } from '../../../Store/modules/AuthenticationState';
 import { SIGN_OUT } from "../../../Store/ActionTypes";
 import SuiLoginDropdown from '../../Login/SuiLoginDropdown.vue';
 import SuiNavSearchbar from './SuiNavSearchbar.vue';
 
-export default Vue.extend({
+export default defineComponent({
   //! Components
   components: {
     SuiLoginDropdown, SuiNavSearchbar

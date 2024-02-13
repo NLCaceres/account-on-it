@@ -14,8 +14,8 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
+import { defineComponent } from "vue";
+export default defineComponent({
   //? Oddly, props will NOT work or register if methods and compProps aren't properly typed
   props: {
     expanded: Boolean
