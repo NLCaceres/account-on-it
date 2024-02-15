@@ -3,45 +3,47 @@
     <slot>
       <sui-card v-for="(infoCard, index) in cardSet" :key="infoCard.title" :infoItem="infoCard" :borderless="borderless"
           :fluid='fluid' :horizontal="horizontal" :standalone="false" :ratio="ratio" :hoverable="hoverable"
-          :height="cardHeight" :reversed="patternLogic(index) || Checkered(index)" :class="[CardClasses]"
-          :fully-centered="fullyCentered" :centered-content="centeredContent" :centered-title="centeredTitle"
-          :centered-meta="centeredMeta" :centered-description="centeredDescription" :centered-extra-content="centeredExtraContent"
-          :style="[CardStyles]">
+          :height="cardHeight" :reversed="patternLogic ? patternLogic(index) : Checkered(index)" :class="CardClasses" :style="CardStyles"
+          :fully-centered="fullyCentered" :centered-content="centeredContent" :centered-title="centeredTitle" :vertical-centered="verticalCentered"
+          :centered-meta="centeredMeta" :centered-description="centeredDescription" :centered-extra-content="centeredExtraContent">
 
-            <template #title="{ infoItem }">
+            <template #title="infoItem">
               <!-- //* Override title area -->
-              <slot name='title' :info-item="infoItem"></slot>
+              <slot name='title' v-bind="infoItem"></slot>
             </template>
 
-            <template #meta="{ infoItem }">
+            <template #meta="infoItem">
               <!-- //* Override meta / subtitle area -->
-              <slot name='meta' :info-item="infoItem"></slot>
+              <slot name='meta' v-bind="infoItem"></slot>
             </template>
 
-            <template #description="{ infoItem }">
-              <slot name="description" :info-item="infoItem">
+            <template #description="infoItem">
+              <slot name="description" v-bind="infoItem">
               <!-- //* Overrides description (default slot) slot in SuiCard component -->
               </slot>
             </template>
 
-            <template #content="{ infoItem }">
+            <template #content="infoItem">
               <!-- //* If total override needed for content area -->
-              <slot name="content" :info-item="infoItem"></slot>
+              <slot name="content" v-bind="infoItem"></slot>
             </template>
 
-            <template #footer="{ infoItem }">
+            <!-- //? The v-if on a named-template containing another named-slot didn't work in Vue2 BUT Vue3's dynamic slots seems to have allowed it -->
+            <!-- //? As a bonus, it eliminates the need to check for a footer-slot in SuiCard -->
+            <template #footer="infoItem" v-if="$slots.footer">
               <!-- //* Overrides extra content class div in a SuiCard -->
-              <slot name='footer' :info-item="infoItem"></slot>
+              <slot name='footer' v-bind="infoItem"></slot>
             </template>
         </sui-card>
     </slot>
   </div>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, type PropType } from "vue"
 import SuiCard from './SuiCard.vue';
+import type CardItem from "@/Utility/Models/CardItem";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     'sui-card': SuiCard
   },
@@ -86,22 +88,21 @@ export default Vue.extend({
     },
     //* Implementing hover effect
     hoverable: {
-      type: [Boolean, Object],
+      type: Boolean,
       default: false
     },
     //! Option to stagger/checker pattern it
     //* May combine them in to one simple prop
     checkered: {
-      type: Boolean, 
+      type: Boolean,
       default: false
     },
-    patternLogic: {
-      type: Function,
-      default: ((): boolean => false)
-    },
+    //? If not using the `required` prop, it seems all props are possibly undefined (optional) by default
+    patternLogic: Function as PropType<(cardIndex: number) => boolean>,
     //* Card Items
     cardSet: {
-      type: Array,
+      type: Object as PropType<CardItem[]>,
+      default: []
     },
     //! Special styling
     borderless: {
@@ -123,8 +124,8 @@ export default Vue.extend({
       default: '50/50'
     },
     //! In case extra styling needed for individual card itself
-    CardClasses: { //* add Classes in from parent
-      type: [Array, String, Object],
+    CardClasses: { //? Classes can be added in one of 3 styles: 1. "foo bar"  2.{ foo: isActive, bar: isNotActive }  3. ["foo", "bar"]
+      type: [Array, String, Object], //? All three styles will be merged into any existing classes properly
       default: ''
     },
     CardStyles: {
