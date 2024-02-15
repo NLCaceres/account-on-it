@@ -1,61 +1,58 @@
 <template>
   <div class="app-cyan card" :class="[Fluid, {ui: standalone, horizontal: Horizontal, inverted: inverted }]"
-        :style="[{ height:`${height}px`, flexDirection: Reversed, boxShadow: borderless ? 'none' : '' }, Hoverable]" 
-        @mouseover="hovering = true" @mouseleave="hovering = false">
+    :style="(ContainerStyle as StyleValue)" @mouseover="hovering = true" @mouseleave="hovering = false">
 
-        <div class="image" :class="[ImagePercentage, ExtraContentSpacing]">
-            <slot name="image">
-                <lazy-load-img class='max-h-100 h-100' fluid :src="(infoItem && infoItem.img) ? infoItem.img.src : null" 
-                  :alt="(infoItem && infoItem.img) ? infoItem.img.alt : null" />
-            </slot>
+        <div class="image" data-testid="card-image" :class="[ImagePercentage, ExtraContentSpacing]">
+          <slot name="image">
+            <lazy-load-img class='max-h-100 h-100' fluid :src="infoItem.img?.src" :alt="infoItem.img?.alt" />
+          </slot>
         </div>
 
-        <div class="content app-white-text" :class="[ContentPercentage, 
+        <div class="content app-white-text" data-testid="card-content" :class="[ContentPercentage, 
           {'center aligned': fullyCentered || centeredContent, 'flexed-column-center': fullyCentered || verticalCentered}]">
-            <slot name="content" :info-item="infoItem"></slot>
+            <slot name="content" v-bind="infoItem"></slot>
 
             <div class="header" :class="[{'center aligned': fullyCentered || centeredTitle, 'f-lg': mobile, 'f-sm': generalDesktop}]">
-                <slot name="title" :info-item="infoItem">{{infoItem ? infoItem.title : ''}}</slot>
+              <slot name="title" v-bind="infoItem">{{infoItem.title ?? ""}}</slot>
             </div>
 
             <div class="meta" :class="[{'center aligned': fullyCentered || centeredMeta, 'f-md': mobile, 'f-xs': generalDesktop}]">
-                <slot name="meta" :info-item="infoItem">{{infoItem ? infoItem.meta : ''}}</slot>
+              <slot name="meta" v-bind="infoItem">{{infoItem.meta ?? ""}}</slot>
             </div>
 
-            <div class="description m-lg-x" :class="[{'center aligned': fullyCentered || centeredDescription,
-              'f-md': mobile, 'f-xs': generalDesktop}]">
-                <slot name='description' :info-item="infoItem">{{infoItem ? infoItem.description : ''}}</slot>
+            <div class="description m-lg-x" :class="[{'center aligned': fullyCentered || centeredDescription, 'f-md': mobile, 'f-xs': generalDesktop}]">
+              <slot name='description' v-bind="infoItem">{{infoItem.description ?? ""}}</slot>
             </div>
         </div>
 
-        <!--//? '!!' works here because v-if isn't a direct conditional! Vue parses it and will only display components 
-        //? IF it receives 'true'. Since slot doesn't exist, it receives 'undefined' cast into 'false' -->
-        <div class="ui button" v-if="!!$slots['attached-button']">
+        <!-- //? In Vue2, or maybe due to earlier Typescript, a v-if checking $slots for a specific named-slot needed "!!" for a proper boolean expression -->
+        <div class="ui button" data-testid="card-attached-button" v-if="$slots['attached-button']">
             <slot name="attached-button"></slot>
         </div>
 
-        <div class="extra content" v-if="$slots.footer"
+        <div class="extra content" data-testid="card-footer" v-if="$slots.footer"
           :class="[{'center aligned': fullyCentered || centeredExtraContent, 'flexed-column-center': fullyCentered || verticalCentered,
             'f-md': mobile, 'f-xs': generalDesktop}]">
-            <slot name="footer" :info-item="infoItem"></slot>
+            <slot name="footer" v-bind="infoItem"></slot>
         </div>
   </div>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, type PropType, type StyleValue } from "vue"
 import { APP_MODULE } from '../../../Store/modules/AppState';
 import { MID_DESKTOP_WIDTH, LARGE_DESKTOP_WIDTH, MOBILE_WIDTH, TABLET_WIDTH, GENERAL_DESKTOP_WIDTH } from '../../../Store/GetterTypes';
 import LazyLoadImg from '../../VueHelpers/Images/LazyLoadImg.vue';
 import { mapGetters } from 'vuex';
+import CardItem from "@/Utility/Models/CardItem";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     LazyLoadImg
   },
   props: {
     infoItem: {
-      type: Object,
-      default: null
+      type: Object as PropType<CardItem>,
+      default: { title: "" }
     },
     standalone: {
       type: Boolean,
@@ -109,11 +106,11 @@ export default Vue.extend({
       default: false,
     },  
     borderless: {
-      type: [Boolean],
+      type: Boolean,
       default: false
     },
     hoverable: {
-      type: [Boolean, Object],
+      type: Boolean,
       default: false
     },
     height: { //? Height/Width attribute only works on some html tags
@@ -151,7 +148,7 @@ export default Vue.extend({
     },
     ImagePercentage(): string {
       //* Format should always be 'XX/YY'
-      if (this.ratio.length !== 5 && this.ratio.search('/') !== 2) {
+      if (this.ratio.length !== 5 || this.ratio.search('/') !== 2) {
         return (this.horizontal) ? `w-50` : `h-50`;
       } 
       return (this.horizontal) 
@@ -159,18 +156,19 @@ export default Vue.extend({
       : `h-${this.ratio.split('/')[0]}`;
     },
     ContentPercentage(): string {
-      if (this.ratio.length !== 5 && this.ratio.search('/') !== 2) {
+      if (this.ratio.length !== 5 || this.ratio.search('/') !== 2) {
         return (this.horizontal) ? `w-50` : `h-50`;
       } 
       return (this.horizontal) 
       ? `w-${this.ratio.split('/')[1]}`
       : `h-${this.ratio.split('/')[1]}`;
     },
+    //TODO: Unclear this ExtraContentSpacing is really needed or if "max-h-100" is the preferred option
     ExtraContentSpacing(): string { //* Image div'll oversize without a limiter
       if (!this.$store.getters[`${APP_MODULE}/${MOBILE_WIDTH}`]) {
         if (this.horizontal) {
           //* If there's a footer below content/img divs (instead of in content section) this saves space for it
-          if (this.$slots.footer || this.$slots['attached-button']) return 'max-h-80'
+          // if ((this.$slots.footer && this.$slots.footer()) || (this.$slots['attached-button'] && this.$slots["attached-button"]())) return 'max-h-80'
           return 'max-h-100' //* No true footer, then use all available space without overflowing elems (img doesn't keep aspect ratio)
         }
       } 
@@ -183,31 +181,16 @@ export default Vue.extend({
       }
       return '';
     },
-    Reversed(): string {
-      if (this.Horizontal) { //* Standalone card
-        return '';
-      } else if (this.horizontal) { //* Set of horizontal cards
-        return (this.reversed) ? 'row-reverse'  : 'row'; 
-      } else { //* Set of vertical cards
-        return (this.reversed) ? 'column-reverse' : 'column'; 
+    ContainerStyle(): StyleValue {
+      let flexDirectionCSS = (this.standalone || this.horizontal) ? "row" : "column";
+      if (this.reversed) { flexDirectionCSS += "-reverse"; }
+      const containerStyle: StyleValue = {
+        height: `${this.height}px`, flexDirection: flexDirectionCSS as "row" | "column" | "row-reverse" | "column-reverse",
+        boxShadow: this.borderless ? "none" : ""
       }
-    },
-    Hoverable(): object {
-      //* 0 1px 3px 3px yellow, 0 0 0 1px #555 - Fomantic default
-      if (this.hoverable && this.hovering) {
-        if (typeof this.hoverable === 'boolean') {
-          return { boxShadow: "0px 1px 3px 3px #bc8b3d !important" };
-        } else if (typeof this.hoverable === 'object') {
-          return this.hoverable;
-        }
-      } 
-      return {};
-    },
-  },
-  methods: {
-    Hovering() {
-      this.hovering = !this.hovering;
-      console.log(`Hovering: ${this.hovering}`);
+      return { //* Fomantic boxShadow default = 0 1px 3px 3px yellow, 0 0 0 1px #555
+        ...containerStyle, boxShadow: (this.hoverable && this.hovering) ? "0px 1px 3px 3px #bc8b3d !important" : ""
+      }
     }
   }
   // inject: {
