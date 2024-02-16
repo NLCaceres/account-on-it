@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/vue";
 import SuiCard from "@/Components/Elements/Cards/SuiCard.vue";
 import { createStore } from 'vuex';
@@ -16,26 +17,13 @@ const StoreWithObserverAndWindowSized = (width, height, observerList = { [LAZY_L
 }
 
 describe('Semantic UI Card Component', () => {
-  describe('with basic card with a basic info item', () => {
-    const props = {
-        infoItem: {
-          title: "FooTitle",
-          meta: "FooBarMeta",
-          description: "BarDescription",
-          img: {
-            src: 'FooImgSource',
-            alt: 'BarAltText'
-          }
-        }
-    };
-
-    it('checks the title rendered', () => {
-      const store = createStore(StoreWithObserverAndWindowSized(767, 449));
-      render(SuiCard, { global: { plugins: [store] }, props });
-      expect(screen.getByText(props.infoItem.title)).toBeInTheDocument();
-      expect(screen.getByText(props.infoItem.meta)).toBeInTheDocument();
-      expect(screen.getByText(props.infoItem.description)).toBeDefined();
-    })
+  it("rendering a basic info item", () => {
+    const infoItem = { title: "FooTitle", meta: "FooBarMeta", description: "BarDescription", img: { src: 'FooImgSource', alt: 'BarAltText' } };
+    const store = createStore(StoreWithObserverAndWindowSized(767, 449));
+    render(SuiCard, { global: { plugins: [store] }, props: { infoItem } });
+    expect(screen.getByText(infoItem.title)).toBeInTheDocument();
+    expect(screen.getByText(infoItem.meta)).toBeInTheDocument();
+    expect(screen.getByText(infoItem.description)).toBeDefined();
   })
   describe('with standard slots to override appearance', () => {
     const slots = {
@@ -244,6 +232,7 @@ describe('Semantic UI Card Component', () => {
       //* DESPITE not being an actually valid ratio (25+25 !== 100, of course)
     })
     it("to provide detailed styling to the main card container", async () => {
+      const user = userEvent.setup();
       const store = createStore(StoreWithObserverAndWindowSized(767, 449));
       const { rerender } = render(SuiCard, { global: { plugins: [store] }, slots: { image: "<img src='foo.jpg' alt='FooImg' />" } });
       //* WHEN using default props, the "standalone" prop defaults to "true", SO the following is the default style
@@ -266,12 +255,25 @@ describe('Semantic UI Card Component', () => {
       await rerender({ horizontal: undefined, reversed: true });
       expect(screen.getByTestId("card-content").parentElement).toHaveStyle({ flexDirection: "column-reverse", boxShadow: ""});
 
-      //* WHEN "borderless" becomes active, THEN boxShadow "none" is added
+      //* WHEN "hoverable" is active, THEN a "box-shadow" is applied when the card is hovered over
+      await rerender({ hoverable: true });
+      await user.hover(screen.getByTestId("card-content").parentElement);
+      expect(screen.getByTestId("card-content").parentElement).toHaveStyle({ boxShadow: "0px 1px 3px 3px #bc8b3d" });
+
+      //* WHEN the user stops hovering, THEN the "box-shadow" is removed
+      await user.unhover(screen.getByTestId("card-content").parentElement);
+      expect(screen.getByTestId("card-content").parentElement).not.toHaveStyle({ boxShadow: "0px 1px 3px 3px #bc8b3d" });
+
+      //* WHEN "borderless" becomes active, THEN "box-shadow" "none" is added ONLY WHEN NOT HOVERING
       await rerender({ borderless: true });
-      //TODO: Not currently testable SINCE "none" is effectively "" in that CSS would just not apply any box-shadow
-      //TODO: Solution: Test out "hovering" & "hoverable" props which should trigger a real boxShadow via @testing-library/user-event's hover()
-      //TODO: THEN when hover is applying AND "borderless" is also applied, the boxShadow CSS should disappear
-      // expect(screen.getByTestId("card-content").parentElement).toHaveStyle({ flexDirection: "column-reverse", boxShadow: "none"});
+      await user.hover(screen.getByTestId("card-content").parentElement);
+      expect(screen.getByTestId("card-content").parentElement).toHaveStyle({ boxShadow: "0px 1px 3px 3px #bc8b3d" });
+
+      //* WHEN "borderless" is active and the card is unhovered, THEN the "box-shadow" is removed
+      await user.unhover(screen.getByTestId("card-content").parentElement);
+      //? The one problem with testing `borderless` still is that even though `box-shadow: "none"` is being applied,
+      //? hence the boxShadow disappearing, it ultimately just becomes `box-shadow: ""` which is effectively the same as "none"
+      expect(screen.getByTestId("card-content").parentElement).not.toHaveStyle({ boxShadow: "0px 1px 3px 3px #bc8b3d" });
     })
   });
 });
