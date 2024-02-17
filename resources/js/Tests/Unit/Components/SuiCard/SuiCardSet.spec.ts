@@ -4,13 +4,13 @@ import SuiCardSet from '@/Components/Elements/Cards/SuiCardSet.vue';
 import { createStore } from 'vuex';
 import { INIT_INTERSECTION_OBSERVER } from "@/Store/ActionTypes";
 import { MOBILE_WIDTH, GENERAL_DESKTOP_WIDTH, GET_INTERSECTION_OBSERVER } from '@/Store/GetterTypes';
-import LAZY_LOAD_OBSERVER from '@/Store/modules/IntersectionState';
+import { LAZY_LOAD_OBSERVER } from '@/Store/modules/IntersectionState';
 
 //? A good number of the tests in this file are good examples of how to use Jest-Dom with Vue and how Vue works under the hood as well
 //? Such as Jest-Dom toHaveStyle() passing tests even if only one style asserted is correct,
 //? OR, in Vue's case, CSS Class or Style props accepting strings, arrays or objects that can be completely invalid styles
 
-const StoreWithObserverAndWindowSized = (width, height, observerList = { [LAZY_LOAD_OBSERVER]: new IntersectionObserver(() => { }) }) => {
+const StoreWithObserverAndWindowSized = (width: number, height: number, observerList = { [LAZY_LOAD_OBSERVER]: new IntersectionObserver(() => { }) }) => {
   return { modules: { //? Getters must be written like actions, AS FUNCTIONS
     app: { namespaced: true, state: { window: { width, height } }, getters: { [MOBILE_WIDTH]: () => true, [GENERAL_DESKTOP_WIDTH]: () => false } },
     intersectionAPI: { //? GET_INTERSECTION_OBSERVER is a tricky one, it is written as a func that RETURNS A FUNC that immediately GETs an intersectionObserver
@@ -19,7 +19,7 @@ const StoreWithObserverAndWindowSized = (width, height, observerList = { [LAZY_L
     }, //? Vuex's 4 core concepts are state, actions, getters, and mutations. ONLY State is written in singular form, so CAREFUL SPELLING!
   }};
 }
-const infoItem = (index) => {
+const infoItem = (index: number) => {
   return { title: `Title ${index}`, meta: `Meta ${index}`, description: `Description ${index}`, img: { src: `Img ${index}`, alt: `Alt ${index}` } };
 }
 
@@ -69,12 +69,12 @@ describe('Semantic UI Card Set Component', () => {
       });
       //* WHEN "CardStyles" passed in as a string BUT not a valid style, THEN it will not be added
       const cards = screen.getAllByTestId("card-content")
-      for (const card of cards) { expect(card.parentElement.style.cssText).not.toContain("foo: duh"); }
+      for (const card of cards) { expect(card.parentElement!.style.cssText).not.toContain("foo: duh"); }
 
       await rerender({ CardStyles: "foo: bar" });
       //* WHEN "CardStyles" passed in as a string BUT not a valid style, THEN it will not be added
       const cardsTwo = screen.getAllByTestId("card-content")
-      for (const card of cardsTwo) { expect(card.parentElement.style.cssText).not.toContain("foo: bar"); }
+      for (const card of cardsTwo) { expect(card.parentElement!.style.cssText).not.toContain("foo: bar"); }
 
       await rerender({ CardStyles: "display: foo" });
       //* WHEN "CardStyles" passed in as a string BUT isn't a valid value, THEN it MIGHT STILL BE ADDED
@@ -85,14 +85,14 @@ describe('Semantic UI Card Set Component', () => {
       await rerender({ CardStyles: { foo: "bar" } });
       //* WHEN "CardStyles" passed in as an object BUT doesn't have any valid styles, THEN it won't be added
       const cardsFour = screen.getAllByTestId("card-content")
-      for (const card of cardsFour) { expect(card.parentElement.style.cssText).not.toContain("foo: bar"); }
+      for (const card of cardsFour) { expect(card.parentElement!.style.cssText).not.toContain("foo: bar"); }
 
       await rerender({ CardStyles: { display: "foo", bar: "fizz" } });
       //* WHEN "CardStyles" passed in as an object, THEN valid styling will be applied even if it doesn't logically work
       const cardsFive = screen.getAllByTestId("card-content")
       for (const card of cardsFive) { 
         expect(card.parentElement).toHaveStyle("display: foo"); //* Not technically valid BUT display accepts it
-        expect(card.parentElement.style.cssText).not.toContain("bar: fizz"); //* Not at all valid, so not applied
+        expect(card.parentElement!.style.cssText).not.toContain("bar: fizz"); //* Not at all valid, so not applied
       }
       
       //! Using arrays
@@ -100,9 +100,9 @@ describe('Semantic UI Card Set Component', () => {
       //* WHEN "CardStyles" passed in as an array of string styles, THEN valid styles will be applied
       const cardsSix = screen.getAllByTestId("card-content")
       for (const card of cardsSix) {
-        expect(card.parentElement.style.cssText).toContain("position: relative"); //* Perfectly valid
-        expect(card.parentElement.style.cssText).toContain("display: foo"); //* Unexpectedly valid but inserted anyway
-        expect(card.parentElement.style.cssText).not.toContain("color: bar"); //* Invalid value so not applied
+        expect(card.parentElement!.style.cssText).toContain("position: relative"); //* Perfectly valid
+        expect(card.parentElement!.style.cssText).toContain("display: foo"); //* Unexpectedly valid but inserted anyway
+        expect(card.parentElement!.style.cssText).not.toContain("color: bar"); //* Invalid value so not applied
       }
 
       await rerender({ CardStyles: [{ foo: "bar", position: "relative" }, { color: "fizz" }, { display: "buzz" }] });
@@ -111,8 +111,8 @@ describe('Semantic UI Card Set Component', () => {
       for (const card of cardsSeven) {
         expect(card.parentElement).toHaveStyle({ display: "buzz" });
         expect(card.parentElement).toHaveStyle({ position: "relative" });
-        expect(card.parentElement.style.cssText).not.toContain("color: fizz");
-        expect(card.parentElement.style.cssText).not.toContain("foo: bar");
+        expect(card.parentElement!.style.cssText).not.toContain("color: fizz");
+        expect(card.parentElement!.style.cssText).not.toContain("foo: bar");
       }
     })
     describe("to center cards it renders", () => {

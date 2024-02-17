@@ -6,10 +6,10 @@ import BasicHeader from "@/Components/Elements/Headers/BasicHeader.vue";
 import SuiButtonedLabel from "@/Components/Forms/SuiButtonedLabel.vue";
 import SuiInput from "@/Components/Forms/SuiInput.vue";
 import SuiLoginCheckboxes from "@/Components/Login/SuiLoginCheckboxes.vue";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
 import { createStore } from 'vuex';
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "Home",
@@ -17,9 +17,10 @@ const routes = [
       wide: HomePage
     }
   },
-  { //? No component actually needed, the link will be rendered no problem (just not navigable)
+  { //? Component doesn't really matter, the link will be rendered no problem (without any intentions of navigating to it)
     path: "/login",
     name: "Login",
+    component: NotFound,
   },
   {
     path: "/not-found",
@@ -33,7 +34,7 @@ const Router = () => {
   return createRouter({ history: createWebHistory(), routes });
 }
 
-const StoreWithWindowSized = (width, height) => {
+const StoreWithWindowSized = (width: number, height: number) => {
   return { modules: { 
     app: { namespaced: true, state: { window: { width, height } } },
     authentication: { namespaced: true, state: { authenticated: false } },

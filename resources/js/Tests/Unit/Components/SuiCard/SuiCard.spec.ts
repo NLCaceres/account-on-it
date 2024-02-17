@@ -4,9 +4,9 @@ import SuiCard from "@/Components/Elements/Cards/SuiCard.vue";
 import { createStore } from 'vuex';
 import { INIT_INTERSECTION_OBSERVER } from "@/Store/ActionTypes";
 import { MOBILE_WIDTH, GENERAL_DESKTOP_WIDTH, GET_INTERSECTION_OBSERVER } from '@/Store/GetterTypes';
-import LAZY_LOAD_OBSERVER from '@/Store/modules/IntersectionState';
+import { LAZY_LOAD_OBSERVER } from '@/Store/modules/IntersectionState';
 
-const StoreWithObserverAndWindowSized = (width, height, observerList = { [LAZY_LOAD_OBSERVER]: new IntersectionObserver(() => { }) }) => {
+const StoreWithObserverAndWindowSized = (width: number, height: number, observerList = { [LAZY_LOAD_OBSERVER]: new IntersectionObserver(() => { }) }) => {
   return { modules: { //? Getters must be written like actions, AS FUNCTIONS
     app: { namespaced: true, state: { window: { width, height } }, getters: { [MOBILE_WIDTH]: () => true, [GENERAL_DESKTOP_WIDTH]: () => false } },
     intersectionAPI: { //? GET_INTERSECTION_OBSERVER is a tricky one, it is written as func, returning a func that immediately GETs an intersectionObserver
@@ -139,8 +139,8 @@ describe('Semantic UI Card Component', () => {
 
       render(SuiCard, { global: { plugins: [store] }, slots: { "attached-button": "<button>FooButton</button>" } });
       //* WHEN slotting a button in this slot, THEN styling might be a bit off since its parent is already styled as a button
-      expect(screen.getByRole("button", { text: "FooButton" })).toBeInTheDocument();
-      expect(screen.getByRole("button", { text: "FooButton" }).parentElement).toHaveClass("button");
+      expect(screen.getByRole("button", { name: "FooButton" })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "FooButton" }).parentElement).toHaveClass("button");
     })
     it("using a 'footer' slot to add content to the bottom", () => {
       const store = createStore(StoreWithObserverAndWindowSized(767, 449));
@@ -166,14 +166,14 @@ describe('Semantic UI Card Component', () => {
       const props = { fluid: true, standalone: true };
       const store = createStore(StoreWithObserverAndWindowSized(767, 449));
       const { rerender } = render(SuiCard, { global: { plugins: [store] }, props, slots: { image: "<img src='foo.jpg' alt='FooImg' />" } });
-      expect(screen.getByRole("img").parentElement.parentElement).toHaveClass("fluid");
+      expect(screen.getByRole("img").parentElement!.parentElement).toHaveClass("fluid");
 
       await rerender({ fluid: true, standalone: false });
-      expect(screen.getByRole("img").parentElement.parentElement).toHaveClass("auto-width");
+      expect(screen.getByRole("img").parentElement!.parentElement).toHaveClass("auto-width");
 
       await rerender({ fluid: false, standalone: true });
-      expect(screen.getByRole("img").parentElement.parentElement).not.toHaveClass("fluid");
-      expect(screen.getByRole("img").parentElement.parentElement).not.toHaveClass("auto-width");
+      expect(screen.getByRole("img").parentElement!.parentElement).not.toHaveClass("fluid");
+      expect(screen.getByRole("img").parentElement!.parentElement).not.toHaveClass("auto-width");
       
     })
     it('to provide a horizontal design', async () => {
@@ -257,20 +257,20 @@ describe('Semantic UI Card Component', () => {
 
       //* WHEN "hoverable" is active, THEN a "box-shadow" is applied when the card is hovered over
       await rerender({ hoverable: true });
-      await user.hover(screen.getByTestId("card-content").parentElement);
+      await user.hover(screen.getByTestId("card-content").parentElement!);
       expect(screen.getByTestId("card-content").parentElement).toHaveStyle({ boxShadow: "0px 1px 3px 3px #bc8b3d" });
 
       //* WHEN the user stops hovering, THEN the "box-shadow" is removed
-      await user.unhover(screen.getByTestId("card-content").parentElement);
+      await user.unhover(screen.getByTestId("card-content").parentElement!);
       expect(screen.getByTestId("card-content").parentElement).not.toHaveStyle({ boxShadow: "0px 1px 3px 3px #bc8b3d" });
 
       //* WHEN "borderless" becomes active, THEN "box-shadow" "none" is added ONLY WHEN NOT HOVERING
       await rerender({ borderless: true });
-      await user.hover(screen.getByTestId("card-content").parentElement);
+      await user.hover(screen.getByTestId("card-content").parentElement!);
       expect(screen.getByTestId("card-content").parentElement).toHaveStyle({ boxShadow: "0px 1px 3px 3px #bc8b3d" });
 
       //* WHEN "borderless" is active and the card is unhovered, THEN the "box-shadow" is removed
-      await user.unhover(screen.getByTestId("card-content").parentElement);
+      await user.unhover(screen.getByTestId("card-content").parentElement!);
       //? The one problem with testing `borderless` still is that even though `box-shadow: "none"` is being applied,
       //? hence the boxShadow disappearing, it ultimately just becomes `box-shadow: ""` which is effectively the same as "none"
       expect(screen.getByTestId("card-content").parentElement).not.toHaveStyle({ boxShadow: "0px 1px 3px 3px #bc8b3d" });
