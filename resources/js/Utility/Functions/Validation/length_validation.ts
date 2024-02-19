@@ -12,8 +12,7 @@ export function RequirementCheck(field: any, validationErrs: Array<any>, fieldNa
   (message) ? validationErrs.push(message) 
     : (fieldName) ? validationErrs.push(`Missing ${fieldName}`)
       : validationErrs.push('This field is required');
-  
-  console.log("end");
+
   return false; //* Return invalid by default!
 }
 
@@ -26,7 +25,7 @@ export function MinLengthCheck(field: string | Array<any>, validationErrs: Array
 
   finalMessage = message ? message
   //* In the event of no fieldName or message passed, you get the following concat'd string
-      : (typeof 'string') ? `Sorry! Please enter ${minLength} or more characters`
+      : (typeof field === 'string') ? `Sorry! Please enter ${minLength} or more characters`
       : `Sorry! Please enter ${minLength} or more entries`      
   //* Otherwise you either get the custom message or the following that specifies field name
   if (!message && fieldName) finalMessage += ` for ${fieldName}`;
@@ -42,7 +41,7 @@ export function MaxLengthCheck(field: string | Array<any>, validationErrs: Array
   if (field.length <= maxLength) return true;
 
   finalMessage = message ? message 
-    : (typeof 'string') ? `Sorry! Please enter ${maxLength} or less characters`
+    : (typeof field === 'string') ? `Sorry! Please enter ${maxLength} or less characters`
     : `Sorry! Please enter ${maxLength} or less entries`;
   //? Careful! Using '!!' in conditionals causes the opposite to happen! 
   //? '!!' is ONLY useful for casting undefined. NOT conditional statements
