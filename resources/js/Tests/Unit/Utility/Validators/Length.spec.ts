@@ -16,11 +16,11 @@ describe("Checks if a value is valid based on its length or presence", () => {
       expect(MaxLengthCheck("", [], -1)).toBe(false) //* No longer valid if negative value
     })
     it("adding a validation error message to the input validation error list, varying based on string vs array, as well as field name", () => {
-      const validationErrs = [];
+      const validationErrs: string[] = [];
       MaxLengthCheck("foobar", validationErrs, 5);
       //* WHEN maxLength exceeded, THEN the validationErrs array passed in will contain a default message
       expect(validationErrs[0]).toBe("Sorry! Please enter 5 or less characters"); //* Ending with "characters" for strings
-      const arrayValidationErrs = [];
+      const arrayValidationErrs: string[] = [];
       MaxLengthCheck(["foo"], arrayValidationErrs, 0);
       expect(arrayValidationErrs[0]).toBe("Sorry! Please enter 0 or less entries"); //* Ending with "entries" for arrays
 
@@ -53,28 +53,28 @@ describe("Checks if a value is valid based on its length or presence", () => {
       expect(MinLengthCheck("", [], -1)).toBe(true); //* WHEN setting the min to a negative num, THEN empty strings are valid
     })
     it("adding a validation error message to the input validation error list, varying based on string vs array, as well as field name", () => {
-      const validationErrs = [];
+      const validationErrs: string[] = [];
       MinLengthCheck("foo", validationErrs, 4);
       //* WHEN length < expected minimum length, THEN the validationErrs array passed in will contain a default message
       expect(validationErrs[0]).toBe("Sorry! Please enter 4 or more characters"); //* Ending with "characters" for strings
-      const arrayValidationErrs = [];
+      const arrayValidationErrs: string[] = [];
       MinLengthCheck(["foo"], arrayValidationErrs, 2);
       expect(arrayValidationErrs[0]).toBe("Sorry! Please enter 2 or more entries"); //* Ending with "entries" for arrays
 
-      const validationErrWithFieldName = [];
+      const validationErrWithFieldName: string[] = [];
       const fieldName = "foo";
       MinLengthCheck("foo", validationErrWithFieldName, 5, fieldName);
       //* WHEN a field name is set, THEN the validationErrs array will contain the default message, ending with the field's input name 
       expect(validationErrWithFieldName[0]).toBe(`Sorry! Please enter 5 or more characters for ${fieldName}`);
-      const arrayValidationErrWithFieldName = [];
+      const arrayValidationErrWithFieldName: string[] = [];
       MinLengthCheck(["foo"], arrayValidationErrWithFieldName, 2, fieldName);
       expect(arrayValidationErrWithFieldName[0]).toBe("Sorry! Please enter 2 or more entries for foo"); //* Specifically here "foo"
 
-      const validationErrWithCustomMessage = [];
+      const validationErrWithCustomMessage: string[] = [];
       MinLengthCheck("foo", validationErrWithCustomMessage, 4, fieldName, "BARFOO!");
       //* WHEN a custom message is set, THEN regardless of field name given or field type, that message will be used instead
       expect(validationErrWithCustomMessage[0]).toBe("BARFOO!");
-      const arrayValidationErrWithCustomMessage = [];
+      const arrayValidationErrWithCustomMessage: string[] = [];
       MinLengthCheck(["foo"], arrayValidationErrWithCustomMessage, 2, fieldName, "FIZZBUZZ");
       expect(arrayValidationErrWithCustomMessage[0]).toBe("FIZZBUZZ");
     })
@@ -93,18 +93,18 @@ describe("Checks if a value is valid based on its length or presence", () => {
       expect(RequirementCheck("foo", [])).toBe(true);
     })
     it("adding a validation error message to the input validation error list, varying based on field name", () => {
-      const validationErr = [];
+      const validationErr: string[] = [];
       RequirementCheck(null, validationErr);
       //* WHEN the field value is not present, THEN a default message stating the field is required will be added to the validation array
       expect(validationErr[0]).toBe("This field is required");
 
-      const validationErrWithFieldName = [];
+      const validationErrWithFieldName: string[] = [];
       const fieldName = "foo";
       RequirementCheck(null, validationErrWithFieldName, fieldName);
       //* WHEN the field name is set, THEN the validation error message becomes "Missing {fieldName}"
       expect(validationErrWithFieldName[0]).toBe("Missing foo");
 
-      const validationErrWithCustomMessage = [];
+      const validationErrWithCustomMessage: string[] = [];
       RequirementCheck(null, validationErrWithCustomMessage, fieldName, "BARFOO!");
       //* WHEN a custom message is input, THEN it will be used instead of any other validation error message
       expect(validationErrWithCustomMessage[0]).toBe("BARFOO!");

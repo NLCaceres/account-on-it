@@ -26,7 +26,7 @@ describe("Common Validators", () => {
     it("adding validation errors to an array input depending on a default value, custom message, and field name", () => {
       const testField = "foo";
       const testOptions = ["bar", "foobar"];
-      const validationErrsWithoutDefault = [];
+      const validationErrsWithoutDefault: string[] = [];
       expect(SelectorValidation(testField, validationErrsWithoutDefault, ["bar", "foobar", "foo"])).toBe(true);
       //* WHEN the field is found in the list of options, THEN no validation errors are added to the array
       expect(validationErrsWithoutDefault).toHaveLength(0);
@@ -42,22 +42,22 @@ describe("Common Validators", () => {
       expect(validationErrsWithoutDefault).toHaveLength(1); //* Since a single validation err string is returned that can be used
       //* in the View and added to the View's running list of validation errors for a given field
 
-      const validationErrsWithDefault = [];
+      const validationErrsWithDefault: string[] = [];
       //* WHEN a default value is set, THEN the validationErrs array is filled with specifically "Please make a selection!"
       SelectorValidation(testField, validationErrsWithDefault, testOptions, "foo");
       expect(validationErrsWithDefault[0]).toBe("Please make a selection!")
 
-      const validationErrsWithDefaultAndFieldName = [];
+      const validationErrsWithDefaultAndFieldName: string[] = [];
       //* WHEN a default value and field name set, THEN the validationErrs array is filled with specifically "Please make a selection for {fieldName}"
       SelectorValidation(testField, validationErrsWithDefaultAndFieldName, testOptions, "foo", "Barfoo");
       expect(validationErrsWithDefaultAndFieldName[0]).toBe("Please make a selection for Barfoo")
 
-      const validationErrsWithDefaultAndCustomMessage = [];
+      const validationErrsWithDefaultAndCustomMessage: string[] = [];
       //* WHEN a default value and a custom message set, THEN the validationErrs array is filled with that exact custom message
       SelectorValidation(testField, validationErrsWithDefaultAndCustomMessage, testOptions, "foo", undefined, "FOOBAR!");
       expect(validationErrsWithDefaultAndCustomMessage[0]).toBe("FOOBAR!");
 
-      const validationErrsWithOverridingCustomMessage = [];
+      const validationErrsWithOverridingCustomMessage: string[] = [];
       //* WHEN a default value, field name and custom message set, THEN the validationErrs array still is filled with that exact custom message
       SelectorValidation(testField, validationErrsWithOverridingCustomMessage, testOptions, "foo", "Barfoo", "BARFOO!");
       expect(validationErrsWithOverridingCustomMessage[0]).toBe("BARFOO!");
