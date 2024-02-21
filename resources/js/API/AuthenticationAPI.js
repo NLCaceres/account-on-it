@@ -1,11 +1,8 @@
+import GetCookie from "@/Utility/Functions/cookies";
+import { ACCEPT_JSON_HEADER } from "@/Utility/Constants/axios_helpers";
 import axios from "axios";
 
 const BASE_URL = "/api/login";
-
-import {
-    /* BASE_HEADER, */
-    ACCEPT_JSON_HEADER
-} from "../Utility/Constants/axios_helpers";
 
 export default {
     async checkAuthentication() {
@@ -16,7 +13,7 @@ export default {
         }
     },
     async recaptchaVerify(actionName) {
-        const token = await grecaptcha.execute(process.env.MIX_RECAPTCHA_V3_SITE_KEY, { action: actionName } );
+        const token = await grecaptcha.execute(import.meta.env.VITE_RECAPTCHA_V3_SITE_KEY, { action: actionName } );
         if (token) {
             try {
                 const response = await axios.post(`${BASE_URL}/forgot-password`, { response: token });
@@ -28,10 +25,12 @@ export default {
     },
     async login(user) {
         const csrfCookie = await axios.get("/sanctum/csrf-cookie");
-        console.log(csrfCookie);
+        //? Manually grabbing the token and setting it in the header (which is what axios.withXSRFToken causes to happen under the hood!)
+        const token = GetCookie("XSRF-TOKEN", true)
+        const encodedToken = encodeURIComponent(token)
         if (csrfCookie.status === 204) {
             try {
-                return await axios.post(`${BASE_URL}`, user);
+                return await axios.post(`${BASE_URL}`, user, { headers: { "X-XSRF-TOKEN": encodedToken } });
             } catch (err) {
                 return err.response || err.message;
             }
