@@ -5,10 +5,12 @@ import "../sass/app.scss";
 
 //! Axios set up
 import axios from "axios";
-axios.defaults.withCredentials = true; //? Useful for cross origin requests
+axios.defaults.withCredentials = true; //? Allows cookies to be sent in cross-origin requests
+axios.defaults.withXSRFToken = true; //? Checks for an "XSRF-TOKEN" cookie to add to an "X-XSRF-TOKEN" header in all requests
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL || "http://127.0.0.1:8000/";
 axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
-axios.defaults.headers.common["Accept"] = "application/json"; //* Ensures that Laravel never sends back a new html file
+axios.defaults.headers.common["Accept"] = "application/json"; //? Tells the server what the SPA expects to receive and what the SPA can handle
+//* ALSO ensures that the server never sends back a new `index.html` file
 
 //! Vue Setup
 import { createApp, Component } from "vue";
