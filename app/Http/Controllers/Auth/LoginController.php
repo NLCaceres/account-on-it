@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
-
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -24,7 +28,7 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers; //* No Longer in by default due to Breeze option. Brought by Laravel/ui
+    // use AuthenticatesUsers; //* No Longer in by default due to Breeze option. Brought by Laravel/ui
     //* Inside it uses ThrottlesLogins trait (also brought by laravel/ui now)
     //* Default 5 login attempts per 1 minute by 
     // protected $maxAttempts = 1; // Default is 5
@@ -35,7 +39,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    // protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -59,24 +63,24 @@ class LoginController extends Controller
         //* Mostly identical to login() in AuthUsers Trait  
         //* EXCEPT we use a case insensitive search for a user with a matching email 
         //* updating only the email part of the credentials before attempting Login
-
-        $this->validateLogin($request); //? All methods from AuthenticatesUsers trait are fair game!
+        // $this->validateLogin($request); //? All methods from AuthenticatesUsers trait are fair game!
+        $this->ensureIsNotRateLimited($request);
 
         //? AuthUsers trait uses ThrottlesLogins trait which grabs username and IP to do so. 
-        if (method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)) //? All traits AuthenticatesUsers use also usable!
-        {
-            $this->fireLockoutEvent($request);
+        // if (method_exists($this, 'hasTooManyLoginAttempts') &&
+        //     $this->hasTooManyLoginAttempts($request)) //? All traits AuthenticatesUsers use also usable!
+        // {
+        //     $this->fireLockoutEvent($request);
 
-            return $this->sendLockoutResponse($request);
-        }
+        //     return $this->sendLockoutResponse($request);
+        // }
 
-        $credentials = $this->credentials($request);
+        // $credentials = $this->credentials($request);
         //* Case insensitive search
-        $user = User::firstWhere('email', 'ilike', $credentials['email']); //? Could add '%' to either side for substring search
+        // $user = User::firstWhere('email', 'ilike', $credentials['email']); //? Could add '%' to either side for substring search
         
-        if (! is_null($user)) $credentials['email'] = $user['email']; //* Only update email (otherwise will not be case insensitive)
-        
+        // if (! is_null($user)) $credentials['email'] = $user['email']; //* Only update email (otherwise will not be case insensitive)
+
         //? Normally Laravel uses the following line, but we don't quite have access to it, 
         //? So we can use Auth::guard instead, which is more or less the same
         // $loginAttempt = $this->guard()->attempt(
@@ -84,16 +88,66 @@ class LoginController extends Controller
         //     $request->filled('remember')
         // );
 
-        if (Auth::attempt($credentials, $request->filled('remember'))) { //* This section changed from AuthenticatesUsers to override
-            return $this->sendLoginResponse($request);
+        Log::debug('Auth trying with: ' . implode($request->only('email')));
+        //? A diff way of using the Log Facade's debug() is the "logger($someStr)" Laravel static helper. There's also info() to replace Log::info()
+        //? logger() could also be used as logger()->error($someStr), i.e. to access other log levels or other Log Facade methods
+        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            Log::debug("Auth failed. Invalid email or password");
+            RateLimiter::hit($this->throttleKey($request));
+
+            //? Throwing this ValidationException returns a 422 JSON Response of:
+            throw ValidationException::withMessages([ //? "{ message: auth.failed Str, errors: { email: [ also auth.failed's string ] } }"
+                'email' => trans('auth.failed'), //? Grabs the string found in "resources/lang/en/auth.php"
+            ]);
         }
 
+        RateLimiter::clear($this->throttleKey($request));
+
+        $request->session()->regenerate();
+
+        return $this->authenticated($request, auth()->user());
+        // if (Auth::attempt($credentials, $request->filled('remember'))) { //* This section changed from AuthenticatesUsers to override
+        //     return $this->sendLoginResponse($request);
+        // }
+
         //? Login attempt unsuccessful, if over max # of attempts lock out user. Redirect from Vue if needed
-        $this->incrementLoginAttempts($request);
+        // $this->incrementLoginAttempts($request);
 
         //? Normally Laravel sends the following line, but instead we make our own message
         //return $this->sendFailedLoginResponse($request);
-        return response(['message' => 'Invalid Credentials'], Response::HTTP_UNAUTHORIZED);  
+        // return response(['message' => 'Invalid Credentials'], Response::HTTP_UNAUTHORIZED);  
+    }
+
+    /**
+     * Ensure the login request is not rate limited.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function ensureIsNotRateLimited(Request $thisRequest): void
+    {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey($thisRequest), 5)) { //? Max of 5 attempts
+            return;
+        }
+
+        event(new Lockout($thisRequest));
+
+        $seconds = RateLimiter::availableIn($this->throttleKey($thisRequest));
+
+        //TODO: Throws a 422 Unprocessable Content request BUT maybe a different exception is more fitting
+        throw ValidationException::withMessages([ //? Specifically one that throws a 429 Too Many Requests errors!
+            'email' => trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]),
+        ]);
+    }
+
+    /**
+     * Get the rate limiting throttle key for the request.
+     */
+    public function throttleKey(Request $thisRequest): string
+    {
+        return Str::transliterate(Str::lower($thisRequest->input('email')).'|'.$thisRequest->ip());
     }
 
     //* Following 2 methods are callback functions, done after logging in & logging out respectively
@@ -129,13 +183,20 @@ class LoginController extends Controller
     }
 
     /**
-     * The user has logged out of the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return mixed
+     * Destroy an authenticated session.
      */
-    protected function loggedOut(Request $request)
-    {   //? If HTTP_NO_CONTENT then no data will ever be sent! Does not matter if you add any, it will NOT send it
-        return response(['message' => 'Logged out'], Response::HTTP_OK);
+    public function logout(Request $request)
+    {
+        //? Guard refers to the guards defined in "config/auth" BUT "web" is actually the current default
+        Auth::guard('web')->logout(); //? SO prefixing with Auth::guard() is actually not needed.
+        //? It could instead just be auth()->logout() OR Auth::logout() automatically assuming the default StatefulGuard
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+        //? Originally this returned response was contained in a "loggedOut()" method since BEFORE I used the AuthenticatesUsers Trait
+        //? which let me use "loggedOut()" explicitly for overriding the Trait's default response, an empty JSON 200 response OR "redirect('/')"
+        //? BUT since I'm not using that trait anymore, it's far simpler to make this return a one liner
+        return response(["message" => "Logged out"], Response::HTTP_OK); //? If used HTTP_NO_CONTENT instead of HTTP_OK, THEN the message/JSON wouldn't be sent
     }
 }
