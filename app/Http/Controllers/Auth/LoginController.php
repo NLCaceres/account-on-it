@@ -3,29 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\LoginRequest;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Http\Exceptions\ThrottleRequestsException;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Str;
 
+//* This controller handles authentication across the app, granting users one of three roles: Admin, Landlord, or Tenant
+//* Returns error messaging if invalid credentials received or if the user has made too many invalid attempts recently
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     /**
      * Create a new controller instance.
      *
@@ -37,72 +23,25 @@ class LoginController extends Controller
         $this->middleware('guest')->except(['logout']);
     }
 
-    /**
-     * Attempt to login the user based on email and password. Enable "remember" feature if included in Request
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\User  $landlord
-     * @throws \Illuminate\Validation\ValidationException
-     * @return \Illuminate\Http\Response
+    /** Attempt to login the user based on email and password. Enable "remember" feature if included in Request
+     * @param  \App\Http\Requests\LoginRequest $request
+     * @return \Illuminate\Http\Response - From authenticated()
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request): Response
     { //? Similar to login() in AuthUsers Trait BUT this is case-insensitive for the email by default
-        $this->ensureIsNotRateLimited($request);
-
-        Log::debug('Auth trying with: ' . implode($request->only('email')));
-        //? A diff way of using the Log Facade's debug() is the "logger($someStr)" Laravel static helper. There's also info() to replace Log::info()
-        //? logger() could also be used as logger()->error($someStr), i.e. to access other log levels or other Log Facade methods
-        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            Log::debug("Auth failed. Invalid email or password");
-            RateLimiter::hit($this->throttleKey($request));
-
-            //? Throwing this ValidationException returns a 422 Unprocessable Content Response with the following JSON:
-            throw ValidationException::withMessages([ //? "{ message: auth.failed Str, errors: { email: [ also auth.failed's string ] } }"
-                'email' => trans('auth.failed'), //? Grabs the string found in "resources/lang/en/auth.php"
-            ]); //? Alternatively could throw an HttpResponseException or return "response(['message' => 'Invalid Credentials'], Response::HTTP_UNAUTHORIZED)"
-        }
-
-        RateLimiter::clear($this->throttleKey($request));
+        $request->authenticate();
 
         $request->session()->regenerate();
 
-        return $this->authenticated($request, auth()->user());
+        return $this->authenticated();
     }
 
-    /**
-     * Ensure the login request is not rate limited.
-     *
-     * @throws \Illuminate\Http\Exceptions\ThrottleRequestsException
-     */
-    public function ensureIsNotRateLimited(Request $thisRequest): void
+    //* The user has been authenticated so grab the user and create the login response
+    protected function authenticated(): Response
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey($thisRequest), 5)) { //? Max of 5 attempts with a decay of 60 seconds (5 reqs allowed per min)
-            return;
-        }
+        /** @var \App\Models\User $user */ //? PHPDoc helps for casting returned interfaces to their concrete implementations
+        $user = auth()->user(); //? Otherwise, PHP generally only allows type casting primitives (called type juggling by PHP)
 
-        event(new Lockout($thisRequest));
-
-        $seconds = RateLimiter::availableIn($this->throttleKey($thisRequest));
-
-        throw new ThrottleRequestsException(trans('auth.throttle', ['seconds' => $seconds, 'minutes' => ceil($seconds / 60)]));
-    }
-
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
-    public function throttleKey(Request $thisRequest): string
-    {
-        return Str::transliterate(Str::lower($thisRequest->input('email')).'|'.$thisRequest->ip());
-    }
-
-    /**
-     * The user has been authenticated so create the login response
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
-     * @return mixed
-     */
-    protected function authenticated(Request $request, $user) //? Helper method called at the end of login()
-    {
         //* Getting an array w/ relations, adding in an attr in place of 'email_verified_at', and sending
         $userArray = $user->attributesToArray();
 
@@ -124,10 +63,8 @@ class LoginController extends Controller
         return response(['message' => 'Logged in', 'user' => $userArray], Response::HTTP_OK);
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
-    public function logout(Request $request)
+    //* Destroy a User's authenticated session
+    public function logout(Request $request): Response
     {
         //? Guard refers to the guards defined in "config/auth" BUT "web" is actually the current default
         Auth::guard('web')->logout(); //? SO prefixing with Auth::guard() is actually not needed.
