@@ -23,7 +23,7 @@ class VueController extends Controller
         $token = $request->input('response');
         //? Interestingly php parses 'str' differently than "str". Double quotes allow str interpolation!
         $secret = config('app.recaptcha_v3_secret');
-        $recaptchaVerified = Http::post("https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}")->json(); //? Posting to the base url only works as a form-encoded url or as shown, with query params!
+        $recaptchaVerified = Http::post("https://www.google.com/recaptcha/api/siteverify?secret=$secret&response=$token")->json(); //? Posting to the base url only works as a form-encoded url or as shown, with query params!
 
         if (!$recaptchaVerified['success']) {
             $errors = $recaptchaVerified['error-codes'];
