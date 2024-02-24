@@ -17,9 +17,15 @@ class TenantPolicy
      * @return mixed
      */
     public function viewAny(User $user)
-    { //* Maybe help landlords find tenants?
-        return $user->role > 0;
+    { //? It seems policies should be kept simple, letting the controller to do finer-grain filtering if absolutely needed
+        return $user->role > 0 || $user->account_type === 0;
     }
+    //? An alternative method to ensure that a Landlord user (aka account_type = 0) ONLY has access to its own Tenants would be to
+    //? Create a NestedController linked to a route like "/landlords/{id}/tenants a la "https://github.com/adamwathan/laracon2017/pull/1"
+    //? It focuses on the Single Responsibility principle by expanding routes while keeping controllers slim with less logic.
+    //? A possible implementation could be the following:
+    //? TenantsController becomes a controller that serves only Admins. LandlordTenantsController becomes the controller that serves a Landlord its Tenants
+    //? TenantsController keeps its TenantPolicy while LandlordTenantsController can decide its authorization process internally (probably as simple as "return $landlord->tenants")
 
     /**
      * Determine whether the user can view the model.
