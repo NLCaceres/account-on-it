@@ -20,11 +20,11 @@ class TenantPolicyTest extends TestCase implements PoliciesTestInterface
      */
     public function testViewAny()
     {
-        //* Pattern: Normal Users can not view the whole list of users. ONLY Admins can.
+        //* Current Pattern: Normal Users can not view the whole list of users. ONLY Admins and Landlords can.
         $policy = new TenantPolicy();
 
-        $canNotViewAsLandlordUser = $policy->viewAny(User::factory()->landlords()->create());
-        $this->assertFalse($canNotViewAsLandlordUser);
+        $canViewAsLandlordUser = $policy->viewAny(User::factory()->landlords()->create());
+        $this->assertTrue($canViewAsLandlordUser);
 
         $canNotViewAsTenantUser = $policy->viewAny(User::factory()->tenants()->create());
         $this->assertFalse($canNotViewAsTenantUser);
