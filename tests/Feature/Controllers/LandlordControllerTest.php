@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 class LandlordControllerTest extends TestCase 
 {
+    use RefreshDatabase;
     use ApiControllerTestTrait;
     protected function baseURL() { return $this->URL_PREFIX . 'landlords'; } //* /api/landlords
 
@@ -22,12 +23,10 @@ class LandlordControllerTest extends TestCase
      */
     public function testIndex()
     {
-        $landlords = Landlord::factory()->count(10)->create();
+        Landlord::factory()->count(10)->create();
         $adminResponse = $this->makeRequest(User::factory()->admins()->create());
         $adminResponse->assertOk();
-        //? getData() method only for JsonResponses or when explicit response() return uses json()
-        $dataForAdmin = $adminResponse->baseResponse->getData()->data; //* Extract just the data array! 
-        $this->assertEquals(count($landlords), count($dataForAdmin)); //* & finally check count
+        $adminResponse->assertJsonCount(10, 'data'); //* Grabs the 'data' key from the JSON and expects to find an array of 10 items
 
         $landlordResponse = $this->makeRequest(User::factory()->landlords()->create());
         $landlordResponse->assertForbidden(); //* No need to check data. Get a 403 anyways
@@ -43,31 +42,47 @@ class LandlordControllerTest extends TestCase
         $landlordModelID = $landlordUser->landlord->id;
 
         $adminResponse = $this->makeRequest(User::factory()->admins()->create(), $landlordModelID);
-        $adminResponse->assertOk();
-        //? Returns an array whereas getData() from jsonResponse() returns stdClass (anon class in php similar to JS Object)
-        $dataForAdmin = $adminResponse->baseResponse->getOriginalContent(); 
-        $this->assertArrayHasKey('landlord', $dataForAdmin); $this->assertCount(3, $dataForAdmin);
+        $adminResponse->assertOk()->assertJsonIsObject()->assertJson(['landlord' => ['properties' => [], 'tenants' => []]]);
 
         $landlordNotViewingSelfResponse = $this->makeRequest(User::factory()->landlords()->create(), $landlordModelID);
         $landlordNotViewingSelfResponse->assertForbidden();
 
-        //? Through Relationships won't allow save or saveMany so have to go through the simple relationships like below
+        //? 'Through' Relationships can't save at all, so have to go through the simple relationships like 'tenants()' or 'properties()'
         $landlordUser->landlord->tenants()->saveMany(Tenant::factory()->count(3)->create());
         $landlordUser->landlord->properties()->saveMany(Property::factory()->count(3)->create(['landlord_id'=>$landlordModelID]));
         $landlordViewingSelfResponse = $this->makeRequest($landlordUser, $landlordModelID);
-        $landlordViewingSelfResponse->assertOk();
-        $dataForLandlordViewingSelf = $landlordViewingSelfResponse->baseResponse->getOriginalContent();
-        $this->assertArrayHasKey('landlord', $dataForLandlordViewingSelf); $this->assertCount(3, $dataForLandlordViewingSelf); 
-        $this->assertCount(3, $dataForLandlordViewingSelf['tenants']); $this->assertCount(3, $dataForLandlordViewingSelf['properties']);
+        $landlordViewingSelfResponse->assertOk()->assertJsonIsObject()->assertJsonCount(3, 'landlord.properties')->assertJsonCount(3, 'landlord.tenants');
 
-        $tenantResponse = $this->makeRequest(User::factory()->tenants()->create(), $landlordModelID);
+        $tenantUser = User::factory()->tenants()->create();
+        $tenantResponse = $this->makeRequest($tenantUser, $landlordModelID);
         $tenantResponse->assertForbidden();
+
+        $tenantWithLandlordUser = User::factory()->tenants()->hasTenant()->create();
+        $landlordUser->landlord->tenants()->save($tenantWithLandlordUser->tenant);
+        $tenantViewingOwnLandlordResponse = $this->makeRequest($tenantWithLandlordUser, $landlordModelID);
+        //* WHEN a tenant has a null "property_id", THEN they are expected to be not renting from this Landlord, so DON'T send any tenant or property info
+        $this->assertNull($tenantWithLandlordUser->tenant->property_id);
+        $tenantViewingOwnLandlordResponse->assertOk()->assertJsonIsObject()->assertJsonCount(0, 'landlord.properties')->assertJsonCount(0, 'landlord.tenants');
+
+        $tenantWithLandlordUser->tenant->property_id = $landlordUser->landlord->properties[0]->id;
+        $tenantWithLandlordUser->push(); //? Recursively saves all associated relationships to ensure changes propagate throughout
+        //* WHEN a tenantUser living alone in their property requests their Landlord info 
+        $tenantWithPropertyResponse = $this->makeRequest($tenantWithLandlordUser, $landlordModelID);
+        //* THEN they only receive their property (always 1) and any other Tenants living in their property, in this case, just their own info
+        $tenantWithPropertyResponse->assertOk()->assertJsonIsObject()->assertJsonCount(1, 'landlord.properties')->assertJsonCount(1, 'landlord.tenants');
     }
 
     public function testStore()
     {
-        $adminResponse = $this->makeRequest(User::factory()->admins()->create(), '', 1, Landlord::factory()->raw(['user_id' => 2]));
-        $adminResponse->assertCreated();
+        $adminUser = User::factory()->admins()->create(); /** @var \App\Models\User $adminUser */ //? PHPDocs also work inline!
+        $landlordAttributes = Landlord::factory()->raw(); //* WHEN no 'user_id' provided, THEN unable to complete request
+        $this->makeRequest($adminUser, '', 1, $landlordAttributes)->assertJsonValidationErrors(['user_id'])->assertUnprocessable();
+
+        $landlordAttributes['user_id'] = 123; //* WHEN the 'user_id' doesn't match any known user, THEN unable to complete request
+        $this->makeRequest($adminUser, requestType: 1, data: $landlordAttributes)->assertUnprocessable();
+
+        $landlordAttributes['user_id'] = $adminUser->id; //* WHEN 'user_id' to link to the Landlord matches a user in the table (even if linked User is an admin)
+        $this->makeRequest($adminUser, '', 1, $landlordAttributes)->assertCreated(); //* THEN create new Landlord account
 
         $landlordResponse = $this->makeRequest(User::factory()->landlords()->create(), '', 1, Landlord::factory()->raw(['user_id'=>2]));
         $landlordResponse->assertForbidden();
@@ -79,32 +94,34 @@ class LandlordControllerTest extends TestCase
     public function testUpdate()
     {
         $landlordData = ['surname' => 'last_name', 'email'=>'exampleEmail123@foobar.com'];
-        $landlordUser = User::factory()->landlords()->hasLandlord($landlordData)->create($landlordData); //? Placement just has to be before make(), raw(), or create()
+        $landlordUser = User::factory()->landlords()->hasLandlord($landlordData)->create($landlordData);
         $landlordModelID = $landlordUser->landlord->id;
-
+        //* WHEN an admin updates a Landlord
         $adminResponse = $this->makeRequest(User::factory()->admins()->create(), $landlordModelID, 2, array_merge(['first_name' => 'new_name'], $landlordData));
-        $adminResponse->assertNoContent();
+        $adminResponse->assertNoContent(); //* THEN the request works
 
+        //* WHEN a Landlord tries to update a DIFFERENT Landlord
         $landlordNotUpdatingSelfResponse = $this->makeRequest(User::factory()->landlords()->create(), $landlordModelID, 2, array_merge(['first_name' => 'second_name'], $landlordData));
-        $landlordNotUpdatingSelfResponse->assertForbidden();
+        $landlordNotUpdatingSelfResponse->assertForbidden(); //* THEN the request fails
 
         $landlordUpdatingSelfResponse = $this->makeRequest($landlordUser, $landlordModelID, 2, array_merge(['first_name' => 'third_name'], $landlordData));
-        $landlordUpdatingSelfResponse->assertNoContent();
+        $landlordUpdatingSelfResponse->assertNoContent(); //* A Landlord updating itself works fine!
 
+        //* WHEN a tenant tries to update Landlord information
         $tenantResponse = $this->makeRequest(User::factory()->tenants()->create(), $landlordModelID, 2, array_merge(['first_name' => 'fourth_name'], $landlordData));
-        $tenantResponse->assertForbidden();
+        $tenantResponse->assertForbidden(); //* THEN the request will be forbidden
     }
     public function testDestroy()
     {
-        $randomLandlordId = 4;
-        $landlordResponse = $this->makeRequest(User::factory()->landlords()->create(), $randomLandlordId, 3);
+        $landlords = Landlord::factory()->count(10)->create();
+        $landlordResponse = $this->makeRequest(User::factory()->landlords()->create(), $landlords[0]->id, 3);
         $landlordResponse->assertForbidden();
 
-        $tenantResponse = $this->makeRequest(User::factory()->tenants()->create(), $randomLandlordId, 3);
+        $tenantResponse = $this->makeRequest(User::factory()->tenants()->create(), $landlords[0]->id, 3);
         $tenantResponse->assertForbidden();
 
-        //* Since admin CAN delete, best to make that request last (or face a 404 not found)
-        $adminResponse = $this->makeRequest(User::factory()->admins()->create(), $randomLandlordId, 3);
+        //* ONLY WHEN an admin makes a destroy request, THEN the request will be permitted
+        $adminResponse = $this->makeRequest(User::factory()->admins()->create(), $landlords[0]->id, 3);
         $adminResponse->assertNoContent();
     }
 }
