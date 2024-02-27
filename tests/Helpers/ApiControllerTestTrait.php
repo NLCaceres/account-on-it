@@ -3,6 +3,7 @@
 namespace Tests\Helpers;
 
 use Laravel\Sanctum\Sanctum;
+use Illuminate\Testing\TestResponse;
 
 //* Sets the standard for what a Controller Test tests (all 5 routes)
 //* As well as provides a helper function to run requests quickly and easily
@@ -14,11 +15,12 @@ trait ApiControllerTestTrait {
     private $ACCEPT_JSON_HEADER = ["Accept" => "application/json"];
     protected $URL_PREFIX = '/api/';
 
-    protected function makeRequest($userMakingRequest, $id = '', $requestType = 0, $data = null) //* Request = 0 - get, 1 - post, 2 - put, 3 - delete
+    //* ID param forms '/api/models/{id}' or, if empty ID, then '/api/models'. RequestType uses 0 for get, 1 for post, 2 for put, 3 for delete
+    protected function makeRequest($userMakingRequest, $id = '', $requestType = 0, $data = null): TestResponse
     {
         Sanctum::actingAs($userMakingRequest);
-        $fullUrl = $this->baseURL() . "/$id";
-        //? Php allows "This is $varName" all with the same performance (using "") but below it likely won't catch the var without {}
+        //? PHP String interpolation works via double quotes + a $ prefix, i.e. "This is $varName"
+        $fullUrl = $this->baseURL() . "/$id"; //? BUT you can't interpolate functions so String Concatenation is still very important
         if ($requestType === 1) { //* POST - Store 
             return $this->post($fullUrl, $data, $this->ACCEPT_JSON_HEADER);
         } elseif ($requestType === 2) { //* PUT - Update
