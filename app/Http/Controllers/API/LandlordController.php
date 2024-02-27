@@ -62,30 +62,22 @@ class LandlordController extends Controller
     { //* Admin gets all of the Landlord's info. Landlord needs to see all their own tenants and properties.
         //TODO: Laravel's API Resources may be able to simplify the following conditionals
         //? Calling hideSensitiveData() even once on an instance ensures future toArray() & attributesToArray() calls don't include that data 
-        if (Auth::user()->role < 1) $landlord->hideSensitiveData(); 
-        $tenantArr = $landlord->tenants;
-        $propertyArr = $landlord->properties;
-        //? Note: Standard Php count($arr) does NOT work on Eloquent collections! ->count() does! 
-        if (Auth::user()->role === 0 && Auth::user()->account_type === 1) { 
-            //* Tenant user viewing their landlord probably only needs their own property and roommates
-            $tenantPropertyID = Auth::user()->tenant->property_id;
-            foreach ($landlord->properties as $property) {
-                if ($property->id === $tenantPropertyID) {
-                    $propertyArr = $property;
-                    break; //* Found tenant user's property. Stop here.
-                }
-            }
-            //? In Php arrow fns get parent scope, normally anon fns don't and need 'use($parentVar)' to push need vars in.
-            //* Unlike above, have to check all of landlord's tenants for tenant user's roommates and self.
-            $tenantArr = array_filter($landlord->tenants, fn($tenant) => $tenantPropertyID === $tenant->property_id);
+        if (Auth::user()->role < 1) { $landlord->hideSensitiveData(); }
+
+        if (Auth::user()->role === 0 && Auth::user()->account_type === 1) {
+            //* Defaulting to a negative ID, ensures empty "tenants" and "properties" arrays are sent when a Tenant without a property requests the landlord info
+            $tenantPropertyID = Auth::user()->tenant->property_id ?? -1; //TODO: BUT should the "properties" array be empty?
+            $landlord->load([ //? Typing the closures' $query param as any kind of Laravel Builder seems to always throw a 500 error so better to leave it untyped
+                'properties' => fn ($query) => $query->where('id', $tenantPropertyID),
+                'tenants' => fn ($query) => $query->where('property_id', $tenantPropertyID)
+            ]); //? PHP Arrow fns inject the surrounding scope, unlike normal anon funcs that need 'use($outsideVar)' to push vars in
         }
-        //* If user making this request is a Tenant, THEN propertyArr is just 1 property, their own
-        //? json() used here sends a Illuminate\HTTP\JsonResponse (not actually a child class of Illuminate\Http\Response but mostly identical)
-        //? Bonus here is Content-Type header auto set to 'application/json'. Otherwise response() helper is usable as normal
-        // return response()->json(['landlord' => $landlord->attributesToArray(), 'tenants' => $tenantArr, 'properties' => $propertyArr]);
+        else { $landlord->load('properties', 'tenants'); }
+
+        //? Suffixing response() with json() sends a Illuminate\HTTP\JsonResponse which is not a child class of Illuminate\Http\Response but mostly identical
+        //? Bonus of using json() is Content-Type header auto set to 'application/json'
         //? The problem with json() is it auto converts everything about the eloquent models to json, so must set $hidden or $visible prop in model class
-        return response(['landlord' => $landlord->attributesToArray(), 'tenants' => $tenantArr, 'properties' => $propertyArr]);
-        //? So Laravel's normal response() is better (since not even a nested ternary could help because PHP deprecated them in 7.4)
+        return response(['landlord' => $landlord]); //? SO using response() as normal with careful eager loading is still best
     }
 
     //* Update the Landlord data in the Database
