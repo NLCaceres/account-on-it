@@ -16,11 +16,11 @@
 
 <script lang="ts">
 let messageCounter = 0;
-import Vue, { PropType } from 'vue'
+import { defineComponent, type PropType } from "vue";
 
 import Message from "../../Utility/Models/Message";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     closeable: {
       type: Boolean,
@@ -44,17 +44,17 @@ export default Vue.extend({
     }
   },
   computed: {
-    Header(): string {
+    Header() {
       return this.message?.header ?? "";
     },
-    Description(): string {
+    Description() {
       return this.message?.description ?? "";
     },
-    ValidMessage(): boolean {
-      if (this.message === null) { //* Should be indicative of using slots
-        return this.$slots.header !== null && this.$slots.default !== null;
+    ValidMessage() {
+      if (this.message === null) { //? Check if message prop used 1st, since if so, slots are probably not filled
+        return !!this.$slots.header && !!this.$slots.default; //? Use the "!!" to ensure a boolean is returned (not simply a truthy obj like a slot func)
       } else if (this.message !== undefined) {
-        return this.message.header !== undefined && this.message.header.length > 0  && this.message.description !== undefined && this.message.description.length > 0;
+        return !!this.message.header && this.message.header.length > 0  && !!this.message.description && this.message.description.length > 0;
       }
       return false;
     }
@@ -75,7 +75,7 @@ export default Vue.extend({
     transition: opacity 1s ease;
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
     opacity: 0;
 }

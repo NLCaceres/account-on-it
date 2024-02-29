@@ -16,7 +16,7 @@
 
       <sui-card-set class="flexed-column inverted" fluid fully-centered :horizontal="tablet || generalDesktop"
         :card-set="infoSet" ratio="50/50" :cardHeight="CardSetHeight" close-cards borderless
-        :pattern-logic="(mobile) ? () => false : (index) => (index+1) % 2 === 0" />
+        :pattern-logic="(mobile) ? () => false : (index: number) => (index+1) % 2 === 0" />
 
     </div>
 
@@ -31,14 +31,14 @@
         :card-classes="{'flexed-auto-no-shrink m-lg-x':true, 'w-40 max-w-40': midDesktop, 'w-30 max-w-30': largeDesktop}">
           <!--//* Set width and max-width so cards are more consistently sized amongst themselves -->
           <!--//* Max-width preventing flex from stretching too much and width evening things out -->
-          <template #title="{ infoItem }">
-            {{ infoItem.street }} <!-- Address1 -->
+          <template #title="{ street }">
+            {{ street }} <!-- Address1 -->
           </template>
-          <template #meta="{ infoItem }">
-            {{ infoItem.additional_info }} <!-- # of beds, sqft, etc -->
+          <template #meta="{ additional_info }">
+            {{ additional_info }} <!-- # of beds, sqft, etc -->
           </template>
-          <template #description="{ infoItem }">
-            {{ (infoItem.city ? infoItem.city + ', ' : '') + infoItem.state }} <!-- City, State, Postal Code -->
+          <template #description="{ city, state }">
+            {{ (city ? city + ', ' : '') + state }} <!-- City, State, Postal Code -->
           </template>
       </sui-card-set>
     </div>
@@ -46,7 +46,7 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { APP_MODULE } from '../../Store/modules/AppState';
 import { MOBILE_WIDTH, TABLET_WIDTH, GENERAL_DESKTOP_WIDTH, MID_DESKTOP_WIDTH, LARGE_DESKTOP_WIDTH } from '../../Store/GetterTypes';
 import { RandomAddressList } from "../../Utility/Functions/random_address";
@@ -57,7 +57,7 @@ import { PropertyWithImg } from '../../Models/PropertyClass';
 import { mapGetters } from 'vuex';
 import LazyLoadImg from '../../Components/VueHelpers/Images/LazyLoadImg.vue';
 
-export default Vue.extend({
+export default defineComponent({
   components: { LazyLoadImg },
   data() {
     return {

@@ -8,8 +8,8 @@
   </th>
 </template>
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
+import { defineComponent } from "vue";
+export default defineComponent({
   props: {
     currentColumnToSortBy: {
       type: String,
@@ -33,7 +33,7 @@ export default Vue.extend({
     }
   },
   mounted() { 
-    if (this.$slots.default) this.headerTitle = this.$slots.default[0].text?.trim() ?? '';
+    if (this.$slots.default()) this.headerTitle = this.$slots.default()[0].text?.trim() ?? '';
   },
   methods: {
     SortTableHeader(): number { 
