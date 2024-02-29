@@ -6,12 +6,12 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import SuiForgotPasswordForm from './SuiForgotPassword/SuiForgotPasswordForm.vue';
 import NewUserPopup from '../../Views/Users/NewUserPopup.vue';
 import SuiLoginForm from './SuiLoginForm.vue';
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     SuiForgotPasswordForm, NewUserPopup, SuiLoginForm
   },

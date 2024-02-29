@@ -20,7 +20,7 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import { mapGetters } from 'vuex';
 // import loginAPI from "../../../API/AuthenticationAPI";
 import { CHANGE_POPUP_VIEW } from '../../../Store/ActionTypes';
@@ -29,7 +29,7 @@ import { APP_MODULE } from '../../../Store/modules/AppState';
 import { LOGIN_POPUP_MODULE, GO_FORGOT_PASS_FORM } from '../../../Store/modules/LoginPopupState';
 import SuiPopupSubmit from '../../Forms/SuiPopupSubmit.vue';
 
-export default Vue.extend({
+export default defineComponent({
   //! Component Import
   components: {
     SuiPopupSubmit, 

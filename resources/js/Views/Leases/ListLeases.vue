@@ -14,14 +14,14 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import store from '../../Store';
 import LeasesAPI from "../../API/LeaseAPI";
 import { BEGIN_LOAD } from "../../Store/ActionTypes";
 import { APP_MODULE } from "../../Store/modules/AppState";
 import { LaravelPaginatedResponse } from '../../Models/InterfaceLaravelResponse';
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       loading: false,

@@ -43,14 +43,14 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue, { PropType } from 'vue';
+import { defineComponent, PropType } from "vue";
 import { PrettifyColumnNames, FilterColumns, CheckIfDate } from '../../Utility/Functions/prettify_entity';
 import SortableTableHeader from '../VueHelpers/SortableTableHeader.vue';
 import { LaravelRecord } from '../../Models/AbstractDbRecord';
 import SuiTable from '../Elements/SuiTable.vue';
 import ModelError from './ModelError.vue';
 
-export default Vue.extend({
+export default defineComponent({
   //! Components
   components: {
     SuiTable, ModelError, SortableTableHeader

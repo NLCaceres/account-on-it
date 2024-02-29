@@ -53,8 +53,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-// import Component from "vue-class-component";
+import { defineComponent } from "vue";
 import { RegisteringUser, Role, AccountType } from "../../Models/UserClass";
 import { userAPI } from "../../API/UserAPI";
 // import AuthAPI from "../../API/AuthenticationAPI";
@@ -65,11 +64,7 @@ import FinalValidationCheck, { SelectorValidation, ValidateWithRules, Validation
 import { APP_MODULE } from "../../Store/modules/AppState";
 import { NEW_MESSAGE } from "../../Store/ActionTypes";
 
-// //? Props declared like below can be used as mixins (if need more mixins then extend 'mixins(mixin1, mixin2, ...)')
-//const UserFormProps = Vue.extend({ props: { newUser: Boolean, saving: Boolean, small: { type:Boolean, default: false } } });
-
-//@Component //({props: {newUser: Boolean}}) //? Props declared here not accessible by 'this' below
-export default /* class UserForm extends UserFormProps */ Vue.extend({
+export default defineComponent({
   props: {
     newUser: Boolean, //* Sets up to create new user vs edit existing one
     confirmPass: Boolean,

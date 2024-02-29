@@ -16,10 +16,10 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 // import tenantsAPI from "../../API/TenantAPI";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       loading: false,

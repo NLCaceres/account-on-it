@@ -10,12 +10,12 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import { CHANGE_POPUP_VIEW } from '../../Store/ActionTypes';
 import { LOGIN_POPUP_MODULE, GO_LOGIN_FORM } from '../../Store/modules/LoginPopupState';
 import SuiLoginPopup from './SuiLoginPopup.vue';
 
-export default Vue.extend({
+export default defineComponent({
   //! Component Imports
   components: {
     SuiLoginPopup

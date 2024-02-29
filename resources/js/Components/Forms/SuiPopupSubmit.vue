@@ -12,10 +12,10 @@
 </template>
 //! MAX WIDTH FOR BUTTONS!
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import loginAPI from "../../API/AuthenticationAPI";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     Ready: Boolean,
     Disabled: Boolean,

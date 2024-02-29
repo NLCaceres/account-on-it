@@ -12,12 +12,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from "vue"
 import { mapGetters } from 'vuex';
 import { MID_DESKTOP_WIDTH, MOBILE_WIDTH, TABLET_WIDTH } from '../../../Store/GetterTypes';
 import { APP_MODULE } from '../../../Store/modules/AppState';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     stepsBack: {
       type: Number,

@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import UserForm from './FormUser.vue';
 import SuiLoginSubmit from '../../Components/Login/SuiLoginSubmit.vue';
 
@@ -20,7 +20,7 @@ import { mapGetters } from 'vuex';
 import { APP_MODULE } from '../../Store/modules/AppState';
 import { MOBILE_WIDTH } from '../../Store/GetterTypes';
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     UserForm, SuiLoginSubmit
   },

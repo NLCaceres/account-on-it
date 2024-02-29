@@ -23,13 +23,13 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import { mapGetters } from 'vuex';
 import { MOBILE_WIDTH } from '../../Store/GetterTypes';
 import { APP_MODULE } from '../../Store/modules/AppState';
 import { PrettifyColumnNames, FilterColumns, CheckIfDate } from '../../Utility/Functions/prettify_entity';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     entity: Object,
     entityName: String,

@@ -32,7 +32,7 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import { CHANGE_POPUP_VIEW, SIGN_IN } from "../../Store/ActionTypes";
 import { mapActions } from "vuex";
 import { APP_MODULE } from '../../Store/modules/AppState';
@@ -41,7 +41,7 @@ import { MOBILE_WIDTH } from '../../Store/GetterTypes';
 import SuiLoginSubmit from './SuiLoginSubmit.vue';
 import SuiLoginLinks from './SuiLoginLinks.vue';
 
-export default Vue.extend({  
+export default defineComponent({  
   components: {
     SuiLoginSubmit, SuiLoginLinks
   },

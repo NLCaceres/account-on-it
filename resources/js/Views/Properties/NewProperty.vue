@@ -17,10 +17,10 @@
   </div>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import PropertyForm from './FormProperty.vue';
 
-export default Vue.extend({
+export default defineComponent({
   //! Local Components: 
   components: {
     'property-form': PropertyForm

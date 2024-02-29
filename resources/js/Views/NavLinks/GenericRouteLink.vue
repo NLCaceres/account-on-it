@@ -7,11 +7,11 @@
   </router-link>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 //? Thanks to the props here, this vue template may be best used for providing clarity
 //? Rather than fully taking place of the simple router-link VueRouter provides
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     pathName: {
       type: String,

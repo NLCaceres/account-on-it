@@ -28,11 +28,11 @@
   </table>
 </template>
 <script lang='ts'>
-import Vue, { PropType } from 'vue';
+import { defineComponent, PropType } from "vue";
 import { CheckIfDate } from "../../Utility/Functions/prettify_entity";
 import SortableTableHeader from '../VueHelpers/SortableTableHeader.vue';
 
-export default Vue.extend({
+export default defineComponent({
   //! Components
   components: {
     SortableTableHeader

@@ -45,7 +45,7 @@
   </form>
 </template>
 <script lang='ts'>
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import { PrettifyColumnNames as ProperName, IdKeyCheck, FilterColumns, CheckIfDate } from "../../Utility/Functions/prettify_entity";
 //todo Foreign keys will be obj { foreignName: [], foreignName2: [] }
 
@@ -53,7 +53,7 @@ interface ValidationError {
   [key: string]: []
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     entity: Object,
     entityName: String,
