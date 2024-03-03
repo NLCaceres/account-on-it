@@ -23,10 +23,10 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import column_converter from "../../Utility/Functions/column_converter";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     modelName: String,
     fieldName: String,
@@ -65,7 +65,7 @@ export default Vue.extend({
       return column_converter(this.width); //* Takes width integer up to 12 and displays text. 1 -> 'one', 10 -> 'ten'
     },
     ProperValidationTransition() : string { 
-      return this.validationErrors.length > 0 ? this.Transitions.INVALID_ERR_TRANSITION : this.Transitions.VALIDATION_INPUT_TRANSITION;
+      return this.validationErrors.length > 0 ? this.Transitions.INVALID_TRANSITION : this.Transitions.VALIDATION_INPUT_TRANSITION;
     }
   },
   methods: {
