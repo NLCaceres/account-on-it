@@ -68,7 +68,7 @@ export default defineComponent({
       required: true
     },
     validationErrors: {
-      type: Object as PropType<string[]>,
+      type: Array as PropType<string[]>,
       default: []
     },
     fluid: {
