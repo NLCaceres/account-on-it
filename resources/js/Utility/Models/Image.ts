@@ -1,8 +1,9 @@
-export default interface Image {
+type Image = {
   src: string,
   alt: string
-}
+};
+export default Image;
 
-export interface HasImage {
+export type HasImage = {
   img?: Image
-}
+};
