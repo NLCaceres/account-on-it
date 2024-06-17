@@ -1,27 +1,27 @@
 <template>
-  <!--//* .center.aligned.segment centers all text and adds padding -->
-  <!--//* .text.container pads text and adds extra margins -->
   <div class="ui segment text container p-0-b app-dark-accent-dark">
+    <!-- - .center.aligned.segment centers all text and adds padding -->
+    <!-- - .text.container pads text and adds extra margins -->
     <sui-login-form />
   </div>
 </template>
 <script lang='ts'>
-import Vue from "vue"
+import { defineComponent } from "vue"
 import SuiLoginForm from './SuiLoginForm.vue';
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     SuiLoginForm
   },
-  data() { 
+  data() {
     return {
 
-    } 
+    }
   },
   mounted() {
-    $('.grecaptcha-badge').show(); //* Show because must make sure user is aware, they're being verified
+    $('.grecaptcha-badge').show(); // - MUST display badge, so user knows they're being verified
   },
-  destroyed() {
+  unmounted() {
     $('.grecaptcha-badge').hide();
   }
 })
