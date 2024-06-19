@@ -13,7 +13,7 @@
           <slot name="content" v-bind="infoItem"></slot>
 
           <div class="header" :class="[{'center aligned': fullyCentered || centeredTitle, 'f-lg': mobile, 'f-sm': generalDesktop}]">
-            <slot name="title" v-bind="infoItem">{{infoItem.title ?? ""}}</slot>
+            <slot name="title" v-bind="infoItem">{{infoItem.title}}</slot>
           </div>
 
           <div class="meta" :class="[{'center aligned': fullyCentered || centeredMeta, 'f-md': mobile, 'f-xs': generalDesktop}]">
@@ -50,9 +50,9 @@ export default defineComponent({
     LazyLoadImg
   },
   props: {
-    infoItem: { // TODO: Double check the default is correct
+    infoItem: {
       type: Object as PropType<CardItem>,
-      default: { title: "" }
+      default: { title: "" } // ?: Besides a factory func, this also works to set a default value for a JS Obj
     },
     standalone: {
       type: Boolean,
@@ -129,59 +129,38 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapGetters(APP_MODULE, { mobile: MOBILE_WIDTH, tablet: TABLET_WIDTH, midDesktop: MID_DESKTOP_WIDTH, 
+    ...mapGetters(APP_MODULE, { mobile: MOBILE_WIDTH, tablet: TABLET_WIDTH, midDesktop: MID_DESKTOP_WIDTH,
       largeDesktop: LARGE_DESKTOP_WIDTH, generalDesktop: GENERAL_DESKTOP_WIDTH }),
     Fluid(): string {
       if (this.fluid) {
-        return (this.standalone) // - If standalone, fluid is fine, otherwise in a set of cards w-100
+        return (this.standalone) // - If standalone, fluid is fine, otherwise in a set of cards "w-100"
           ? 'fluid' // - Only really works when it's the only card (aka not under 'ui cards' parent)
-          //: 'w-100'; // - The 'width: 100% !important' css rule guarantees it will fill the container
-          : 'auto-width'; // - Flex's align-items default is stretch across cross axis so this works just as well as w-100
+          : 'auto-width'; // - Flex's align-items default is stretch across cross axis so this works just as well as "w-100"
       }
       return '';
     },
     Horizontal(): boolean { // - Helper for standalone check
       // - If not standalone, then horizontal class not needed
       return (this.horizontal && this.standalone)
-      ? true
-      : false;
+        ? true
+        : false;
     },
     ImagePercentage(): string {
       // - Format should always be 'XX/YY'
       if (this.ratio.length !== 5 || this.ratio.search('/') !== 2) {
         return (this.horizontal) ? `w-50` : `h-50`;
       } 
-      return (this.horizontal) 
-      ? `w-${this.ratio.split('/')[0]}`
-      : `h-${this.ratio.split('/')[0]}`;
+      return (this.horizontal)
+        ? `w-${this.ratio.split('/')[0]}`
+        : `h-${this.ratio.split('/')[0]}`;
     },
     ContentPercentage(): string {
       if (this.ratio.length !== 5 || this.ratio.search('/') !== 2) {
         return (this.horizontal) ? `w-50` : `h-50`;
       } 
-      return (this.horizontal) 
-      ? `w-${this.ratio.split('/')[1]}`
-      : `h-${this.ratio.split('/')[1]}`;
-    },
-    // TODO: Unclear this ExtraContentSpacing is really needed or if "max-h-100" is the preferred option
-    ExtraContentSpacing(): string { // - Image div'll oversize without a limiter
-      if (!this.$store.getters[`${APP_MODULE}/${MOBILE_WIDTH}`]) {
-        if (this.horizontal) {
-          // - If there's a footer below content/img divs (instead of in content section) this saves space for it
-          // if ((this.$slots.footer && this.$slots.footer()) || (this.$slots['attached-button'] && this.$slots["attached-button"]())) return 'max-h-80'
-
-          // - ELSE no true footer, so use all the available space w/out overflowing elements (img doesn't keep aspect ratio)
-          return 'max-h-100'
-        }
-      } 
-      else if (this.$store.getters[`${APP_MODULE}/${MOBILE_WIDTH}`]) {
-        if (this.horizontal) return '';
-        return '' /* 'w-100' */;
-      } 
-      else {
-        return '';
-      }
-      return '';
+      return (this.horizontal)
+        ? `w-${this.ratio.split('/')[1]}`
+        : `h-${this.ratio.split('/')[1]}`;
     },
     ContainerStyle(): StyleValue {
       let flexDirectionCSS = (this.standalone || this.horizontal) ? "row" : "column";
@@ -195,10 +174,6 @@ export default defineComponent({
       }
     }
   }
-  // inject: {
-  //   reversed: 'checkerPattern',
-
-  // }
 })
 </script>
 
