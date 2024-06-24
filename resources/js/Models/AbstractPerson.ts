@@ -1,14 +1,9 @@
-import DbRecord from "./AbstractDbRecord";
+import DbRecord from "./DbRecord";
 
-export default abstract class Person extends DbRecord {
-    constructor(
-        public first_name: string,
-        public surname: string,
-        public email: string,
-        id?: number,
-        created_at?: Date,
-        updated_at?: Date
-    ) {
-        super(id, created_at, updated_at);
-    }
-}
+type Person = {
+    first_name: string,
+    surname: string,
+    email: string
+} & DbRecord
+
+export default Person;
