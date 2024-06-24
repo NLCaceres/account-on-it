@@ -1,11 +1,7 @@
-export default abstract class DbRecord implements LaravelRecord {
-    constructor(
-        public id?: number,
-        public created_at?: Date,
-        public updated_at?: Date
-    ) {}
+type DbRecord = {
+    id?: number,
+    created_at?: Date | string,
+    updated_at?: Date | string,
 }
 
-export interface LaravelRecord {
-    [key: string]: any;
-}
+export default DbRecord;
