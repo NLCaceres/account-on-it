@@ -2,11 +2,11 @@ import Property from '../../Models/PropertyClass';
 import AddressList from '../Constants/addresses-us-100.min.json';
 // const addresses = require('../Constants/addresses-us-100.min.json').addresses;
 
-export interface Coordinates {
+export type Coordinates = {
   lat: number //* Latitude (float/doubles)
   lng: number //* Longitude (float/doubles)
 }
-export interface Address {
+export type Address = {
   address1: string,
   address2: string,
   city: string,
@@ -23,11 +23,13 @@ export default function RandomAddress(): Address {
 }
 export function RandomAddressList(numAddresses: number = 5): Property[] {
   //todo convert into property
-  const addressList = [];
+  const addressList: Property[] = [];
   for (let i = 0; i < numAddresses; i++) { //* Should produce # of addresses listed.
     const address = RandomAddress();
-    addressList.push(new Property(address.address1, address.city, address.state, 
-      address.postalCode, address.address2)); //* Uses above function to grab a new address for list
+    addressList.push({
+      street: address.address1, city: address.city, state: address.state,
+      postal_code: address.postalCode, additional_info: address.address2
+    })
   }
   return addressList;
 }
