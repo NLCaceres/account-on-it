@@ -1,9 +1,9 @@
-import Tenant from "../Models/TenantClass";
+import Tenant, { TenantDetailResponse } from "../Models/TenantClass";
 import BaseRepository from "./RepositoryBase";
 
-const TENANTS_URL = '/api/tenants'
+const TENANTS_URL = "/api/tenants";
 
-export default class TenantAPI extends BaseRepository<Tenant> {
+export default class TenantAPI extends BaseRepository<Tenant, TenantDetailResponse> {
   constructor() {
     super(TENANTS_URL);
   }

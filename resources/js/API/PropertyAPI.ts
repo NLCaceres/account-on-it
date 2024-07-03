@@ -1,12 +1,12 @@
-import Property from "../Models/PropertyClass";
+import Property, { PropertyDetailResponse } from "../Models/PropertyClass";
 import BaseRepository from "./RepositoryBase";
 
-const PROPERTIES_URL = '/api/properties';
+const PROPERTIES_URL = "/api/properties";
 
-export default class PropertyAPI extends BaseRepository<Property> {
-    constructor() {
-        super(PROPERTIES_URL);
-    }
+export default class PropertyAPI extends BaseRepository<Property, PropertyDetailResponse> {
+  constructor() {
+    super(PROPERTIES_URL);
+  }
 }
 
 export const propertyAPI = new PropertyAPI();

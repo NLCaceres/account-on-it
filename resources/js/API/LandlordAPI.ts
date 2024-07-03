@@ -1,12 +1,12 @@
-import BaseRepository from './RepositoryBase';
-import Landlord from '../Models/LandlordClass';
+import BaseRepository from "./RepositoryBase";
+import Landlord, { LandlordDetailResponse } from "../Models/LandlordClass";
 
-const LANDLORDS_URL = '/api/landlords'
+const LANDLORDS_URL = "/api/landlords";
 
-export default class LandlordAPI extends BaseRepository<Landlord> {
-    constructor() {
-        super(LANDLORDS_URL);
-    }
+export default class LandlordAPI extends BaseRepository<Landlord, LandlordDetailResponse> {
+  constructor() {
+    super(LANDLORDS_URL);
+  }
 }
 
 export const landlordAPI = new LandlordAPI();
