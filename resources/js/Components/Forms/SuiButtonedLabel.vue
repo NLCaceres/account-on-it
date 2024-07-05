@@ -1,30 +1,47 @@
 <template>
-  <div class='flexed-align-baselines'>
-    <label class="form-label" :for="ForLabel" @click="$emit('label-click')">
-      <slot></slot>
+  <div class="flexed-align-baselines">
+    <label class="form-label" :for="ForLabel" @click="LabelClick">
+      <slot />
     </label>
-    <!-- //? NOTE: If button doesn't have type it defaults to submit which could accidentally submit a form! -->
-    <button type='button' class="ui animated fade button inverted app-blue p-0-x" @click="$emit('click')">
+    <!-- ?: Without a type, buttons default to "submit" which can accidentally submit the form -->
+    <button type="button" class="ui animated fade button inverted app-blue p-0-x" @click="ButtonClick">
       <div class="hidden content">Show</div>
       <div class="visible content">
-        <i class="eye outline icon"></i>
+        <i class="eye outline icon" />
       </div>
     </button>
   </div>
 </template>
+
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent } from "vue";
 export default defineComponent({
   props: {
-    modelName: String,
-    fieldName: String
+    modelName: {
+      type: String,
+      required: true
+    },
+    fieldName: {
+      type: String,
+      required: true
+    },
   },
+  // ?: Using "click" or other native events in "emits" will DROP native events
+  emits: ["label-click", "click"], // ?: AND ONLY listen for component-originated ones
   computed: {
     ForLabel() {
       return `${this.modelName}_${this.fieldName}`;
     }
+  },
+  methods: {
+    LabelClick() {
+      this.$emit("label-click");
+    },
+    ButtonClick() {
+      this.$emit("click");
+    }
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>
@@ -34,7 +51,7 @@ export default defineComponent({
     color: #db2828;
   }
   .ui.animated.fade.button.inverted.app-blue {
-    padding: 5px 12px; //? 2 values means 1st sets y values and 2nd sets x values
+    padding: 5px 12px; // ?: 2 values means 1st sets y values and 2nd sets x values
 
     > div.visible.content {
       margin-left: 0.85em;
