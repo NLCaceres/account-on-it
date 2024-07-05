@@ -30,7 +30,7 @@ export default defineComponent({
   emits: ["label-click", "click"], // ?: AND ONLY listen for component-originated ones
   computed: {
     ForLabel() {
-      return `${this.modelName}_${this.fieldName}`;
+      return (this.modelName.length === 0 && this.fieldName.length === 0) ? "" : `${this.modelName}_${this.fieldName}`;
     }
   },
   methods: {
