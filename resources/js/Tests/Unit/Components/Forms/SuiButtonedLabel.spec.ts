@@ -28,45 +28,27 @@ describe("Semantic UI Label with Button attached", () => {
       expect(screen.getByText("Barfoo")).toHaveAttribute("for", "foo_");
     });
   });
-  it("emits a non-native click event from both the label and button", async () => {
-    const labelClickListenerSpy = vi.fn();
+  it("emits a non-native click event from button", async () => {
     const buttonListenerSpy = vi.fn();
     const stubComponent = {
       render() {
-        return h(SuiButtonedLabel, {
-          onLabelClick: labelClickListenerSpy, onClick: buttonListenerSpy, modelName: "", fieldName: ""
-        }, () => "Foobar");
+        return h(SuiButtonedLabel, { onClick: buttonListenerSpy, modelName: "", fieldName: "" }, () => "Foobar");
       }
     };
     const user = userEvent.setup();
     render(stubComponent);
-    const label = screen.getByText("Foobar");
-    // - WHEN the label is clicked
-    await user.click(label);
-    // - THEN ONLY the "onLabelClick" listener will fire
-    expect(labelClickListenerSpy).toHaveBeenCalledOnce();
-    expect(buttonListenerSpy).not.toHaveBeenCalledOnce();
-
-    // - Testing-Library's `fireEvent` still kicks off the "onLabelClick" custom event
-    await fireEvent(label, new Event("click"));
-    // - Causing the labelClickListener to run again
-    expect(labelClickListenerSpy).toHaveBeenCalledTimes(2);
-    expect(buttonListenerSpy).not.toHaveBeenCalledOnce();
-
     // - WHEN the button is clicked
     await user.click(screen.getByRole("button"));
-    // - THEN ONLY the buttonListener will run, NOT the labelClickListener
-    expect(labelClickListenerSpy).toHaveBeenCalledTimes(2);
+    // - THEN buttonListenerSpy runs
     expect(buttonListenerSpy).toHaveBeenCalledOnce();
 
+    // - Testing-Lib's `fireEvent` still kicks off the buttonListener's custom "click" event
     await fireEvent(screen.getByRole("button"), new Event("click"));
-    expect(labelClickListenerSpy).toHaveBeenCalledTimes(2);
     expect(buttonListenerSpy).toHaveBeenCalledTimes(2);
 
     // - WHEN other click events fire
-    await fireEvent(label.parentElement!, new Event("click"));
-    // - THEN they're ignored, neither listener reacts, despite the button expecting a basic "click" event
-    expect(labelClickListenerSpy).toHaveBeenCalledTimes(2);
+    await fireEvent(screen.getByRole("button").parentElement!, new Event("click"));
+    // - THEN they're ignored despite the button expecting a basic "click" event
     expect(buttonListenerSpy).toHaveBeenCalledTimes(2);
   });
 });

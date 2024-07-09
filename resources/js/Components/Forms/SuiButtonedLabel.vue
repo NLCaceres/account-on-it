@@ -1,6 +1,6 @@
 <template>
   <div class="flexed-align-baselines">
-    <label class="form-label" :for="ForLabel" @click="LabelClick">
+    <label class="form-label" :for="ForLabel">
       <slot />
     </label>
     <!-- ?: Without a type, buttons default to "submit" which can accidentally submit the form -->
@@ -27,16 +27,13 @@ export default defineComponent({
     },
   },
   // ?: Using "click" or other native events in "emits" will DROP native events
-  emits: ["label-click", "click"], // ?: AND ONLY listen for component-originated ones
+  emits: ["click"], // ?: AND ONLY listen for component-originated ones
   computed: {
     ForLabel() {
       return (this.modelName.length === 0 && this.fieldName.length === 0) ? "" : `${this.modelName}_${this.fieldName}`;
     }
   },
   methods: {
-    LabelClick() {
-      this.$emit("label-click");
-    },
     ButtonClick() {
       this.$emit("click");
     }

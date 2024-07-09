@@ -1,12 +1,11 @@
 <template>
   <div class="field" :class="{'required': required, [FieldWidth + ' wide'] : (width > 0 && width < 13) }">
-    <!-- - Emit click allows parent to control what happens on it -->
-    <sui-buttoned-label v-if="labelWithButton" :model-name="modelName" :field-name="fieldName"
-                        @click="$emit('click')" @label-click="FocusField">
+    <!-- - `$emit('click')` lets the parent control what happens when the Label's button is pressed -->
+    <sui-buttoned-label v-if="labelWithButton" :model-name="modelName" :field-name="fieldName" @click="$emit('click')">
       {{ ProperFieldName }}
     </sui-buttoned-label>
 
-    <label v-else class="form-label" :for="FieldID" @click="FocusField">
+    <label v-else class="form-label" :for="FieldID">
       <slot> {{ ProperFieldName }} </slot>
     </label>
 
@@ -108,13 +107,6 @@ export default defineComponent({
       return this.validationErrors.length > 0
         ? this.Transitions.INVALID_TRANSITION : this.Transitions.VALIDATION_INPUT_TRANSITION;
     }
-  },
-  methods: {
-    FocusField() { // - Ordinarily label clicks focus their inputs, but some CSS frameworks block it
-      if (this.FieldID !== "") {
-        $(`input#${this.FieldID}`).trigger("focus");
-      }
-    },
   }
 });
 </script>
