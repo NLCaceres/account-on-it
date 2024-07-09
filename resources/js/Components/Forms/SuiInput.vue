@@ -37,8 +37,6 @@ import column_converter from "../../Utility/Functions/column_converter";
 
 export default defineComponent({
   props: {
-    actionable: Boolean, // - Tacks on a button to the end
-    labelWithButton: Boolean,
     modelName: {
       type: String,
       required: true
@@ -47,30 +45,32 @@ export default defineComponent({
       type: String,
       required: true
     },
-    capitalFirst: Boolean,
-    showPass: {
-      type: Boolean,
-      default: false
-    },
-    required: Boolean,
-    // ?: Placeholders don't always help, so it's ok not to be required, JUST provide a default
-    placeholder: { // ?: Placeholders don't always help, so it's ok to not be required, JUST provide a default
-      type: String, // ?: SINCE screen readers don't always read them, so they're actually more decorative
-      default: "" // ?: Modern A11y UX might suggest a <span> hovered above the <input> to help screen readers
-    },
-    disabled: Boolean,
-    readonly: Boolean,
-    autocomplete: {
-      type: String,
-      default: "On"
-    },
     modelValue: {
       type: [Number, String],
       required: true
     },
     validationErrors: {
       type: Array as PropType<string[]>,
-      default() { return []; }
+      required: true
+    },
+    actionable: Boolean, // - Tacks on a button to the end
+    labelWithButton: Boolean,
+    autocomplete: {
+      type: String,
+      default: "On"
+    },
+    capitalFirst: Boolean, // - Capitalize's input's string value
+    disabled: Boolean,
+    readonly: Boolean,
+    required: Boolean,
+    showPass: {
+      type: Boolean,
+      default: false
+    },
+    // ?: Placeholders don't always help, so it's ok not to be required, JUST provide a default
+    placeholder: { // ?: Placeholders don't always help, so it's ok to not be required, JUST provide a default
+      type: String, // ?: SINCE screen readers don't always read them, so they're actually more decorative
+      default: "" // ?: Modern A11y UX might suggest a <span> hovered above the <input> to help screen readers
     },
     fluid: {
       type: Boolean,
@@ -85,13 +85,13 @@ export default defineComponent({
   computed: {
     ...mapGetters(APP_MODULE, {mobile: MOBILE_WIDTH}),
     FieldID() {
-      return `${this.modelName}_${this.fieldName}`;
+      return (this.modelName.length === 0 && this.fieldName.length === 0) ? "" : `${this.modelName}_${this.fieldName}`;
     },
     FieldType() {
       // - Only case where password must be returned is if starts with pass && user doesnt want to show it
       return (this.fieldName.toLowerCase().includes("password") && !this.showPass) ? "password" : "text";
     },
-    InputVal() { // ?: Used to convert a string "foo" to "Foo" BUT currently not actually used
+    InputVal() { // ?: Currently not used BUT converts a string "foo" to "Foo"
       return (this.capitalFirst && typeof this.modelValue === "string")
         ? this.modelValue.charAt(0).toUpperCase() + this.modelValue.slice(1)
         : this.modelValue;
@@ -111,7 +111,9 @@ export default defineComponent({
   },
   methods: {
     FocusField() { // - Ordinarily label clicks focus their inputs, but some CSS frameworks block it
-      $(`input#${this.FieldID}`).trigger("focus");
+      if (this.FieldID !== "") {
+        $(`input#${this.FieldID}`).trigger("focus");
+      }
     },
   }
 });
