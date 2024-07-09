@@ -44,6 +44,12 @@ export default tsEslint.config(
         "singleline": "never", "multiline": "never", "selfClosingTag": { "singleline": "never", "multiline": "never" }
       }],
       "vue/max-attributes-per-line": "off",
+      "vue/no-unused-emit-declarations": "error",
+      "vue/no-unused-properties": ["error", {
+        "groups": ["props", "data", "computed", "methods", "setup"], "deepData": false,
+        "ignorePublicMembers": false, "unreferencedOptions": []
+      }],
+      "vue/object-curly-spacing": ["error", "always"],
       "vue/singleline-html-element-content-newline": "off",
       "vue/block-order": ["error", { "order": ["template", "script", "style"] }],
       "vue/padding-line-between-blocks": ["error", "always"],
