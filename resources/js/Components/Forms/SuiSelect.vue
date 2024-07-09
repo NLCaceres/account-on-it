@@ -1,10 +1,10 @@
 <template>
-  <div class="field" :class="{ required: required, [FieldWidth + ' wide']: width > 0 }">
+  <div class="field" :class="{ required, [FieldWidth + ' wide']: (width < 13 && width > 0) }">
     <label class="form-label" :for="FieldID">
       <slot />
     </label>
 
-    <select :id="FieldID" :name="FieldID" class="fluid dropdown" :class="{'search': searchBar}"
+    <select :id="FieldID" :name="FieldID" class="dropdown" :class="{ fluid, 'search': searchBar }"
             :value="modelValue" @change="$emit('update:modelValue', (<HTMLSelectElement>$event.target).value)">
       <option disabled value>
         <slot name="default-option" />

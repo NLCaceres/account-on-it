@@ -4,6 +4,30 @@ import SuiSelect from "@/Components/Forms/SuiSelect.vue";
 import { INVALID_TRANSITION, VALIDATION_INPUT_TRANSITION } from "@/Utility/Constants/Transitions";
 
 describe("Semantic UI Select/Dropdown element with label", () => {
+  it("renders a root-level 'field' container using props to add CSS classes", async () => {
+    const { rerender } = render(SuiSelect, {
+      global: { mocks: { Transitions: { INVALID_TRANSITION, VALIDATION_INPUT_TRANSITION } } },
+      props: {
+        modelName: "", fieldName: "", modelValue: "", options: [], validationErrors: [], required: true, width: 1
+      },
+      slots: { default: "Foobar" }
+    });
+    // - WHEN `required` = true, THEN a "required" CSS class is added
+    // - AND `wide` = a num > 0, THEN its text name + "wide" CSS classes are added
+    expect(screen.getByRole("combobox").parentElement).toHaveClass("required one wide");
+
+    // - WHEN `required` = false + `wide` = a num > 12, THEN no "required" & no text num + "wide" CSS classes applied
+    await rerender({ required: false, width: 15 });
+    expect(screen.getByRole("combobox").parentElement).toHaveClass("field", { exact: true });
+
+    // - WHEN `width` between 0 & 13, THEN text num + "wide" CSS applied
+    await rerender({ width: 12 });
+    expect(screen.getByRole("combobox").parentElement).toHaveClass("twelve wide");
+
+    await rerender({ width: 0 });
+    // - WHEN `required` = false + `width` = 0 or lower, THEN their respective CSS is removed
+    expect(screen.getByRole("combobox").parentElement).toHaveClass("field", { exact: true });
+  });
   describe("renders a label", () => {
     it("with a slot", () => {
       render(SuiSelect, {
@@ -129,6 +153,21 @@ describe("Semantic UI Select/Dropdown element with label", () => {
       await fireEvent.update(screen.getByRole("option", { name: "Foo" }));
       expect(updateEventSpy).toHaveBeenCalledTimes(2);
       expect(selector).toHaveValue("Foo");
+    });
+    it("uses props to add CSS classes", async () => {
+      const { rerender } = render(SuiSelect, {
+        global: { mocks: { Transitions: { INVALID_TRANSITION, VALIDATION_INPUT_TRANSITION } } },
+        props: {
+          modelName: "", fieldName: "", modelValue: "", options: [], validationErrors: [], fluid: true, searchBar: true
+        },
+        slots: { default: "Foobar" }
+      });
+      // - WHEN `fluid` + `searchBar` = true, THEN "fluid" and "searchBar" CSS classes are added
+      expect(screen.getByRole("combobox")).toHaveClass("fluid search");
+
+      await rerender({ fluid: false, searchBar: false });
+      // - WHEN `fluid` + `searchBar` = false, THEN "fluid" and "searchBar" CSS classes are removed
+      expect(screen.getByRole("combobox")).toHaveClass("dropdown", { exact: true });
     });
   });
   it("renders a list of validation errors when provided", async () => {
