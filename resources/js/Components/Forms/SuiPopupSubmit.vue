@@ -1,16 +1,15 @@
 <template>
   <div class="field m-sm-x flexed-spaced-around">
-    <button type="button" @click="ChangeView"
-      class="ui inverted button app-blue button-pair m-md-r" >
-        Back
+    <button type="button" class="ui inverted button app-blue button-pair m-md-r" @click="ChangeView">
+      Back
     </button>
-    <button type="button" class="ui inverted button app-green button-pair"
-      :class="{ loading: !ready, disabled: disabled }" >
-        Submit
+    <button type="button"
+            class="ui inverted button app-green button-pair" :class="{ loading: !ready, disabled: disabled }">
+      Submit
     </button>
   </div>
 </template>
-//! MAX WIDTH FOR BUTTONS!
+
 <script lang="ts">
 import { defineComponent } from "vue";
 import loginAPI from "../../API/AuthenticationAPI";
@@ -29,7 +28,7 @@ export default defineComponent({
     return {
       ready: false,
       disabled: false
-    }
+    };
   },
   mounted() {
     this.HandleRecaptcha();

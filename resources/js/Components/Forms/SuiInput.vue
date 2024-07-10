@@ -1,7 +1,7 @@
 <template>
-  <div class="field" :class="{'required': required, [FieldWidth + ' wide'] : (width > 0 && width < 13) }">
+  <div class="field" :class="{ 'required': required, [FieldWidth + ' wide'] : (width > 0 && width < 13) }">
     <!-- - `$emit('click')` lets the parent control what happens when the Label's button is pressed -->
-    <sui-buttoned-label v-if="labelWithButton" :model-name="modelName" :field-name="fieldName" @click="$emit('click')">
+    <sui-buttoned-label v-if="labelWithButton" :model-name :field-name @click="$emit('click')">
       {{ ProperFieldName }}
     </sui-buttoned-label>
 
@@ -10,8 +10,8 @@
     </label>
 
     <div class="ui input" :class="{ 'action': actionable, 'fluid': fluid }">
-      <input :id="FieldID" :type="FieldType" :data-testid="FieldID" :placeholder="placeholder" :disabled="disabled"
-             :readonly="readonly" :autocomplete="autocomplete" :value="modelValue"
+      <input :id="FieldID" :type="FieldType" :data-testid="FieldID"
+             :placeholder :disabled :readonly :autocomplete :value="modelValue"
              @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)">
 
       <slot name="input-attachment">
