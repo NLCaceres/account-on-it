@@ -50,6 +50,7 @@ export default tsEslint.config(
         "ignorePublicMembers": false, "unreferencedOptions": []
       }],
       "vue/object-curly-spacing": ["error", "always"],
+      "vue/v-bind-style": ["error", "shorthand", { "sameNameShorthand": "always" }],
       "vue/singleline-html-element-content-newline": "off",
       "vue/block-order": ["error", { "order": ["template", "script", "style"] }],
       "vue/padding-line-between-blocks": ["error", "always"],
