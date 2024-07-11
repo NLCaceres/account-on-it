@@ -105,7 +105,7 @@ describe("Semantic UI Input Field", () => {
           stubs: { SuiButtonedLabel }
         },
         props: { modelName: "fizz", fieldName: "buzz", modelValue: "abc", validationErrors: [] },
-        slots: { default: "Some-Label" }
+        slots: { default: "Some-Label" } // - Simplify querying for the Label's inner text for all checks
       });
 
       // - The <label>'s for is simply the 'modelName' connected to the 'fieldName' via "_"
@@ -153,17 +153,25 @@ describe("Semantic UI Input Field", () => {
       await rerender({ fieldName: "iD" }); // - This is true even if the fieldName is awkwardly cased
       expect(screen.getByText("ID")).toBeInTheDocument();
     });
-    it("a default slot to override the 'fieldName' prop", () => {
-      render(SuiInput, {
+    it("a default slot to override the 'fieldName' prop", async () => {
+      const { rerender } = render(SuiInput, {
         global: {
           mocks: { Transitions: { INVALID_TRANSITION, VALIDATION_INPUT_TRANSITION }}, stubs: { SuiButtonedLabel }
         },
         slots: { default: "<h2>some_Slot</h2>" },
-        props: { modelName: "foo", fieldName: "color", modelValue: "abc", validationErrors: [] },
+        props: { modelName: "foo", fieldName: "Foobar", modelValue: "abc", validationErrors: [] },
       });
 
       // - WHEN the the default slot is set, THEN any 'fieldName' will be overridden WITHOUT ANY FORMATTING
       expect(screen.getByText("some_Slot")).toBeInTheDocument();
+      expect(screen.queryByText("Foobar")).not.toBeInTheDocument();
+      expect(screen.getByText("some_Slot")).toHaveRole("heading");
+      expect(screen.getByText("some_Slot").parentElement).toHaveClass("form-label");
+
+      await rerender({ fieldName: "Barfoo", labelWithButton: true });
+      // - WHEN the the default slot is set, THEN even if using the `<sui-buttoned-label>`, the `fieldName` is overriden
+      expect(screen.getByText("some_Slot")).toBeInTheDocument();
+      expect(screen.queryByText("Barfoo")).not.toBeInTheDocument();
       expect(screen.getByText("some_Slot")).toHaveRole("heading");
       expect(screen.getByText("some_Slot").parentElement).toHaveClass("form-label");
     });
