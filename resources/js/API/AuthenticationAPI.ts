@@ -1,6 +1,6 @@
 import GetCookie from "@/Utility/Functions/cookies";
 import User, { RegisteringUser } from "@/Models/UserClass";
-import { ACCEPT_JSON_HEADER } from "@/Utility/Constants/axios_helpers";
+import { ACCEPT_JSON_HEADER } from "@/Utility/Constants/HttpHeaders";
 import axios from "axios";
 
 const BASE_URL = "/api/login";
