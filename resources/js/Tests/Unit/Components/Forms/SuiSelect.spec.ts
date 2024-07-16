@@ -131,7 +131,7 @@ describe("Semantic UI Select/Dropdown element with label", () => {
       expect(screen.getByText("This is a list of foobars")).toHaveValue("");
     });
     it("emits a non-native click event to handle v-model's expected event 'update:modelValue'", async () => {
-      const updateEventSpy = vi.fn().mockImplementation(() => console.log("Running"));
+      const updateEventSpy = vi.fn();
       const stubComponent = {
         render() {
           return h(SuiSelect, {
