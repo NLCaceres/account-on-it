@@ -3,8 +3,8 @@
     <button type="button" class="ui inverted button app-blue button-pair m-md-r" @click="ChangeView">
       Back
     </button>
-    <button type="button"
-            class="ui inverted button app-green button-pair" :class="{ loading: !ready, disabled: disabled }">
+    <button type="button" :disabled="IsDisabled"
+            class="ui inverted button app-green button-pair" :class="{ loading: IsLoading, disabled: IsDisabled }">
       Submit
     </button>
   </div>
@@ -12,39 +12,55 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import loginAPI from "../../API/AuthenticationAPI";
+import { recaptchaVerify } from "@/API/AuthenticationAPI";
 
 export default defineComponent({
   props: {
-    Ready: Boolean,
-    Disabled: Boolean,
-    recaptchaActionName: String,
-    inSubview: {
+    inSubview: Boolean, // ?: Booleans default to false, not `undefined`
+    setLoading: {
       type: Boolean,
-      default: false
-    }
+      default: undefined // ?: To allow `undefined`, it MUST be specified
+    },
+    setDisabled: {
+      type: Boolean,
+      default: undefined
+    },
+    recaptchaActionName: {
+      type: String,
+      required: true,
+    },
   },
+  emits: ["update:view"],
   data() {
     return {
-      ready: false,
-      disabled: false
+      loading: false,
+      disabled: true
     };
+  },
+  computed: {
+    IsLoading(): boolean { // - Lets the parent set if the form is loading Recaptcha result
+      return this.setLoading ?? this.loading;
+    },
+    IsDisabled(): boolean { // - Lets the parent set if the form submit should be disabled
+      return this.setDisabled ?? this.disabled;
+    }
   },
   mounted() {
     this.HandleRecaptcha();
   },
   methods: {
     async HandleRecaptcha() {
-      const recaptchaScore = await loginAPI.recaptchaVerify(this.recaptchaActionName);
+      this.loading = true;
+      const recaptchaScore = await recaptchaVerify(this.recaptchaActionName);
 
       if (recaptchaScore > 0.7) {
-        this.ready = true;
         this.disabled = false;
-      } 
+      };
+      this.loading = false;
     },
     ChangeView(): void {
       if (this.inSubview) {
-        this.$emit(this.CustomEvents.UPDATE_VIEW);
+        this.$emit("update:view");
       } else {
         this.$router.back();
       }
