@@ -1,50 +1,57 @@
 <template>
-  <div class="ui cards" :class="{horizontal: horizontal, 'close-card-set': closeCards}">
+  <div class="ui cards" :class="{ horizontal: horizontal, 'close-card-set': closeCards }">
     <slot>
-      <sui-card v-for="(infoCard, index) in cardSet" :key="infoCard.title" :infoItem="infoCard" :borderless="borderless"
-        :fluid='fluid' :horizontal="horizontal" :standalone="false" :ratio="ratio" :hoverable="hoverable"
-        :height="cardHeight" :reversed="patternLogic ? patternLogic(index) : Checkered(index)" :class="CardClasses" :style="CardStyles"
-        :fully-centered="fullyCentered" :centered-content="centeredContent" :centered-title="centeredTitle" :vertical-centered="verticalCentered"
-        :centered-meta="centeredMeta" :centered-description="centeredDescription" :centered-extra-content="centeredExtraContent">
+      <sui-card v-for="(infoCard, index) in cardSet" :key="infoCard.title" :info-item="infoCard"
+                :borderless :fluid :horizontal :standalone="false" :ratio :hoverable :height="cardHeight"
+                :reversed="patternLogic ? patternLogic(index) : Checkered(index)" :class="cardClasses"
+                :style="cardStyles" :fully-centered :centered-content :centered-title :vertical-centered
+                :centered-meta :centered-description :centered-extra-content>
+        <template #title="infoItem">
+          <!-- - Override title area -->
+          <slot name="title" v-bind="infoItem" />
+        </template>
 
-          <template #title="infoItem">
-            <!-- - Override title area -->
-            <slot name='title' v-bind="infoItem"></slot>
-          </template>
+        <template #meta="infoItem">
+          <!-- - Override meta / subtitle area -->
+          <slot name="meta" v-bind="infoItem" />
+        </template>
 
-          <template #meta="infoItem">
-            <!-- - Override meta / subtitle area -->
-            <slot name='meta' v-bind="infoItem"></slot>
-          </template>
+        <template #description="infoItem">
+          <!-- - Overrides description (default slot) slot in SuiCard component -->
+          <slot name="description" v-bind="infoItem" />
+        </template>
 
-          <template #description="infoItem">
-            <!-- - Overrides description (default slot) slot in SuiCard component -->
-            <slot name="description" v-bind="infoItem"></slot>
-          </template>
+        <template #content="infoItem">
+          <!-- - If total override needed for content area -->
+          <slot name="content" v-bind="infoItem" />
+        </template>
 
-          <template #content="infoItem">
-            <!-- - If total override needed for content area -->
-            <slot name="content" v-bind="infoItem"></slot>
-          </template>
-
-          <!-- ?: The v-if on a named-template containing another named-slot didn't work in Vue2 BUT Vue3's dynamic slots seems to have allowed it -->
-          <!-- ?: As a bonus, it eliminates the need to check for a footer-slot in SuiCard -->
-          <template #footer="infoItem" v-if="$slots.footer">
-            <!-- - Overrides extra content class div in a SuiCard -->
-            <slot name='footer' v-bind="infoItem"></slot>
-          </template>
+        <!-- ?: The v-if on a named-template containing another named-slot didn't work in Vue2 -->
+        <!-- ?: BUT Vue3's dynamic slots seems to have allowed it -->
+        <!-- ?: As a bonus, it eliminates the need to check for a footer-slot in SuiCard -->
+        <template v-if="$slots.footer" #footer="infoItem">
+          <!-- - Overrides extra content class div in a SuiCard -->
+          <slot name="footer" v-bind="infoItem" />
+        </template>
       </sui-card>
     </slot>
   </div>
 </template>
+
 <script lang="ts">
-import { defineComponent, type PropType } from "vue"
-import SuiCard from './SuiCard.vue';
+import { defineComponent, type StyleValue, type PropType } from "vue";
+import SuiCard from "./SuiCard.vue";
 import type CardItem from "@/Utility/Models/CardItem";
 
 export default defineComponent({
   components: {
-    'sui-card': SuiCard
+    "sui-card": SuiCard
+  },
+  provide: function() {
+    return {
+      checkerPattern: this.checkered,
+      cardSet: this.cardSet
+    };
   },
   props: {
     // !: Centering Functionality
@@ -56,7 +63,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    centeredContent: { 
+    centeredContent: {
       type: Boolean,
       default: false,
     },
@@ -68,7 +75,7 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    centeredExtraContent: { 
+    centeredExtraContent: {
       type: Boolean,
       default: false,
     },
@@ -97,11 +104,14 @@ export default defineComponent({
       default: false
     },
     // ?: If not using the `required` prop, it seems all props are possibly undefined (optional) by default
-    patternLogic: Function as PropType<(cardIndex: number) => boolean>,
+    patternLogic: {
+      type: Function as PropType<(cardIndex: number) => boolean>,
+      require: false, default: undefined
+    },
     // - Card Items
     cardSet: {
       type: Array as PropType<CardItem[]>,
-      default: []
+      default() { return []; }
     },
     // !: Special styling
     borderless: {
@@ -120,16 +130,16 @@ export default defineComponent({
     // - Ratio between content to image
     ratio: {
       type: String,
-      default: '50/50'
+      default: "50/50"
     },
     // !: In case extra styling needed for individual card itself
-    CardClasses: { // ?: Classes can be added in one of 3 styles: 1. "foo bar"  2.{ foo: isActive, bar: isNotActive }  3. ["foo", "bar"]
-      type: [Array, String, Object], // ?: All three styles will be merged into any existing classes properly
-      default: ''
+    cardClasses: { // ?: Classes in Vue can look like: 1. "foo bar"  2.{ foo: isActive, bar: isNotActive }
+      type: [Array, Object, String] as PropType<string | string[] | Record<string, boolean>>, // ?: 3. ["foo", "bar"]
+      default: "" // ?: All 3 styles are merged with all normal class attributes
     },
-    CardStyles: {
-      type: [Array, String, Object],
-      default: ''
+    cardStyles: {
+      type: [Array, Object, String] as PropType<string | string[] | StyleValue>,
+      default: ""
     }
   },
   methods: {
@@ -138,15 +148,10 @@ export default defineComponent({
         ? (index+1) % 2 === 0 // - Checks if odd or even and properly changes flex direction: LtR -> RtL
         : false; // - all unified flex direction:  LtR
     }
-  },
-  provide: function() {
-    return {
-      checkerPattern: this.checkered,
-      cardSet: this.cardSet
-    };
   }
-})
+});
 </script>
+
 <style lang="scss" scoped>
 @media screen and (min-width: 481px) {
   div.ui.cards.close-card-set > div.card {
