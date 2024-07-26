@@ -1,37 +1,41 @@
 <template>
-  <div id="carousel" class="p-0" @mouseover="visibleArrows = true" @mouseleave="visibleArrows = false" :style="{height: Height}">
-    <transition name="fade" mode="in-out"> 
-      <img id="bg-img" :src="imgSet[currentImgIndex].src" :alt="imgSet[currentImgIndex].alt" :key="imgSet[currentImgIndex].src"
-        class='ui image' :height="Height" :width="$store.state.app.window.width" />
+  <div id="carousel" class="p-0" :style="{ height: Height }"
+       @mouseover="visibleArrows = true" @mouseleave="visibleArrows = false">
+    <transition name="fade" mode="in-out">
+      <img id="bg-img" :key="imgSet[currentImgIndex].src" class="ui image"
+           :src="imgSet[currentImgIndex].src" :alt="imgSet[currentImgIndex].alt"
+           :height="Height" :width="$store.state.app.window.width">
     </transition>
 
-    <slot></slot> <!-- - Text elements go here -->
+    <slot /> <!-- - Text elements go here -->
 
-    <div id="controls" class='flexed-column-spaced-between h-100 w-100'>
-      <div></div> <!-- - Added empty div here so flexbox will layout the other 2 divs as a center and bottom thirds -->
+    <div id="controls" class="flexed-column-spaced-between h-100 w-100">
+      <div /> <!-- - Added empty div here so flexbox will layout the other 2 divs as a center and bottom thirds -->
 
-      <div id="arrows" v-if="visibleArrows && !Mobile" class="flexed-spaced-between m-lg-t">
-        <button type="button" class='ui icon huge button carousel-arrows'>
+      <div v-if="visibleArrows && !Mobile" id="arrows" class="flexed-spaced-between m-lg-t">
+        <button type="button" class="ui icon huge button carousel-arrows">
           <i class="chevron left big icon carousel-arrow" @click="ClickChange('left')" />
         </button>
-        <button type="button" class='ui icon huge button carousel-arrows'>
+        <button type="button" class="ui icon huge button carousel-arrows">
           <i class="chevron right big icon carousel-arrow" @click="ClickChange('right')" />
         </button>
       </div>
 
-      <div id="icons" v-if="visibleArrows" class="m-xl-b align-self-center">
-        <button type="button" v-for="(img, index) in imgSet" :key="img.src" :class="{active: currentImgIndex === index}"
-          class="circular ui icon button carousel-indicator" @click="ChangeImg(0, index)" />
+      <div v-if="visibleArrows" id="icons" class="m-xl-b align-self-center">
+        <button v-for="(img, index) in imgSet" :key="img.src" type="button"
+                class="circular ui icon button carousel-indicator" :class="{ active: currentImgIndex === index }"
+                @click="ChangeImg(0, index)" />
       </div>
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import { StopPageVisibilityAPI } from "../../Utility/Functions/page_visibility";
-import { MOBILE_WIDTH, PAGE_VISIBILITY_READY } from '../../Store/GetterTypes';
+import { MOBILE_WIDTH, PAGE_VISIBILITY_READY } from "../../Store/GetterTypes";
 import { defineComponent, type PropType } from "vue";
-import { APP_MODULE } from '../../Store/modules/AppState';
-import { INIT_PAGE_VISIBILITY } from '../../Store/ActionTypes';
+import { APP_MODULE } from "../../Store/modules/AppState";
+import { INIT_PAGE_VISIBILITY } from "../../Store/ActionTypes";
 import Image from "@/Utility/Models/Image";
 
 export default defineComponent({
@@ -43,30 +47,30 @@ export default defineComponent({
     },
     imgSet: {
       type: Array as PropType<Image[]>,
-      default: []
-    }
-  },
-  // !: Computed Props
-  computed: {
-    Height() {
-      return this.$store.state.app.window.width > 490 ? '450px' : '400px';
-    },
-    Mobile() { // - Returns 0 opacity if on mobile view so arrows not needed
-      return this.$store.getters[`${APP_MODULE}/${MOBILE_WIDTH}`]
+      default() { return []; }
     }
   },
   // !: Data
   data() {
     return {
       currentImgIndex: 0,
-      intervalID: null as number | null, // ?: Window version (vs global) of setTimeout/setInterval returns a # id
+      intervalID: undefined as number | undefined, // ?: `window.setTimeout/setInterval` returns a num ID
       visibleArrows: false,
     };
+  },
+  // !: Computed Props
+  computed: {
+    Height(): string {
+      return this.$store.state.app.window.width > 490 ? "450px" : "400px";
+    },
+    Mobile(): boolean { // - Returns 0 opacity if on mobile view so arrows not needed
+      return this.$store.getters[`${APP_MODULE}/${MOBILE_WIDTH}`];
+    }
   },
   // !: Lifecycle Methods
   mounted(): void { // - If PageVisAPI available, THEN run the Carousel, listening for webPage changes
     this.$store.dispatch(`${APP_MODULE}/${INIT_PAGE_VISIBILITY}`, this.CarouselPaused)
-      .then(() => this.CarouselPaused()); // - Use the empty promise returned by dispatch (and all async funcs) to start the Carousel
+      .then(() => this.CarouselPaused()); // - Use `then` to await `dispatch` void promise to start the Carousel
   },
   beforeUnmount(): void {
     if (this.$store.getters[`${APP_MODULE}/${PAGE_VISIBILITY_READY}`]) { // - If PageVisAPI supported
@@ -84,10 +88,10 @@ export default defineComponent({
           // - THEN using the "hidden" key, see if the user is focused on this app's window/tab
           const isDocHidden = document[this.$store.state.app.websiteVisibility.hidden as "hidden"];
           if (isDocHidden && this.intervalID) {
-            window.clearInterval(this.intervalID) // - Stop the Carousel auto-play interval via its ID
+            window.clearInterval(this.intervalID); // - Stop the Carousel auto-play interval via its ID
           }
           else { // - Restarting Carousel auto-play
-            this.intervalID = window.setInterval(this.ChangeImg, this.intervalLength)
+            this.intervalID = window.setInterval(this.ChangeImg, this.intervalLength);
           }
         }
     },
@@ -106,11 +110,11 @@ export default defineComponent({
     },
     ClickChange(direction: string): void {
       if (this.intervalID) {
-        // - If Carousel running, reset the interval running it after a click (preventing super fast changes or awkward timing)
-        window.clearInterval(this.intervalID);
+        // - If Carousel running, reset the interval running it after a click
+        window.clearInterval(this.intervalID); // - This prevents super fast changes or awkward Carousel motion
         this.intervalID = window.setInterval(this.ChangeImg, this.intervalLength);
       }
-      if (direction === 'right') this.ChangeImg(1);
+      if (direction === "right") this.ChangeImg(1);
       else this.ChangeImg(-1);
     },
   },
@@ -144,7 +148,7 @@ export default defineComponent({
       color: #888
     }
 }
-// - Indicators on the bottom marking which image is active 
+// - Indicators on the bottom marking which image is active
 .carousel-indicator {
   color: white;
   &:hover {
