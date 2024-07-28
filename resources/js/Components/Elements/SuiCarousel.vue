@@ -2,7 +2,7 @@
   <div id="carousel" class="p-0" :style="{ height: Height }"
        @mouseover="visibleArrows = true" @mouseleave="visibleArrows = false">
     <transition name="fade" mode="in-out">
-      <img id="bg-img" :key="imgSet[currentImgIndex].src" class="ui image"
+      <img v-if="imgSet.length > 0" id="bg-img" :key="imgSet[currentImgIndex].src" class="ui image"
            :src="imgSet[currentImgIndex].src" :alt="imgSet[currentImgIndex].alt"
            :height="Height" :width="$store.state.app.window.width">
     </transition>
@@ -13,16 +13,18 @@
       <div /> <!-- - Added empty div here so flexbox will layout the other 2 divs as a center and bottom thirds -->
 
       <div v-if="visibleArrows && !Mobile" id="arrows" class="flexed-spaced-between m-lg-t">
-        <button type="button" class="ui icon huge button carousel-arrows">
-          <i class="chevron left big icon carousel-arrow" @click="ClickChange('left')" />
+        <button type="button" class="ui icon huge button carousel-arrows"
+                data-testid="carousel-left" @click="ClickChange('left')">
+          <i class="chevron left big icon carousel-arrow" />
         </button>
-        <button type="button" class="ui icon huge button carousel-arrows">
-          <i class="chevron right big icon carousel-arrow" @click="ClickChange('right')" />
+        <button type="button" class="ui icon huge button carousel-arrows"
+                data-testid="carousel-right" @click="ClickChange('right')">
+          <i class="chevron right big icon carousel-arrow" />
         </button>
       </div>
 
       <div v-if="visibleArrows" id="icons" class="m-xl-b align-self-center">
-        <button v-for="(img, index) in imgSet" :key="img.src" type="button"
+        <button v-for="(img, index) in imgSet" :key="img.src" type="button" :data-testid="`indicator-${index + 1}`"
                 class="circular ui icon button carousel-indicator" :class="{ active: currentImgIndex === index }"
                 @click="ChangeImg(0, index)" />
       </div>
@@ -31,11 +33,11 @@
 </template>
 
 <script lang="ts">
-import { StopPageVisibilityAPI } from "../../Utility/Functions/page_visibility";
-import { MOBILE_WIDTH, PAGE_VISIBILITY_READY } from "../../Store/GetterTypes";
+import { StopPageVisibilityAPI } from "@/Utility/Functions/page_visibility";
+import { MOBILE_WIDTH, PAGE_VISIBILITY_READY } from "@/Store/GetterTypes";
 import { defineComponent, type PropType } from "vue";
-import { APP_MODULE } from "../../Store/modules/AppState";
-import { INIT_PAGE_VISIBILITY } from "../../Store/ActionTypes";
+import { APP_MODULE } from "@/Store/modules/AppState";
+import { INIT_PAGE_VISIBILITY } from "@/Store/ActionTypes";
 import Image from "@/Utility/Models/Image";
 
 export default defineComponent({
@@ -47,7 +49,7 @@ export default defineComponent({
     },
     imgSet: {
       type: Array as PropType<Image[]>,
-      default() { return []; }
+      required: true
     }
   },
   // !: Data
@@ -114,8 +116,8 @@ export default defineComponent({
         window.clearInterval(this.intervalID); // - This prevents super fast changes or awkward Carousel motion
         this.intervalID = window.setInterval(this.ChangeImg, this.intervalLength);
       }
-      if (direction === "right") this.ChangeImg(1);
-      else this.ChangeImg(-1);
+      if (direction === "right") { this.ChangeImg(1); }
+      else { this.ChangeImg(-1); }
     },
   },
 });
