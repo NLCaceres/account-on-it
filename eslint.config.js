@@ -27,6 +27,8 @@ export default tsEslint.config(
       ...tsEslint.configs.recommended
     ],
     rules: {
+      "key-spacing": "off",
+      "@typescript-eslint/key-spacing": "error",
       "max-len": ["error", { "code": 120 }],
       "no-trailing-spaces": "error",
       "quotes": "off",
@@ -43,6 +45,7 @@ export default tsEslint.config(
       "vue/html-closing-bracket-newline": ["error", {
         "singleline": "never", "multiline": "never", "selfClosingTag": { "singleline": "never", "multiline": "never" }
       }],
+      "vue/key-spacing": "error",
       "vue/max-attributes-per-line": "off",
       "vue/no-unused-emit-declarations": "error",
       "vue/no-unused-properties": ["error", {
