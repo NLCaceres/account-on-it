@@ -1,7 +1,6 @@
+type Message = {
+  title: string,
+  description: string
+};
 
-
-export default class Message {
-  constructor(public header?: string, public description?: string) {
-
-  }
-}
+export default Message;
