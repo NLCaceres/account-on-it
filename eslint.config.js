@@ -27,8 +27,6 @@ export default tsEslint.config(
     files: ["resources/js/**/*.js"],
     extends: [eslint.configs.recommended],
   },
-  // @ts-ignore
-  ...vueEslint.configs["flat/recommended"], // - Not currently type-compatible with Typescript-Eslint but otherwise works
   {
     files: ["resources/js/**/*.vue", "resources/js/**/*.ts"],
     extends: [
@@ -41,6 +39,14 @@ export default tsEslint.config(
   },
   {
     files: ["resources/js/**/*.vue"],
+    languageOptions: { // - Substitute the TS Parser for the Vue parser
+      parser: vueParser,
+      parserOptions: { // - THEN use the TS parser here to handle the `<script>` section
+        parser: tsEslint.parser,
+        sourceType: "module"
+      }
+    },
+    extends: [...vueEslint.configs["flat/recommended"]], // - Not technically type-compatible BUT it will be, and works for now
     rules: {
       "vue/first-attribute-linebreak": ["error", { "singleline": "ignore", "multiline": "beside" }],
       "vue/html-closing-bracket-newline": ["error", {
@@ -70,15 +76,6 @@ export default tsEslint.config(
     },
     rules: {
       "@typescript-eslint/no-non-null-assertion": "off"
-    }
-  },
-  {
-    languageOptions: {
-      parser: vueParser,
-      parserOptions: {
-        parser: tsEslint.parser,
-        sourceType: "module"
-      }
     }
   },
   { // - Global ignore
