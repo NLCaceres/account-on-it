@@ -5,18 +5,27 @@ import globals from "globals";
 import tsEslint from "typescript-eslint";
 import vueEslint from "eslint-plugin-vue";
 import vueParser from "vue-eslint-parser";
+import styleEslint from "@stylistic/eslint-plugin";
 
 export default tsEslint.config(
   {
+    files: ["resources/js/**/*.{js,ts,vue}"],
+    plugins: {
+      stylistic: styleEslint
+    },
+    rules: {
+      "stylistic/linebreak-style": ["error", "unix"],
+      "stylistic/no-trailing-spaces": "error",
+      "stylistic/indent": ["error", 2],
+      "stylistic/quotes": "error",
+      "stylistic/semi": "error",
+      "stylistic/key-spacing": "error",
+      "stylistic/max-len": ["error", { "code": 120 }],
+    }
+  },
+  {
     files: ["resources/js/**/*.js"],
     extends: [eslint.configs.recommended],
-    rules: {
-      "linebreak-style": ["error", "unix"],
-      "no-trailing-spaces": "error",
-      "indent": ["error", 2],
-      "quotes": "error",
-      "semi": "error"
-    }
   },
   // @ts-ignore
   ...vueEslint.configs["flat/recommended"], // - Not currently type-compatible with Typescript-Eslint but otherwise works
@@ -27,14 +36,6 @@ export default tsEslint.config(
       ...tsEslint.configs.recommended
     ],
     rules: {
-      "key-spacing": "off",
-      "@typescript-eslint/key-spacing": "error",
-      "max-len": ["error", { "code": 120 }],
-      "no-trailing-spaces": "error",
-      "quotes": "off",
-      "@typescript-eslint/quotes": "error",
-      "semi": "off",
-      "@typescript-eslint/semi": "error",
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     }
   },
@@ -58,14 +59,6 @@ export default tsEslint.config(
       "vue/block-order": ["error", { "order": ["template", "script", "style"] }],
       "vue/padding-line-between-blocks": ["error", "always"],
       "vue/require-typed-object-prop": "error"
-    }
-  },
-  {
-    files: ["resources/js/**/*.ts"],
-    rules: {
-      "linebreak-style": ["error", "unix"],
-      "indent": "off",
-      "@typescript-eslint/indent": ["error", 2]
     }
   },
   { // - Test-specific overridden config
