@@ -41,7 +41,6 @@ import { INIT_PAGE_VISIBILITY } from "@/Store/ActionTypes";
 import Image from "@/Utility/Models/Image";
 
 export default defineComponent({
-  // !: Props
   props: {
     intervalLength: {
       type: Number,
@@ -52,7 +51,6 @@ export default defineComponent({
       required: true
     }
   },
-  // !: Data
   data() {
     return {
       currentImgIndex: 0,
@@ -60,7 +58,6 @@ export default defineComponent({
       visibleArrows: false,
     };
   },
-  // !: Computed Props
   computed: {
     Height(): string {
       return this.$store.state.app.window.width > 490 ? "450px" : "400px";
@@ -69,7 +66,6 @@ export default defineComponent({
       return this.$store.getters[`${APP_MODULE}/${MOBILE_WIDTH}`];
     }
   },
-  // !: Lifecycle Methods
   mounted(): void { // - If PageVisAPI available, THEN run the Carousel, listening for webPage changes
     this.$store.dispatch(`${APP_MODULE}/${INIT_PAGE_VISIBILITY}`, this.CarouselPaused)
       .then(() => this.CarouselPaused()); // - Use `then` to await `dispatch` void promise to start the Carousel
@@ -81,21 +77,19 @@ export default defineComponent({
       if (this.intervalID) { window.clearInterval(this.intervalID); }
     }
   },
-  // !: Methods
   methods: {
-    // !: Carousel Methods
     CarouselPaused() {
-        // - Check if PageVisAPI supported (by seeing if the "hidden" key is set)
-        if (this.$store.getters[`${APP_MODULE}/${PAGE_VISIBILITY_READY}`]) {
-          // - THEN using the "hidden" key, see if the user is focused on this app's window/tab
-          const isDocHidden = document[this.$store.state.app.websiteVisibility.hidden as "hidden"];
-          if (isDocHidden && this.intervalID) {
-            window.clearInterval(this.intervalID); // - Stop the Carousel auto-play interval via its ID
-          }
-          else { // - Restarting Carousel auto-play
-            this.intervalID = window.setInterval(this.ChangeImg, this.intervalLength);
-          }
+      // - Check if PageVisAPI supported (by seeing if the "hidden" key is set)
+      if (this.$store.getters[`${APP_MODULE}/${PAGE_VISIBILITY_READY}`]) {
+        // - THEN using the "hidden" key, see if the user is focused on this app's window/tab
+        const isDocHidden = document[this.$store.state.app.websiteVisibility.hidden as "hidden"];
+        if (isDocHidden && this.intervalID) {
+          window.clearInterval(this.intervalID); // - Stop the Carousel auto-play interval via its ID
         }
+        else { // - Restarting Carousel auto-play
+          this.intervalID = window.setInterval(this.ChangeImg, this.intervalLength);
+        }
+      }
     },
     ChangeImg(incrementer: number = 1, directChange: number = -1): void {
       if (directChange > -1) { this.currentImgIndex = directChange; return; }

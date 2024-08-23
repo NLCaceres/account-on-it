@@ -1,5 +1,5 @@
 <template>
-  <div class="field" :class="{ 'required': required, [FieldWidth + ' wide'] : (width > 0 && width < 13) }">
+  <div class="field" :class="{ 'required': required, [FieldWidth + ' wide']: (width > 0 && width < 13) }">
     <!-- - `$emit('click')` lets the parent control what happens when the Label's button is pressed -->
     <sui-buttoned-label v-if="labelWithButton" :model-name :field-name @click="$emit('click')">
       <slot> {{ ProperFieldName }} </slot>

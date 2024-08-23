@@ -130,8 +130,8 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters(APP_MODULE, {
-        mobile: MOBILE_WIDTH, generalDesktop: GENERAL_DESKTOP_WIDTH
-      }),
+      mobile: MOBILE_WIDTH, generalDesktop: GENERAL_DESKTOP_WIDTH
+    }),
     Fluid(): string {
       if (this.fluid) {
         return (this.standalone) // - If standalone, fluid is fine, otherwise in a set of cards "w-100"

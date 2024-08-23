@@ -155,11 +155,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @media screen and (min-width: 481px) {
   div.ui.cards.close-card-set > div.card {
+    margin-top: 0;
+    margin-bottom: 0;
+
     &:first-child {
       margin-top: 1em;
     }
-    margin-top: 0;
-    margin-bottom: 0;
     &:last-child {
       margin-bottom: 1em;
     }
