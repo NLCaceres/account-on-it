@@ -1,10 +1,12 @@
 <template>
-  <div style="position: relative;" :class="[Fluid]" @intersect="$emit('intersect', $event)" ref="container">
-    <!--//* Goal: Blur but load up img so blurred placeholder div just pops out when img ready -->
-    <transition name='blur' mode="in-out">
-      <img v-if="src && src.length > 0" :class="['absolute-pos', Fluid]" :src="Src" :alt="AltText" @load="$emit('load')" :height="Height" :width="Width" />
+  <div ref="container" style="position: relative;" :class="[Fluid]" @intersect="$emit('intersect', $event)">
+    <!-- - Goal: Blur but load up img so blurred placeholder div just pops out when img ready -->
+    <transition name="blur" mode="in-out">
+      <img v-if="src && src.length > 0" :class="['absolute-pos', Fluid]"
+           :src="Src" :alt="AltText" :height="Height" :width="Width" @load="$emit('load')">
 
-      <div v-else :class="['app-gray-light app-gray-dark-text flexed-center-all absolute-pos', Fluid]" :style="{height: `${Height}`, width: `${Width}`}">
+      <div v-else :class="['app-gray-light app-gray-dark-text flexed-center-all absolute-pos', Fluid]"
+           :style="{ height: `${Height}`, width: `${Width}` }">
         <h4 class="">Placeholder</h4>
       </div>
     </transition>
@@ -16,8 +18,14 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
-    src: String,
-    alt: String,
+    src: {
+      type: String,
+      default: ""
+    },
+    alt: {
+      type: String,
+      default: ""
+    },
     height: {
       type: Number,
       default: 250,
@@ -31,6 +39,7 @@ export default defineComponent({
       default: false,
     },
   },
+  emits: ["intersect", "load"],
   computed: {
     Src(): string {
       return (this.src === undefined || this.src.length === 0)
@@ -40,13 +49,13 @@ export default defineComponent({
       return (this.alt === undefined || this.alt.length === 0) ? "Placeholder Image" : this.alt;
     },
     Fluid(): string {
-      return this.fluid ? 'w-100 h-100' : '';
+      return this.fluid ? "w-100 h-100" : "";
     },
     Height(): string {
-      return this.fluid ? '' : `${this.height}px`
+      return this.fluid ? "" : `${this.height}px`;
     },
     Width(): string {
-      return this.fluid ? '' : `${this.width}px`
+      return this.fluid ? "" : `${this.width}px`;
     }
   }
 });
@@ -54,7 +63,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 div.app-gray > h4 {
-  //* May be a useful class for headers
+  // - May be a useful class for headers
   margin: auto;
   line-height: 51px;
   vertical-align: middle;
