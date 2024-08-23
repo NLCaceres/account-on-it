@@ -1,23 +1,23 @@
-export default function InitIntersectionObserver(intersectionCallback: () => void, intersectOptions: any = {}): IntersectionObserver | null {
-  if ("IntersectionObserver" in window) {
-    return new IntersectionObserver(intersectionCallback, intersectOptions);
-  }
-  return null;
+export default function InitIntersectionObserver(
+  intersectionCallback: () => void, intersectOptions: IntersectionObserverInit = {}
+) {
+  return ("IntersectionObserver" in window)
+    ? new IntersectionObserver(intersectionCallback, intersectOptions)
+    : undefined;
 }
 
-export function StopIntersectionObservation(observer: IntersectionObserver | null, elem: Element) {
+export function StopIntersectionObservation(observer: IntersectionObserver, elem: Element) {
   if ("IntersectionObserver" in window) {
-    observer?.unobserve(elem);
-  }
-}
-
-export function FinishIntersectionObservation(observer: IntersectionObserver | null) {
-  if ("IntersectionObserver" in window) {
-    observer?.disconnect(); //? This kills all observations so careful!
-    //* Probably best called from main app component
+    observer.unobserve(elem);
   }
 }
 
-export function DidIntersect(entry: IntersectionObserverEntry): boolean {
+export function FinishIntersectionObservation(observer: IntersectionObserver) {
+  if ("IntersectionObserver" in window) {
+    observer.disconnect(); // ?: This kills ALL observations so careful!
+  } // - Probably best called from `<App />`
+}
+
+export function DidIntersect(entry: IntersectionObserverEntry) {
   return entry.isIntersecting || entry.intersectionRatio > 0;
 }
