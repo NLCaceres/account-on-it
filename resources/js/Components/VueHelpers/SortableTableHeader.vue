@@ -1,45 +1,34 @@
 <template>
-  <th @click="SortTableHeader"> 
-    <slot></slot>
-    <i v-if="SortOrder === 1" class="sort up icon"></i>
-    <i v-else-if="SortOrder === -1" class="sort down icon"></i>
-    <i v-else class="sort icon"></i>
-
+  <th @click="SortTableHeader">
+    <slot />
+    <i v-if="SortOrder === 1" class="sort up icon" />
+    <i v-else-if="SortOrder === -1" class="sort down icon" />
+    <i v-else class="sort icon" />
   </th>
 </template>
+
 <script lang="ts">
 import { defineComponent } from "vue";
 export default defineComponent({
   props: {
-    currentColumnToSortBy: {
-      type: String,
-      default: 'default',
-      required: true
-    } 
+    shouldSortByThis: Boolean
   },
-  computed: {
-    SortOrder(): number | undefined {
-      if (this.currentColumnToSortBy !== this.headerTitle) {
-        return 0;
-      } else {
-        return this.sortOrder;
-      }
-    }
-  },
+  emits: ["change-sort"],
   data() {
     return {
-      sortOrder: 0, //* 0 = None, 1 = ascending, -1 = descending
-      headerTitle: ''
+      sortOrder: 0, // - 0 = None, 1 = ascending, -1 = descending
+    };
+  },
+  computed: {
+    SortOrder(): number {
+      return (this.shouldSortByThis) ? this.sortOrder : 0;
     }
   },
-  mounted() { 
-    if (this.$slots.default()) this.headerTitle = this.$slots.default()[0].text?.trim() ?? '';
-  },
   methods: {
-    SortTableHeader(): number { 
-      this.sortOrder = this.sortOrder === 0 //* 0 = starting point -> After click, start in ascending mode
+    SortTableHeader(): number {
+      this.sortOrder = this.sortOrder === 0 // - 0 = starting point -> After click, start in ascending mode
         ? 1 : this.sortOrder * -1;
-      this.$emit(this.CustomEvents.CHANGE_SORT, this.sortOrder);
+      this.$emit("change-sort", this.sortOrder);
       return this.sortOrder;
     }
   }
