@@ -1,15 +1,21 @@
 <template>
-  <div id="recaptcha-view"></div>
+  <div id="recaptcha-view" />
 </template>
-<script>
 
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  emits: ["recaptcha"],
+  mounted() {
+    this.SetupRecaptcha();
+  },
   methods: {
     SetupRecaptcha() {
-      setTimeout(() => {
+      setTimeout(() => { // ?: For better typing, `DefinitelyTyped` has a `grecaptcha` set of types!
         grecaptcha.render("recaptcha-view", {
           sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-          callback: token => {
+          callback: (_token: string) => {
             this.$emit("recaptcha", true);
           },
           "expired-callback": () => {
@@ -18,9 +24,6 @@ export default {
         });
       }, 500);
     }
-  },
-  mounted() {
-    this.SetupRecaptcha();
   }
-};
+});
 </script>
