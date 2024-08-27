@@ -30,9 +30,9 @@
 <script lang='ts'>
 import { defineComponent, type PropType } from "vue";
 import { mapGetters } from "vuex";
-import { MOBILE_WIDTH } from "../../Store/GetterTypes";
-import { APP_MODULE } from "../../Store/modules/AppState";
-import column_converter from "../../Utility/Functions/column_converter";
+import { MOBILE_WIDTH } from "@/Store/GetterTypes";
+import { APP_MODULE } from "@/Store/modules/AppState";
+import column_converter from "@/Utility/Functions/column_converter";
 
 export default defineComponent({
   props: {
@@ -103,7 +103,7 @@ export default defineComponent({
     FieldWidth() {
       return column_converter(this.width); // ?: Takes width integer up to 12 and displays text. 1 -> 'one', 10 -> 'ten'
     },
-    ProperValidationTransition() {
+    ProperValidationTransition() { // TODO: Might be replaceable with the Composition API
       return this.validationErrors.length > 0
         ? this.Transitions.INVALID_TRANSITION : this.Transitions.VALIDATION_INPUT_TRANSITION;
     }

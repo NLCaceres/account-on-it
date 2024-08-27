@@ -24,8 +24,8 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent } from "vue";
-import column_converter from "../../Utility/Functions/column_converter";
+import { defineComponent, type PropType } from "vue";
+import column_converter from "@/Utility/Functions/column_converter";
 
 export default defineComponent({
   props: {
