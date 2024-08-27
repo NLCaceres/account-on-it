@@ -5,26 +5,25 @@
     <sui-login-form />
   </div>
 </template>
+
 <script lang='ts'>
-import { defineComponent } from "vue"
-import SuiLoginForm from './SuiLoginForm.vue';
+import { defineComponent } from "vue";
+import SuiLoginForm from "./SuiLoginForm.vue";
 
 export default defineComponent({
   components: {
     SuiLoginForm
   },
   data() {
-    return {
-
-    }
+    return { };
   },
   mounted() {
-    $('.grecaptcha-badge').show(); // - MUST display badge, so user knows they're being verified
+    $(".grecaptcha-badge").show(); // - MUST display badge, so user knows they're being verified
   },
   unmounted() {
-    $('.grecaptcha-badge').hide();
+    $(".grecaptcha-badge").hide();
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

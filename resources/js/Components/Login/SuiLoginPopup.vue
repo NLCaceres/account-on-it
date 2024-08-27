@@ -5,31 +5,30 @@
     <sui-login-form v-else in-subview />
   </div>
 </template>
+
 <script lang='ts'>
 import { defineComponent } from "vue";
-import SuiForgotPasswordForm from './SuiForgotPassword/SuiForgotPasswordForm.vue';
-import NewUserPopup from '../../Views/Users/NewUserPopup.vue';
-import SuiLoginForm from './SuiLoginForm.vue';
+import SuiForgotPasswordForm from "./SuiForgotPassword/SuiForgotPasswordForm.vue";
+import NewUserPopup from "@/Views/Users/NewUserPopup.vue";
+import SuiLoginForm from "./SuiLoginForm.vue";
 
 export default defineComponent({
   components: {
     SuiForgotPasswordForm, NewUserPopup, SuiLoginForm
   },
   data() {
-    return {
-      
-    };
+    return { };
   },
   methods: {
     // ChangeView() {
-      // if (pageToChange === 0) { //* Explicitly check for 0 for ForgotPass Form
-      //   this.forgotPasswordView = !this.forgotPasswordView;
-      // } else if (pageToChange === 1) { //* New User Form
-      //   this.createUserView = !this.createUserView;
-      // } else {
-      //   this.forgotPasswordView = false;
-      //   this.createUserView = false;
-      // }
+    // if (pageToChange === 0) { //* Explicitly check for 0 for ForgotPass Form
+    //   this.forgotPasswordView = !this.forgotPasswordView;
+    // } else if (pageToChange === 1) { //* New User Form
+    //   this.createUserView = !this.createUserView;
+    // } else {
+    //   this.forgotPasswordView = false;
+    //   this.createUserView = false;
+    // }
     // }
   }
 });
@@ -39,7 +38,7 @@ export default defineComponent({
 @import "../../../sass/variables/colors.scss";
 // @import "~/variables/colors.scss";
 
-//? Login Popup
+// ?: Login Popup
 .ui.bottom.popup {
   max-width: 400px;
   width: 350px;
