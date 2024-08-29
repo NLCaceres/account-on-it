@@ -1,13 +1,13 @@
 <template>
-  <div class="field" :class="{ 'required': required, [FieldWidth + ' wide']: width > 0 }">
-    <label class="form-label" :for="`${modelName}_${fieldName}`">
+  <div class="field" :class="{ 'required': required, [FieldWidth + ' wide']: (width > 0 && width < 13) }">
+    <label class="form-label" :for="FieldID">
       <slot>{{ ProperFieldName }}</slot>
     </label>
 
-    <div :id="`${modelName}_${fieldName}_search`" class="ui search" :class="{ 'fluid': fluid }">
+    <div :id="FieldContainerID" class="ui search" :class="{ 'fluid': fluid }">
       <div class="ui icon input">
-        <input :id="`${modelName}_${fieldName}`" type="text" :placeholder
-               class="prompt" :value="modelValue" @input="$emit('input', (<HTMLInputElement>$event.target).value)">
+        <input :id="FieldID" type="text" :placeholder class="prompt" :value="modelValue"
+               @input="$emit('update:modelValue', (<HTMLInputElement>$event.target).value)">
         <i class="search icon" />
       </div>
       <div class="results" />
@@ -57,8 +57,17 @@ export default defineComponent({
       default: 0
     }
   },
-  emits: ["input"],
+  emits: ["update:modelValue"],
   computed: {
+    ValidModelFieldNames(): boolean {
+      return this.modelName.length > 0 && this.fieldName.length > 0;
+    },
+    FieldContainerID(): string {
+      return (this.ValidModelFieldNames) ? `${this.modelName}_${this.fieldName}_search` : "";
+    },
+    FieldID(): string {
+      return (this.ValidModelFieldNames) ? `${this.modelName}_${this.fieldName}` : "";
+    },
     ProperFieldName(): string {
       return this.fieldName.toLowerCase() === "id" || this.fieldName.toLowerCase() === "_id"
         ? "ID"
