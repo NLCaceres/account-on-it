@@ -1,11 +1,14 @@
 <template>
-  <div class="row" id="mobile-nav">
-    <router-link class="header item app-dark-accent border-light p-xs-y" :to="{ name: 'Home'}">
-      <slot></slot>
+  <div id="mobile-nav" class="row">
+    <router-link class="header item app-dark-accent border-light p-xs-y" :to="{ name: 'Home' }">
+      <slot />
     </router-link>
 
     <div class="right menu">
-      <router-link v-if="!Authenticated" id="login" :to="{ name: 'Login' }" class="ui item border-x-white app-green">Log In?</router-link>
+      <router-link v-if="!Authenticated" id="login" :to="{ name: 'Login' }" class="ui item border-x-white app-green">
+        Log In?
+      </router-link>
+
       <div v-else id="mobile-nav-links" class="ui fluid dropdown item p-xs-y">
         <a>
           <button type="button" class="ui inverted basic icon button">
@@ -13,7 +16,7 @@
           </button>
         </a>
         <div class="vertical menu app-blue" :style="{ width: NavbarWidth }">
-          <slot name="mobile-links" :style="{ width: NavbarWidth }"/>
+          <slot name="mobile-links" :style="{ width: NavbarWidth }" />
         </div>
       </div>
     </div>
@@ -34,9 +37,8 @@ export default defineComponent({
   },
   updated() {
     if (this.$store.state.authentication.authenticated) {
-        console.log("Authenticated");
-        $('#mobile-nav-links').dropdown();
-      }
+      $("#mobile-nav-links").dropdown();
+    }
   }
 });
 </script>
@@ -45,12 +47,12 @@ export default defineComponent({
 @import "../../../../sass/variables/colors.scss";
 // @import "~/variables/colors.scss";
 
-//! Mobile
+// !: Mobile
 .tablet.mobile.only.row {
   margin-left: 0;
   margin-right: 0;
 }
-//? Handle Hamburger button in Mobile
+// ?: Handle Hamburger button in Mobile
 .ui.basic.button:hover {
   background: $dark-accent !important;
 }

@@ -1,23 +1,21 @@
 <template>
-  <div class="row" id="desktop-nav">
-    <router-link id="desktop-brand" :to="{ name: 'Home'}" class="header item app-dark-accent border-light">
-        <slot></slot>
+  <div id="desktop-nav" class="row">
+    <router-link id="desktop-brand" :to="{ name: 'Home' }" class="header item app-dark-accent border-light">
+      <slot />
     </router-link>
 
-    <slot name="links" v-if="!expanded"></slot>
+    <slot v-if="!expanded" name="links" />
 
     <div class="right menu">
-      <!--//! Menu   -->
       <sui-login-dropdown v-if="!Authenticated" />
-      
-      <!--//! Login   -->
-      <div v-else class="item menu p-0" id="searchbar-logout">
-        <sui-nav-searchbar @expand="HandleSearchBarExpansion" :expanded="expanded" />
 
-        <a v-if="!expanded" id="logout" class="ui item border-x-white app-red h-100"
-          @click="Logout">Log Out?</a>
+      <div v-else id="searchbar-logout" class="item menu p-0">
+        <sui-nav-searchbar :expanded @expand="HandleSearchBarExpansion" />
 
-        <button type="button" v-else class="ui icon button app-white-text app-dark-accent" @click="expanded = !expanded">
+        <a v-if="!expanded" id="logout" class="ui item border-x-white app-red h-100" @click="Logout">Log Out?</a>
+
+        <button v-else type="button" class="ui icon button app-white-text app-dark-accent"
+                @click="expanded = !expanded">
           <i class="close icon" />
         </button>
       </div>
@@ -27,25 +25,26 @@
 
 <script lang='ts'>
 import { defineComponent } from "vue";
-import { AUTH_MODULE } from '../../../Store/modules/AuthenticationState';
-import { SIGN_OUT } from "../../../Store/ActionTypes";
-import SuiLoginDropdown from '../../Login/SuiLoginDropdown.vue';
-import SuiNavSearchbar from './SuiNavSearchbar.vue';
+import { AUTH_MODULE } from "@/Store/modules/AuthenticationState";
+import { SIGN_OUT } from "@/Store/ActionTypes";
+import SuiLoginDropdown from "@/Components/Login/SuiLoginDropdown.vue";
+import SuiNavSearchbar from "./SuiNavSearchbar.vue";
 
 export default defineComponent({
-  //! Components
   components: {
     SuiLoginDropdown, SuiNavSearchbar
   },
-  //! Lifecycle Hooks
-  mounted() {},
-  //! Data
   data() {
     return {
       expanded: false,
     };
   },
-  //! Methods
+  computed: {
+    Authenticated(): boolean {
+      return this.$store.state.authentication.authenticated;
+    },
+  },
+  mounted() {},
   methods: {
     async Logout() {
       const response = await this.$store.dispatch(`${AUTH_MODULE}/${SIGN_OUT}`);
@@ -55,19 +54,12 @@ export default defineComponent({
       this.expanded = !this.expanded;
     },
   },
-  computed: {
-    Authenticated(): boolean {
-      return this.$store.state.authentication.authenticated;
-    },
-  },
 });
 </script>
 
 <style lang="scss">
-//! NOT SCOPED 
-//? Reason is scoped prevents child components from getting styled by parents
+// ?: Not scoped to let child components get the following styling
 
-//! Small Desktop
 @media screen and (min-width: 768px) and (max-width: 1000px) {
   #desktop-brand {
     margin-right: 0em;
@@ -81,11 +73,11 @@ export default defineComponent({
       padding-right: 0.9em;
     }
   }
-  //* The following handles the link slot! BUT ONLY IF this style tag is not scoped to the component!
+  // - The following handles the link slot! BUT ONLY IF this style tag is not scoped to the component!
   div.row > div.flexed {
-    //margin-left: 1em !important; //* 1em only works to about 900
+    //margin-left: 1em !important; // - 1em only works to about 900
 
-    > a.item.text-centered { 
+    > a.item.text-centered {
       padding-left: 0.9em;
       padding-right: 0.9em;
     }
@@ -98,7 +90,7 @@ export default defineComponent({
     }
   }
 }
-//! Medium Desktop
+
 @media screen and (min-width: 1001px) and (max-width: 1225px) {
   #desktop-brand {
     margin-right: 0.5em;
@@ -107,7 +99,7 @@ export default defineComponent({
     width: 155px;
   }
 }
-//! Large Desktop
+
 @media screen and (min-width: 1226px) {
   #desktop-brand {
     margin-right: 8em;
