@@ -10,12 +10,14 @@
       <sui-login-dropdown v-if="!Authenticated" />
 
       <div v-else id="searchbar-logout" class="item menu p-0">
-        <sui-nav-searchbar :expanded @expand="HandleSearchBarExpansion" />
+        <sui-nav-searchbar :expanded @expand="ExpandSearchbar" />
 
-        <a v-if="!expanded" id="logout" class="ui item border-x-white app-red h-100" @click="Logout">Log Out?</a>
+        <button v-if="!expanded" id="logout" class="ui item border-x-white app-red h-100" @click="Logout">
+          Log Out?
+        </button>
 
         <button v-else type="button" class="ui icon button app-white-text app-dark-accent"
-                @click="expanded = !expanded">
+                aria-label="Searchbar Close" @click="expanded = !expanded">
           <i class="close icon" />
         </button>
       </div>
@@ -44,13 +46,14 @@ export default defineComponent({
       return this.$store.state.authentication.authenticated;
     },
   },
-  mounted() {},
   methods: {
     async Logout() {
       const response = await this.$store.dispatch(`${AUTH_MODULE}/${SIGN_OUT}`);
-      if (response.data.message === "Logged out" && this.$route.path !== "/") this.$router.push({ name: "Home" });
+      if (response.data.message === "Logged out" && this.$route.path !== "/") {
+        this.$router.push({ name: "Home" });
+      }
     },
-    HandleSearchBarExpansion() {
+    ExpandSearchbar() {
       this.expanded = !this.expanded;
     },
   },
