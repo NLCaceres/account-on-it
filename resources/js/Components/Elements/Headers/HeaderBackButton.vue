@@ -1,21 +1,25 @@
 <template>
-  <div :class="[ reverse ? 'flexed-column-reverse' : 'flexed-column' ]">
-    <div :class='[headerClasses]'>
+  <div :class="[reverse ? 'flexed-column-reverse' : 'flexed-column']">
+    <div :class="[headerClasses]">
       <h1 class="m-0">
-        <slot></slot>
+        <slot />
       </h1>
       <div class="ui divider m-xs-t m-sm-b" />
     </div>
-    <back-button :steps-back="StepsBack" @go-back="GoBack" :breadcrumb="breadcrumb" :class="[{ 'm-sm-y': reverse, 
-      'nega-m-sm-l': reverse & mobile, 'nega-m-lg-l': reverse & tablet, 'nega-m-xl-l': reverse & midDesktop}]"/>
+    <back-button :steps-back="StepsBack"
+                 :class="[{
+                   'm-sm-y': reverse, 'nega-m-sm-l': reverse && mobile, 'nega-m-lg-l': reverse && tablet,
+                   'nega-m-xl-l': reverse && midDesktop
+                 }]"
+                 :breadcrumb @go-back="GoBack" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
-import { mapGetters } from 'vuex';
-import { MID_DESKTOP_WIDTH, MOBILE_WIDTH, TABLET_WIDTH } from '../../../Store/GetterTypes';
-import { APP_MODULE } from '../../../Store/modules/AppState';
+import { defineComponent, type PropType } from "vue";
+import { mapGetters } from "vuex";
+import { APP_MODULE } from "@/Store/modules/AppState";
+import { MID_DESKTOP_WIDTH, MOBILE_WIDTH, TABLET_WIDTH } from "@/Store/GetterTypes";
 
 export default defineComponent({
   props: {
@@ -23,36 +27,27 @@ export default defineComponent({
       type: Number,
       default: -1
     },
-    parentHandledBackButton: {
-      type: Boolean,
-      default: false,
-    },
-    reversed: {
-      type: Boolean,
-      default: false
-    },
-    breadcrumb: {
-      type: Boolean,
-      default: false
-    },
-    reverse: {
-      type: Boolean,
-      default: false
-    },
+    breadcrumb: Boolean,
+    parentHandledBackButton: Boolean,
+    reverse: Boolean,
     headerClasses: {
-      type: [String, Array],
-      default: ''
+      type: [String, Array] as PropType<string | string[]>,
+      default: ""
     }
   },
+  emits: ["go-back"],
   computed: {
+    ...mapGetters(APP_MODULE, { mobile: MOBILE_WIDTH, tablet: TABLET_WIDTH, midDesktop: MID_DESKTOP_WIDTH }),
     StepsBack(): number {
       return (this.parentHandledBackButton) ? 0 : this.stepsBack;
     },
-    ...mapGetters(APP_MODULE, { mobile: MOBILE_WIDTH, tablet: TABLET_WIDTH, midDesktop: MID_DESKTOP_WIDTH })
   },
   methods: {
     GoBack() {
-      if (this.parentHandledBackButton) this.$emit(this.CustomEvents.GO_BACK); return; 
+      if (this.parentHandledBackButton) {
+        this.$emit("go-back");
+        return;
+      }
     }
   },
 });
