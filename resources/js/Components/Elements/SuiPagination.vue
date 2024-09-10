@@ -3,7 +3,8 @@
     <transition-group name="change-page" tag="ul" class="flexed p-0 app-pagination m-sm-t"
                       :style="{ '--total': 5 }" @before-enter="beforeEnter" @after-enter="afterEnter">
       <li v-if="currentPage !== 1" key="prev" class="app-page border-r rounded-l" :style="{ '--i': 0 }">
-        <button type="button" class="ui icon left attached button page-button" @click="PrevPage">
+        <button type="button" class="ui icon left attached button page-button"
+                aria-label="Previous Page" @click="PrevPage">
           <i class="left chevron icon" />
         </button>
       </li>
@@ -22,7 +23,8 @@
       </li>
 
       <li v-if="currentPage !== numOfPages" key="next" class="app-page border-l rounded-r" :style="{ '--i': 4 }">
-        <button type="button" class="ui icon right attached button page-button" @click="NextPage">
+        <button type="button" class="ui icon right attached button page-button"
+                aria-label="Next Page" @click="NextPage">
           <i class="right chevron icon" />
         </button>
       </li>
@@ -56,13 +58,10 @@ export default defineComponent({
   computed: {
     NumOfPages(): number | number[] {
       if (this.numOfPages) {
-        if (this.currentPage === 1) {
-          return [this.currentPage, this.currentPage + 1];
-        } else if (this.currentPage === this.numOfPages) {
-          return [this.currentPage - 1, this.currentPage];
-        } else {
-          return [this.currentPage - 1, this.currentPage, this.currentPage + 1];
-        }
+        return (this.numOfPages === 1) ? [this.currentPage]
+          : (this.currentPage === 1) ? [this.currentPage, this.currentPage + 1]
+          : (this.currentPage === this.numOfPages) ? [this.currentPage - 1, this.currentPage]
+          : [this.currentPage - 1, this.currentPage, this.currentPage + 1];
       }
       return this.entityTotal / this.divideBy;
     }
