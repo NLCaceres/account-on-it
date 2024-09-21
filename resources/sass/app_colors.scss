@@ -1,3 +1,4 @@
+@use "sass:color";
 @import "variables/colors.scss";
 
 @mixin set-colors($app-color) {
@@ -8,17 +9,21 @@
   }
 
   &-dark {
-    background-color: darken($app-color, 5%) !important;
+    // ?: `darken` deprecated, so 2 options: `scale` or `adjust`
+    // ?: `scale` CORRECTLY darkens the given color, WITHOUT affecting its lighting/lightness
+    // ?: `adjust` for a given color, negative percent $lightness, and `$space: hsl` preserves `darken` behavior
+    background-color: color.adjust($app-color, $lightness: -5%, $space: hsl) !important;
     &-text {
-      color: darken($app-color, 5%) !important;
+      color: color.adjust($app-color, $lightness: -5%, $space: hsl) !important;
     }
   }
- &-light {
-   background-color: lighten($app-color, 5%) !important;
-   &-text {
-     color: lighten($app-color, 5%) !important;
-   }
- }
+  &-light {
+    // ?: Similar to `darken`, `lighten` has been deprecated so `scale` and `adjust` similarly can be used
+    background-color: color.adjust($app-color, $lightness: 5%, $space: hsl) !important;
+    &-text {
+      color: color.adjust($app-color, $lightness: 5%, $space: hsl) !important;
+    }
+  }
 }
 
 .transparent {
