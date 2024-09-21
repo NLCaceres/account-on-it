@@ -16,11 +16,12 @@ export default tsEslint.config(
     rules: {
       "stylistic/linebreak-style": ["error", "unix"],
       "stylistic/no-trailing-spaces": "error",
-      "stylistic/indent": ["error", 2],
+      "stylistic/indent": ["error", 2, { "flatTernaryExpressions": true }],
       "stylistic/quotes": "error",
       "stylistic/semi": "error",
       "stylistic/key-spacing": "error",
       "stylistic/max-len": ["error", { "code": 120 }],
+      "stylistic/object-curly-spacing": ["error", "always"]
     }
   },
   {
